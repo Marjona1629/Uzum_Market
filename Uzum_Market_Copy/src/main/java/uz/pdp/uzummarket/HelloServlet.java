@@ -1,4 +1,4 @@
-package com.example.uzum_market_copy;
+package uz.pdp.uzummarket;
 
 import java.io.*;
 import jakarta.servlet.http.*;
