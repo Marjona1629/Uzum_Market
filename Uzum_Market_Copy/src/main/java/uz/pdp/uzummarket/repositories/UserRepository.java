@@ -1,20 +1,18 @@
 package uz.pdp.uzummarket.repositories;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.*;
 import uz.pdp.uzummarket.entities.User;
 
 import java.util.List;
 
 public class UserRepository implements BaseRepository<User> {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("HIBERNATE-UNIT");
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
 
     @Override
     public void save(User user) {
-        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             if (user.getUserId() == null) {
@@ -31,7 +29,6 @@ public class UserRepository implements BaseRepository<User> {
 
     @Override
     public boolean delete(User user) {
-        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             User managedUser = entityManager.find(User.class, user.getUserId());
@@ -60,7 +57,6 @@ public class UserRepository implements BaseRepository<User> {
 
     @Override
     public void update(User user) {
-        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             entityManager.merge(user);
