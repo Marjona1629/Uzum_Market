@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import uz.pdp.uzummarket.enums.Role;
 import uz.pdp.uzummarket.enums.Status;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -21,31 +20,44 @@ import java.util.Set;
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer userId;
-	@Column(nullable = false)
-	private String first_name;
-	@Column(nullable = false)
-	private String last_name;
+	private Integer id;
+
+	private String firstName;
+	private String lastName;
+
 	@Column(unique = true, nullable = false)
-	private String userName;
+	private String username;
+
 	private Integer age;
+
 	@Column(unique = true, nullable = false)
-	private String userEmail;
+	private String email;
+
 	@Column(nullable = false)
-	private String userPassword;
-	@Column(nullable = false)
-	private String userPhone;
-	private String userGender;
+	private String password;
+
+	private String phone;
+
+	private String gender;
+
 	private LocalDateTime dateTime = LocalDateTime.now();
-	private String userAddress;
-	private String userCity;
-	private String userState;
+
+	private String address;
+
+	private String city;
+
+	private String state;
+
 	@Enumerated(EnumType.STRING)
 	private Role role = Role.CUSTOMER;
+
 	@Enumerated(EnumType.STRING)
 	private Status status = Status.ACTIVE;
+
 	private boolean isDeleted = Boolean.FALSE;
+
 	private String code;
+
 	private Boolean hasConfirmed = Boolean.FALSE;
 
 	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
