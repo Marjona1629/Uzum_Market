@@ -109,5 +109,11 @@
         <a href="${uri_to}"><c:out value="${sign ? 'Sign In' : 'Sign Up'}"/></a>
     </div>
 </form>
+<c:if test="${not empty confirmationMessage}">
+    <p style="color: red;">${confirmationMessage}</p>
+</c:if>
+<c:if test="${not empty errorMessage}">
+    <p style="color: red;">${errorMessage}</p>
+</c:if>
 </body>
 </html>

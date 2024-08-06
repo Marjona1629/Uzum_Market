@@ -1,4 +1,5 @@
 package uz.pdp.uzummarket.controller;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,7 +22,12 @@ public class SignIn extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (authService.signIn(req, resp)) {
-            req.getRequestDispatcher("home.jsp").forward(req, resp);
+            resp.setContentType("text/html");
+            resp.getWriter().write("<h1>CONFIRM SIGN IN.</h1>");
+        } else {
+            resp.setContentType("text/html");
+            resp.getWriter().write("<h1>You should confirm your account! A confirmation email has been resent.</h1>");
+            resp.getWriter().write("<a href='https://mail.google.com'>Go to Gmail</a>");
         }
     }
 }
