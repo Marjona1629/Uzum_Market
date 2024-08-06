@@ -5,40 +5,54 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import uz.pdp.uzummarket.repositories.UserRepository;
-import uz.pdp.uzummarket.entities.User;
+import uz.pdp.uzummarket.util.DBConnection;
 
 import java.io.IOException;
-import java.util.Base64;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Logger;
 
 @WebServlet("/confirm")
 public class ConfirmAccountServlet extends HttpServlet {
 
-    private final UserRepository userRepository = UserRepository.getInstance();
+    private static final Logger LOGGER = Logger.getLogger(ConfirmAccountServlet.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String confirmation = request.getParameter("confirmation");
+        String code = request.getParameter("code");
+        String message;
+        String messageType;
 
-        if (confirmation != null) {
-            String decodedText = new String(Base64.getDecoder().decode(confirmation));
-            String[] parts = decodedText.split(":");
-            String email = parts[0];
-            String code = parts[1];
+        if (code != null && !code.isEmpty()) {
+            try (Connection con = DBConnection.getConnection()) {
+                String updateQuery = "UPDATE users SET hasConfirmed = TRUE WHERE code = ?";
+                try (PreparedStatement pstmt = con.prepareStatement(updateQuery)) {
+                    pstmt.setString(1, code);
+                    int rowsAffected = pstmt.executeUpdate();
 
-            User user = userRepository.getUserByEmail(email).orElse(null);
-
-            if (user != null && user.getCode().equals(code)) {
-                user.setHasConfirmed(true);
-                userRepository.update(user);
-
-                // Redirect to home page after successful confirmation
-                response.sendRedirect("home.jsp");
-                return;
+                    if (rowsAffected > 0) {
+                        message = "Your account has been confirmed. You can now log in.";
+                        messageType = "success";
+                        response.sendRedirect("login.jsp");
+                        return; // Ensure to stop further execution
+                    } else {
+                        message = "Invalid confirmation code.";
+                        messageType = "danger";
+                    }
+                }
+            } catch (SQLException e) {
+                LOGGER.severe("SQL Exception: " + e.getMessage());
+                message = "An error occurred while confirming your account.";
+                messageType = "danger";
             }
+        } else {
+            message = "Invalid confirmation code.";
+            messageType = "danger";
         }
 
-        // Redirect to an error page or display an error message
-        response.sendRedirect("error.jsp");
+        request.setAttribute("message", message);
+        request.setAttribute("messageType", messageType);
+        request.getRequestDispatcher("/confirmation-status.jsp").forward(request, response);
     }
 }

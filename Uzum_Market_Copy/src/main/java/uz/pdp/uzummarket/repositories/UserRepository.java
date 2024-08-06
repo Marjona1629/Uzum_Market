@@ -88,6 +88,7 @@ public class UserRepository implements BaseRepository<User> {
             query.setParameter("password", password);
             return query.getSingleResult();
         } catch (NoResultException e) {
+            // No user found with the given username and password
             return null;
         }
     }

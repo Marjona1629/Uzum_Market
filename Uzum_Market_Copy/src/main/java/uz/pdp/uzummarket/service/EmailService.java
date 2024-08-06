@@ -6,12 +6,16 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 
 import java.util.Properties;
+import java.util.Random;
 
 public class EmailService {
     @SneakyThrows
-    public void sendSmsToUser(String email, String text) {
+    public void sendConfirmationCode(String email, String code) {
         String subject = "Account Confirmation";
-        String htmlContent = String.format("Please click this <a href=\"http://localhost:8080/home?confirmation=%s\">link</a> in order to confirm your account", text);
+        String htmlContent = String.format(
+                "Your confirmation code is: <b>%s</b>. Please enter this code to confirm your account.",
+                code
+        );
 
         Properties properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com");
@@ -38,8 +42,8 @@ public class EmailService {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-
     }
+
 
     private static EmailService emailService;
     public static EmailService getInstance() {

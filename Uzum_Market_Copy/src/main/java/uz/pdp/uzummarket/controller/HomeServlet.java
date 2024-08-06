@@ -1,27 +1,29 @@
 package uz.pdp.uzummarket.controller;
 
-import java.io.*;
-import java.util.List;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import uz.pdp.uzummarket.entities.Product;
 import uz.pdp.uzummarket.service.ProductService;
 
-@WebServlet(name = "home", value = "/home")
+import java.io.IOException;
+import java.util.List;
+
+@WebServlet(name = "home", value = "/app/home")
 public class HomeServlet extends HttpServlet {
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ProductService productService = new ProductService();
-       // List<Product> discountedProducts = productService.getDiscountedProducts();
+        List<Product> discountedProducts = productService.getDiscountedProducts();
 
-        // Set the attribute
-       // request.setAttribute("discountedProducts", discountedProducts);
+        request.setAttribute("discountedProducts", discountedProducts);
 
         // Forward to JSP
-        RequestDispatcher dispatcher = request.getRequestDispatcher("home.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/home.jsp");
         dispatcher.forward(request, response);
     }
 

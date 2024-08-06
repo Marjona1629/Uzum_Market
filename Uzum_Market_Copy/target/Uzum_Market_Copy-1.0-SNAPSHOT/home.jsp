@@ -1,6 +1,7 @@
-
+<%@ page import="uz.pdp.uzummarket.service.ProductService" %>
 <%@ page import="uz.pdp.uzummarket.entities.Product" %>
 <%@ page import="java.util.List" %>
+<%@ page import="uz.pdp.uzummarket.service.CategoryService" %>
 <%@ page import="uz.pdp.uzummarket.entities.Category" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,14 +21,14 @@
 
 
     <!-- Css Styles -->
-    <link rel="stylesheet" href="assets/css_files/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/nice-select.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/jquery-ui.min.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/style.css" type="text/css">
 
     <style>
         #search-suggestions {
@@ -66,7 +67,7 @@
             <div class="col-lg-3">
                 <div class="header__logo">
                     <a href="${pageContext.request.contextPath}/home.jsp">
-                        <img src="assets/img/uzum_market_logo.png" alt="">
+                        <img src="/assets/img/uzum_market_logo.png" alt="">
                     </a>
                 </div>
             </div>
@@ -87,8 +88,9 @@
                     </ul>
                 </div>
                 <div class="header__top__right__auth">
-                    <a href="auth.jsp"><i class="fa fa-user"></i>Cabinet</a>
+                    <a href="login.jsp"><i class="fa fa-user"></i> Cabinet</a>
                 </div>
+
             </div>
             <div class="col-lg-3">
                 <div class="humberger__open">
@@ -101,7 +103,7 @@
 
 <!-- Header Section End -->
 
-<!-- Hero Section Begin --><%--
+<!-- Hero Section Begin -->
 <section class="hero">
     <div class="container">
         <div class="row">
@@ -146,7 +148,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="hero__item set-bg" data-setbg="assets/img/Black-Friday.jpg">
+                <div class="hero__item set-bg" data-setbg="/assets/img/Black-Friday.jpg">
                     <div class="hero__text">
                         <a href="#" class="primary-btn">BUY NOW</a>
                     </div>
@@ -154,12 +156,12 @@
             </div>
         </div>
     </div>
-</section>--%>
+</section>
 <!-- Hero Section End -->
 
 <!-- Featured Section Begin -->
 
-<%--<section class="featured spad">
+<section class="featured spad">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
@@ -174,24 +176,24 @@
                 String categoryId = request.getParameter("categoryId");
                 if (categoryId != null) {
                     ProductService productService = new ProductService();
-                    List<Product> products = productService.getAllProductByCategory(Integer.parseInt(categoryId));
+                    List<Product> products = productService.getAllProductsByCategory(Integer.parseInt(categoryId));
                     for (Product product : products) {
-                        String base64Image = product.getProductImages();
+                        String base64Image = product.getImages();
                         String imageType = "image/png";
             %>
             <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat">
                 <div class="featured__item">
                     <div class="featured__item__pic">
-                        <img src="<%= (base64Image != null && !base64Image.isEmpty()) ? "data:" + imageType + ";base64," + base64Image : "path/to/fallback-image.jpg" %>" alt="<%=product.getProductName()%>">
+                        <img src="<%= (base64Image != null && !base64Image.isEmpty()) ? "data:" + imageType + ";base64," + base64Image : "path/to/fallback-image.jpg" %>" alt="<%=product.getName()%>">
                         <ul class="featured__item__pic__hover">
                             <li><a href="#"><i class="fa fa-heart"></i></a></li>
                             <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-                            <li><a href="AddToCartServlet?productId=<%=product.getProductId()%>"><i class="fa fa-shopping-cart"></i></a></li>
+                            <li><a href="AddToCartServlet?productId=<%=product.getId()%>"><i class="fa fa-shopping-cart"></i></a></li>
                         </ul>
                     </div>
                     <div class="featured__item__text">
-                        <h6><%=product.getProductName()%></h6>
-                        <h5><%=product.getProductPrice()%>$</h5>
+                        <h6><%=product.getName()%></h6>
+                        <h5><%=product.getPrice()%>$</h5>
                     </div>
                 </div>
             </div>
@@ -201,7 +203,7 @@
             %>
         </div>
     </div><br><br><br>
-</section>--%>
+</section>
 
 
 <!-- Featured Section End -->
@@ -217,22 +219,22 @@
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="assets/img/categories/cat-2.jpg">
+                    <div class="categories__item set-bg" data-setbg="/assets/img/categories/cat-2.jpg">
                         <h5><a href="#">Blouse</a></h5>
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="assets/img/categories/cat-3.jpg">
+                    <div class="categories__item set-bg" data-setbg="/assets/img/categories/cat-3.jpg">
                         <h5><a href="#">Watch</a></h5>
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="assets/img/categories/cat-4.jpg">
+                    <div class="categories__item set-bg" data-setbg="/assets/img/categories/cat-4.jpg">
                         <h5><a href="#">Coca Cola</a></h5>
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="assets/img/categories/cat-5.jpg">
+                    <div class="categories__item set-bg" data-setbg="/assets/img/categories/cat-5.jpg">
                         <h5><a href="#">Parfum</a></h5>
                     </div>
                 </div>
@@ -268,14 +270,14 @@
     }
 </script>
 <!-- Js Plugins -->
-<script src="assets/css_files/js/jquery-3.3.1.min.js"></script>
-<script src="assets/css_files/js/bootstrap.min.js"></script>
-<script src="assets/css_files/js/jquery.nice-select.min.js"></script>
-<script src="assets/css_files/js/jquery-ui.min.js"></script>
-<script src="assets/css_files/js/jquery.slicknav.js"></script>
-<script src="assets/css_files/js/mixitup.min.js"></script>
-<script src="assets/css_files/js/owl.carousel.min.js"></script>
-<script src="assets/css_files/js/main.js"></script>
+<script src="/assets/css_files/js/jquery-3.3.1.min.js"></script>
+<script src="/assets/css_files/js/bootstrap.min.js"></script>
+<script src="/assets/css_files/js/jquery.nice-select.min.js"></script>
+<script src="/assets/css_files/js/jquery-ui.min.js"></script>
+<script src="/assets/css_files/js/jquery.slicknav.js"></script>
+<script src="/assets/css_files/js/mixitup.min.js"></script>
+<script src="/assets/css_files/js/owl.carousel.min.js"></script>
+<script src="/assets/css_files/js/main.js"></script>
 </body>
 
 </html>
