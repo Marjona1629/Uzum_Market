@@ -47,7 +47,7 @@ public class ConfirmAccountServlet extends HttpServlet {
                                 if (rowsAffected > 0) {
                                     message = "Your account has been confirmed. You can now log in.";
                                     messageType = "success";
-                                    response.sendRedirect("login.jsp");
+                                    response.sendRedirect("home.jsp");
                                     return; // Ensure to stop further execution after redirect
                                 } else {
                                     message = "Failed to confirm your account.";
