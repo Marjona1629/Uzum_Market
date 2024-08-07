@@ -4,11 +4,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import uz.pdp.uzummarket.entities.User;
 import uz.pdp.uzummarket.enums.Role;
 import uz.pdp.uzummarket.enums.Status;
+import uz.pdp.uzummarket.repositories.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AuthService {
+    private static final Logger LOGGER = Logger.getLogger(AuthService.class.getName());
+    private final UserRepository userRepository = UserRepository.getInstance();
 
     public User createUser(HttpServletRequest request) {
         String email = request.getParameter("email");
@@ -16,20 +21,34 @@ public class AuthService {
         String password = request.getParameter("password");
         String isDeletedParam = request.getParameter("isDeleted");
 
-        Boolean isDeleted = null;
+        if (email == null || username == null || password == null) {
+            throw new IllegalArgumentException("Required parameters are missing.");
+        }
 
-        isDeleted = Boolean.parseBoolean(isDeletedParam);
+        Boolean isDeleted = Boolean.parseBoolean(isDeletedParam);
 
-        return User.builder()
+        User user = User.builder()
                 .username(username)
                 .email(email)
                 .password(password) // Consider hashing the password before saving
                 .dateTime(LocalDateTime.now()) // Set the current time for dateTime
-                .role(Role.valueOf(Role.CUSTOMER.toString())) // Set default role to CUSTOMER
+                .role(Role.CUSTOMER) // Set default role to CUSTOMER
                 .status(Status.ACTIVE) // Set default status to ACTIVE
                 .isDeleted(isDeleted)
                 .code(generateCode())
+                .hasConfirmed(false)
                 .build();
+
+        LOGGER.log(Level.INFO, "Creating user: {0}", user);
+
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error saving user to database: {0}", e.getMessage());
+            throw new RuntimeException("Failed to save user", e);
+        }
+
+        return user;
     }
 
     private String generateCode() {
@@ -39,5 +58,27 @@ public class AuthService {
             sb.append(random.nextInt(10));
         }
         return sb.toString();
+    }
+
+    public User findByCode(String code) {
+        LOGGER.log(Level.INFO, "Looking up user by code: {0}", code);
+        return userRepository.findByCode(code);
+    }
+
+    public boolean confirmUser(String code) {
+        User user = findByCode(code);
+        if (user != null) {
+            if (!user.getHasConfirmed()) {
+                user.setHasConfirmed(true);
+                try {
+                    userRepository.updateUser(user); // Update user in the database
+                } catch (Exception e) {
+                    LOGGER.log(Level.SEVERE, "Error updating user confirmation status: {0}", e.getMessage());
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }

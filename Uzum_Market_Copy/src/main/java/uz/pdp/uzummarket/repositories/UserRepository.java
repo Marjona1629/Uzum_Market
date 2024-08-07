@@ -13,17 +13,15 @@ import java.util.Optional;
 public class UserRepository implements BaseRepository<User> {
 
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("HIBERNATE-UNIT");
-    private final EntityManager entityManager = entityManagerFactory.createEntityManager();
-    private final EntityTransaction transaction = entityManager.getTransaction();
 
     @Override
     public void save(User user) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             if (user.getId() == null) {
                 entityManager.persist(user);
-            } else {
-                entityManager.merge(user);
             }
             transaction.commit();
         } catch (Exception e) {
@@ -31,12 +29,14 @@ public class UserRepository implements BaseRepository<User> {
                 transaction.rollback();
             }
             throw new RuntimeException("Failed to save user", e);
+        } finally {
+            entityManager.close();
         }
     }
-
-
     @Override
     public boolean delete(User user) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             User managedUser = entityManager.find(User.class, user.getId());
@@ -52,21 +52,35 @@ public class UserRepository implements BaseRepository<User> {
                 transaction.rollback();
             }
             throw new RuntimeException("Failed to delete user", e);
+        } finally {
+            entityManager.close();
         }
     }
 
     @Override
     public User get(Integer id) {
-        return entityManager.find(User.class, id);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            return entityManager.find(User.class, id);
+        } finally {
+            entityManager.close();
+        }
     }
 
     @Override
     public List<User> getAll() {
-        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+        } finally {
+            entityManager.close();
+        }
     }
 
     @Override
     public void update(User user) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             entityManager.merge(user);
@@ -76,10 +90,13 @@ public class UserRepository implements BaseRepository<User> {
                 transaction.rollback();
             }
             throw new RuntimeException("Failed to update user", e);
+        } finally {
+            entityManager.close();
         }
     }
 
     public User login(String username, String password) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             TypedQuery<User> query = entityManager.createQuery(
                     "SELECT u FROM User u WHERE u.username = :username AND u.password = :password", User.class
@@ -88,12 +105,14 @@ public class UserRepository implements BaseRepository<User> {
             query.setParameter("password", password);
             return query.getSingleResult();
         } catch (NoResultException e) {
-            // No user found with the given username and password
             return null;
+        } finally {
+            entityManager.close();
         }
     }
 
     public User findByEmailAndPassword(String email, String password) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             TypedQuery<User> query = entityManager.createQuery(
                     "SELECT u FROM User u WHERE u.email = :email AND u.password = :password", User.class
@@ -103,10 +122,13 @@ public class UserRepository implements BaseRepository<User> {
             return query.getSingleResult();
         } catch (NoResultException e) {
             return null;
+        } finally {
+            entityManager.close();
         }
     }
 
     public boolean checkUserExists(String email) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             TypedQuery<Long> query = entityManager.createQuery(
                     "SELECT COUNT(u) FROM User u WHERE u.email = :email", Long.class
@@ -116,10 +138,13 @@ public class UserRepository implements BaseRepository<User> {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        } finally {
+            entityManager.close();
         }
     }
 
     public Optional<User> getUserByEmail(String email) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             TypedQuery<User> query = entityManager.createQuery(
                     "SELECT u FROM User u WHERE u.email = :email", User.class
@@ -129,10 +154,14 @@ public class UserRepository implements BaseRepository<User> {
             return Optional.of(user);
         } catch (NoResultException e) {
             return Optional.empty();
+        } finally {
+            entityManager.close();
         }
     }
 
     public boolean registerSeller(String email) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             Query query = entityManager.createQuery(
@@ -149,6 +178,38 @@ public class UserRepository implements BaseRepository<User> {
             }
             e.printStackTrace();
             return false;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public User findByCode(String code) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.code = :code", User.class);
+            query.setParameter("code", code);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public void updateUser(User user) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.merge(user);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw new RuntimeException("Failed to update user", e);
+        } finally {
+            entityManager.close();
         }
     }
 

@@ -9,7 +9,7 @@ public interface DBConnection {
 
     String user = "postgres";
     String password = "1111";
-    String url = "jdbc:postgresql://localhost:5434/uzum_market";
+    String url = "jdbc:postgresql://localhost:5432/uzum_market";
 
     static Properties getProperties() {
         Properties properties = new Properties();

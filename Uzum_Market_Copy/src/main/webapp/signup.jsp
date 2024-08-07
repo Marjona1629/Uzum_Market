@@ -63,10 +63,6 @@
         .btn-primary:hover {
             background-color: #45a049;
         }
-
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -74,32 +70,18 @@
 <div class="container">
     <h3>Sign Up</h3>
     <form class="registration-form" action="/signup" method="post">
+        <!-- Your form inputs here -->
         <input type="text" name="username" class="form-control" placeholder="Username" required><br>
         <input type="email" name="email" class="form-control" placeholder="Email" required><br>
         <input type="password" name="password" class="form-control" placeholder="Password" required><br>
         <button class="btn btn-primary" type="submit">Register</button>
     </form>
-    <!-- Confirmation Code Form -->
-    <div id="confirmation-section" class="hidden">
-        <h4>Enter Confirmation Code</h4>
-        <form id="confirmation-form" action="/confirm" method="post">
-            <input type="text" name="confirmationCode" class="form-control" placeholder="Confirmation Code" required><br>
-            <button class="btn btn-primary" type="submit">Submit</button>
-        </form>
-    </div>
 </div>
 
 <!-- Bootstrap Bundle JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-
-<script>
-    // Handle form submission
-    document.querySelector('.registration-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert('Please enter the confirmation code sent to your email.');
-        document.getElementById('confirmation-section').classList.remove('hidden');
-    });
-</script>
+<!-- Your Custom JS -->
+<script src="css_files/js/enter.js"></script>
 
 </body>
 </html>
