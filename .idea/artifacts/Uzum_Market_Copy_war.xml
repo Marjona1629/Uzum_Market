@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" external-system-id="Maven" name="Uzum_Market_Copy:war">
+    <output-path>$PROJECT_DIR$/Uzum_Market_Copy/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>Uzum_Market_Copy</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="Uzum_Market_Copy-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="Uzum_Market_Copy:war exploded" />
+    </root>
+  </artifact>
+</component>

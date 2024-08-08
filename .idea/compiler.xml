@@ -10,5 +10,8 @@
         <module name="Uzum_Market_Copy" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Uzum_Market_Copy" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
