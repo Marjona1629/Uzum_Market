@@ -15,6 +15,8 @@ import java.util.List;
 
 @WebServlet("/AddToCartServlet")
 public class AddToCartServlet extends HttpServlet {
+
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         int productId = Integer.parseInt(request.getParameter("productId"));
@@ -37,3 +39,10 @@ public class AddToCartServlet extends HttpServlet {
         response.sendRedirect("shoping-cart.jsp");
     }
 }
+/*
+git add .
+git commit -m"message"
+git pull origin main
+git add .
+git commit -m"message"
+git push origin main*/
