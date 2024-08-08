@@ -181,28 +181,29 @@
         <div class="row">
             <div class="col-lg-3 col-md-3 col-sm-6 text-center">
                 <div class="contact__widget">
-                    <span class="icon_phone"></span>
+                    <img src="/assets/css_files/css/pics/icon-phone.png" alt="Phone Icon">
                     <h4>Phone</h4>
                     <p>+99890 900 90 90</p>
                 </div>
             </div>
+
             <div class="col-lg-3 col-md-3 col-sm-6 text-center">
                 <div class="contact__widget">
-                    <span class="icon_pin_alt"></span>
+                    <img src="/assets/css_files/css/pics/icons-address.png" alt="Address Icon">
                     <h4>Address</h4>
                     <p>Tashkent Mirabad</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6 text-center">
                 <div class="contact__widget">
-                    <span class="icon_clock_alt"></span>
+                    <img src="/assets/css_files/css/pics/icon-time.png" alt="Time Icon">
                     <h4>Open time</h4>
                     <p>10:00 am to 23:00 pm</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6 text-center">
                 <div class="contact__widget">
-                    <span class="icon_mail_alt"></span>
+                    <img src="/assets/css_files/css/pics/icons-email.png" alt="Email Icon">
                     <h4>Email</h4>
                     <p>hello@colorlib.com</p>
                 </div>

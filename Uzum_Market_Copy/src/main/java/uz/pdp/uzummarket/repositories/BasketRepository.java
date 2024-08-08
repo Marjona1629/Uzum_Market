@@ -73,6 +73,7 @@ public class BasketRepository implements BaseRepository<Basket> {
             transaction.begin();
             entityManager.merge(basket);
             transaction.commit();
+            entityManager.close();
         } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback();

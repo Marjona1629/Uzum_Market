@@ -144,7 +144,7 @@
                     <a href="basket.jsp"><i class="fa fa-shopping-basket"></i> Basket</a>
                 </div>
                 <div class="header__nav__item">
-                    <a href="contact.jsp"><i class="fa fa-connectdevelop"></i> Contact</a>
+                    <a href="/contact"><i class="fa fa-connectdevelop"></i> Contact</a>
                 </div>
                 <div class="header__nav__item header__top__right__language">
                     <img src="/assets/img/language.png" alt=""><a>English</a>
