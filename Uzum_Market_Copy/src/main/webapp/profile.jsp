@@ -36,7 +36,7 @@
             box-sizing: border-box;
         }
 
-    .alert {
+        .alert {
             border-radius: 8px;
             padding: 20px;
             background-color: #ceb0e0;
@@ -285,221 +285,157 @@
 </section>
 <!-- Hero Section End -->
 <form action="/app/updateProfile" method="post">
-<%
-    User user = (User) session.getAttribute("user");
-    if (user != null) {
-        String userGender = user.getGender();
-        String femaleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar3.png";
-        String maleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar6.png";
-%>
+    <%
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            String userGender = user.getGender();
+            String femaleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar3.png";
+            String maleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar6.png";
+    %>
 
-<div class="container profile-container rounded bg-white mt-5 mb-5">
-    <div class="row">
-        <div class="col-md-3 border-right">
-            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                <img
-                        class="rounded-circle mt-5"
-                        width="150px"
-                        src="<%= userGender != null && userGender.equalsIgnoreCase("female") ? femaleAvatarUrl : maleAvatarUrl %>"
-                        alt="Profile Picture"
-                >
-                <br>
-                <span class="font-weight-bold"><%= user.getUsername() %></span>
-            </div>
-        </div>
-        <div class="col-md-9 border-right">
-            <div class="p-3 py-5">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="text-right">Profile Settings</h4>
+    <div class="container profile-container rounded bg-white mt-5 mb-5">
+        <div class="row">
+            <div class="col-md-3 border-right">
+                <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                    <img
+                            class="rounded-circle mt-5"
+                            width="150px"
+                            src="<%= userGender != null && userGender.equalsIgnoreCase("female") ? femaleAvatarUrl : maleAvatarUrl %>"
+                            alt="Profile Picture"
+                    >
+                    <br>
+                    <span class="font-weight-bold"><%= user.getUsername() %></span>
                 </div>
-                <form action="updateProfile" method="post">
-                    <div class="row mt-2">
-                        <div class="col-md-6">
-                            <label class="labels">First Name</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Enter First Name"
-                                    name="firstName"
-                                    value="<%= user.getFirstName() != null ? user.getFirstName() : "" %>"                            >
-                        </div>
-                        <div class="col-md-6">
-                            <label class="labels">Last Name</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Enter Last Name"
-                                    name="lastName"
-                                    value="<%= user.getLastName() != null ? user.getLastName() : "" %>"                            >
-                        </div>
+            </div>
+            <div class="col-md-9 border-right">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Profile Settings</h4>
                     </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12">
-                            <label class="labels">Email</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Email ID"
-                                    name="email"
-                                    value="<%= user.getEmail() %>"
-                            >
+                    <form action="updateProfile" method="post">
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <label class="labels">First Name</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter First Name"
+                                        name="firstName"
+                                        value="<%= user.getFirstName() != null ? user.getFirstName() : "" %>"                            >
+                            </div>
+                            <div class="col-md-6">
+                                <label class="labels">Last Name</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter Last Name"
+                                        name="lastName"
+                                        value="<%= user.getLastName() != null ? user.getLastName() : "" %>"                            >
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12">
-                            <label class="labels">Phone Number</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Enter Phone Number"
-                                    name="phone"
-                                    value="<%= user.getPhone() != null ? user.getPhone() : "" %>">
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Email</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Email ID"
+                                        name="email"
+                                        value="<%= user.getEmail() %>"
+                                >
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12">
-                            <label class="labels">Address</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Enter Address Line 1"
-                                    name="address"
-                                    value="<%= user.getAddress() != null ? user.getAddress() : "" %>">
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Phone Number</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter Phone Number"
+                                        name="phone"
+                                        value="<%= user.getPhone() != null ? user.getPhone() : "" %>">
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12">
-                            <label class="labels">Country</label>
-                            <select name="country" id="country" class="form-control">
-                                <option value="" <%= user.getState() == null ? "selected" : "" %>>Select Country...</option>
-                                <option value="USA" <%= "USA".equals(user.getState()) ? "selected" : "" %>>USA</option>
-                                <option value="Canada" <%= "Canada".equals(user.getState()) ? "selected" : "" %>>Canada</option>
-                                <option value="UK" <%= "UK".equals(user.getState()) ? "selected" : "" %>>UK</option>
-                                <option value="Australia" <%= "Australia".equals(user.getState()) ? "selected" : "" %>>Australia</option>
-                            </select>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Address</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter Address Line 1"
+                                        name="address"
+                                        value="<%= user.getAddress() != null ? user.getAddress() : "" %>">
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12">
-                            <label class="labels">City</label>
-                            <select name="city" id="city" class="form-control">
-                                <option value="" <%= user.getCity() == null ? "selected" : "" %>>Select City...</option>
-                                <!-- Cities will be populated based on the selected country -->
-                            </select>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Country</label>
+                                <select name="country" id="country" class="form-control">
+                                    <option value="" <%= user.getState() == null ? "selected" : "" %>>Select Country...</option>
+                                    <option value="USA" <%= "USA".equals(user.getState()) ? "selected" : "" %>>USA</option>
+                                    <option value="Canada" <%= "Canada".equals(user.getState()) ? "selected" : "" %>>Canada</option>
+                                    <option value="UK" <%= "UK".equals(user.getState()) ? "selected" : "" %>>UK</option>
+                                    <option value="Australia" <%= "Australia".equals(user.getState()) ? "selected" : "" %>>Australia</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12">
-                            <label class="labels">Gender</label>
-                            <select name="gender" class="form-control">
-                                <option value="male" <%= "male".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Male</option>
-                                <option value="female" <%= "female".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Female</option>
-                                <option value="other" <%= "other".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Other</option>
-                            </select>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">City</label>
+                                <select name="city" id="city" class="form-control">
+                                    <option value="" <%= user.getCity() == null ? "selected" : "" %>>Select City...</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="mt-5 text-center">
-                        <button class="btn btn-primary profile-button" type="submit">Save Profile</button>
-                    </div>
-                </form>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Gender</label>
+                                <select name="gender" class="form-control">
+                                    <option value="male" <%= "male".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Male</option>
+                                    <option value="female" <%= "female".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Female</option>
+                                    <option value="other" <%= "other".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-5 text-center">
+                            <button class="btn btn-primary profile-button" type="submit">Save Profile</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<% } else { %>
-<!-- Centering the message in the middle of the content -->
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="alert alert-warning text-center" role="alert">
-                User not found. Please <a href="/login" class="alert-link">Login</a> again.
+    <% } else { %>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="alert alert-warning text-center" role="alert">
+                    User not found. Please <a href="/login" class="alert-link">Login</a> again.
+                </div>
             </div>
         </div>
     </div>
-</div>
-<% } %>
+    <% } %>
 </form>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const countrySelect = document.getElementById("country");
-        const citySelect = document.getElementById("city");
-
-        // Define city options for each country
-        const cities = {
-            "USA": ["New York", "Los Angeles", "Chicago", "Houston"],
-            "Canada": ["Toronto", "Vancouver", "Montreal", "Calgary"],
-            "UK": ["London", "Manchester", "Birmingham", "Glasgow"],
-            "Australia": ["Sydney", "Melbourne", "Brisbane", "Perth"],
-        };
-
-        // Populate city dropdown based on the selected country
-        countrySelect.addEventListener("change", function() {
-            const selectedCountry = countrySelect.value;
-            const cityOptions = cities[selectedCountry] || [];
-
-            // Clear existing options
-            citySelect.innerHTML = '<option value="">Select City...</option>';
-
-            // Add new options based on selected country
-            cityOptions.forEach(function(city) {
-                const option = document.createElement("option");
-                option.value = city;
-                option.text = city;
-                citySelect.add(option);
-            });
-        });
-
-        // Trigger change event to populate cities if country is pre-selected
-        countrySelect.dispatchEvent(new Event("change"));
-    });
-</script>
-
-<!-- Include footer -->
-<script>
-    function searchProducts() {
-        const query = document.getElementById('search-input').value;
-        if (query.length === 0) {
-            document.getElementById('search-suggestions').innerHTML = '';
-            return;
-        }
-        fetch(`/searchProducts?query=${query}`)
-            .then(response => response.json())
-            .then(data => {
-                let suggestions = '';
-                data.forEach(product => {
-                    suggestions += `<div class="suggestion-item" onclick="selectProduct('${product.name}')">${product.name}</div>`;
-                });
-                document.getElementById('search-suggestions').innerHTML = suggestions;
-            })
-            .catch(error => console.error('Error fetching products:', error));
-    }
-
-    function selectProduct(productName) {
-        document.getElementById('search-input').value = productName;
-        document.getElementById('search-suggestions').innerHTML = '';
-    }
     document.addEventListener('DOMContentLoaded', function() {
         const countrySelect = document.getElementById('country');
         const citySelect = document.getElementById('city');
 
-        // Define city options for each country
         const citiesByCountry = {
             "USA": ["New York", "Los Angeles", "Chicago", "Houston"],
             "Canada": ["Toronto", "Vancouver", "Montreal", "Calgary"],
             "UK": ["London", "Manchester", "Birmingham", "Leeds"],
             "Australia": ["Sydney", "Melbourne", "Brisbane", "Perth"]
-            // Add more countries and cities as needed
         };
 
         function updateCities() {
             const selectedCountry = countrySelect.value;
             const cities = citiesByCountry[selectedCountry] || [];
 
-            // Clear current city options
             citySelect.innerHTML = '<option value="">Select City...</option>';
 
-            // Add new city options
             cities.forEach(city => {
                 const option = document.createElement('option');
                 option.value = city;
@@ -508,14 +444,11 @@
             });
         }
 
-        // Event listener for country dropdown change
         countrySelect.addEventListener('change', updateCities);
-
-        // Initialize cities based on the current country value
         updateCities();
     });
 </script>
-<!-- Js Plugins -->
+
 <script src="/assets/css_files/js/jquery-3.3.1.min.js"></script>
 <script src="/assets/css_files/js/bootstrap.min.js"></script>
 <script src="/assets/css_files/js/jquery.nice-select.min.js"></script>
