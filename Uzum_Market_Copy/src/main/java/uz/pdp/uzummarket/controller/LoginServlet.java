@@ -25,7 +25,7 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         User user = userService.login(username, password);
 
-        if ( user != null && user.isDeleted() != true) {
+        if (user != null && user.isDeleted() != true) {
             if (user.getStatus() == Status.BLOCKED) {
                 response.sendRedirect("/blockedUser.jsp");
                 return;

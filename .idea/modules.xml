@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Uzum_Market.iml" filepath="$PROJECT_DIR$/.idea/Uzum_Market.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Uzum_Market_Copy/Uzum_Market_Copy.iml" filepath="$PROJECT_DIR$/Uzum_Market_Copy/Uzum_Market_Copy.iml" />
     </modules>
   </component>
 </project>

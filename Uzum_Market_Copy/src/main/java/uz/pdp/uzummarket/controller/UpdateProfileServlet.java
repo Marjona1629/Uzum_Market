@@ -22,9 +22,9 @@ public class UpdateProfileServlet extends HttpServlet {
             String firstName = request.getParameter("firstName");
             String lastName = request.getParameter("lastName");
             String email = request.getParameter("email");
-            String phoneNumber = request.getParameter("phoneNumber");
+            String phoneNumber = request.getParameter("phone");
             String address = request.getParameter("address");
-            String state = request.getParameter("state");
+            String state = request.getParameter("country");
             String city = request.getParameter("city");
             String gender = request.getParameter("gender");
 
@@ -48,7 +48,7 @@ public class UpdateProfileServlet extends HttpServlet {
                 request.getRequestDispatcher("/profile.jsp").forward(request, response);
             }
         } else {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
         }
     }
 }

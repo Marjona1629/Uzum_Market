@@ -19,12 +19,11 @@ public class LoginFilter implements Filter {
         HttpSession session = request.getSession();
         Object user = session.getAttribute("user");
 
-        if ( user != null) {
-           System.out.println("Logged in as " + user);
+        if (user != null) {
+            System.out.println("Logged in as " + user);
             filterChain.doFilter(request, response);
-       }else {
-          response.sendRedirect("/login");
-       }
+        } else {
+            response.sendRedirect("/login");
+        }
     }
-
 }

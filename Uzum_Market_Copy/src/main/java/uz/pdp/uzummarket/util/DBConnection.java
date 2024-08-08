@@ -8,7 +8,7 @@ import java.util.Properties;
 public interface DBConnection {
 
     String user = "postgres";
-    String password = "1111";
+    String password = "root123";
     String url = "jdbc:postgresql://localhost:5432/uzum_market";
 
     static Properties getProperties() {

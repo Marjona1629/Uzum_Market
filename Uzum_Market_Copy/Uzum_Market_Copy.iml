@@ -6,6 +6,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
+          <factory-entry name="HIBERNATE-UNIT" />
           <factory-entry name="Uzum_Market" value="10888a3d-cf4a-4c47-9f3b-7711ddc38fb7" />
         </datasource-mapping>
         <naming-strategy-map />
