@@ -30,8 +30,13 @@ public class UserService {
         return userRepository.getAll();
     }
 
-    public void updateUser(User user) {
-        userRepository.update(user);
+    public boolean updateUser(User user) {
+        try {
+            userRepository.update(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public User login(String username, String password) {

@@ -6,6 +6,7 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import uz.pdp.uzummarket.entities.Shop;
 import uz.pdp.uzummarket.entities.User;
+import uz.pdp.uzummarket.enums.Role;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,37 @@ public class AdminService {
             instance = new AdminService();
         }
         return instance;
+    }
+    public User getAdminInfo() {
+        EntityManager entityManager = null;
+        User adminInfo = null;
+
+        try {
+            entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            String query = "SELECT u FROM User u WHERE u.role = :role";
+            List<User> admins = entityManager.createQuery(query, User.class)
+                    .setParameter("role", Role.ADMIN)
+                    .getResultList();
+
+            if (!admins.isEmpty()) {
+                adminInfo = admins.get(0);
+            }
+
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            if (entityManager != null && entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
+
+        return adminInfo;
     }
 
     public List<User> getSellers() {
@@ -44,23 +76,6 @@ public class AdminService {
         return sellers;
     }
 
-    public User getAdminInfo() {
-        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
-        User admin = null;
-
-        try {
-            String jpql = "SELECT u FROM User u WHERE u.role = :role";
-            TypedQuery<User> query = entityManager.createQuery(jpql, User.class);
-            query.setParameter("role", "ADMIN");
-            query.setMaxResults(1);
-            admin = query.getSingleResult();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            entityManager.close();
-        }
-        return admin;
-    }
 
     public int getTotalCount(String tableName, String role) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();

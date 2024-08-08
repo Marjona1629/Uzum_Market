@@ -12,24 +12,24 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="admin-assets/img/favicon.png" rel="icon">
-    <link href="admin-assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="/admin-assets/img/favicon.png" rel="icon">
+    <link href="/admin-assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
     <!-- Vendor CSS Files -->
-    <link href="admin-assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="admin-assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="admin-assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-    <link href="admin-assets/vendor/quill/quill.snow.css" rel="stylesheet">
-    <link href="admin-assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-    <link href="admin-assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-    <link href="admin-assets/vendor/simple-datatables/style.css" rel="stylesheet">
+    <link href="/admin-assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/admin-assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="/admin-assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="/admin-assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="/admin-assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="/admin-assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="/admin-assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
     <!-- Template Main CSS File -->
-    <link href="admin-assets/css/style.css" rel="stylesheet">
+    <link href="/admin-assets/css/style.css" rel="stylesheet">
 
 </head>
 
@@ -336,78 +336,19 @@
 
 
 <main id="main" class="main">
-
-    <%
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = DBConnection.getConnection();
-            String query = "SELECT first_name, last_name, user_email, user_phone, user_address, user_city, user_state, user_gender, date_time FROM users WHERE role = ?";
-            statement = connection.prepareStatement(query);
-            statement.setString(1, "ADMIN");
-            resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                String adminFullName = resultSet.getString("first_name") + " " + resultSet.getString("last_name");
-                String adminEmail = resultSet.getString("user_email");
-                String adminPhone = resultSet.getString("user_phone");
-                String adminAddress = resultSet.getString("user_address");
-                String adminCity = resultSet.getString("user_city");
-                String adminState = resultSet.getString("user_state");
-                String adminGender = resultSet.getString("user_gender");
-                Timestamp dateTime = resultSet.getTimestamp("date_time");
-
-                // Set seller information in session attributes for later use
-                session.setAttribute("adminFullName", adminFullName);
-                session.setAttribute("adminEmail", adminEmail);
-                session.setAttribute("adminPhone", adminPhone);
-                session.setAttribute("adminAddress", adminAddress);
-                session.setAttribute("adminCity", adminCity);
-                session.setAttribute("adminState", adminState);
-                session.setAttribute("adminGender", adminGender);
-                session.setAttribute("dateTime", dateTime);
-            } else {
-                // Handle case where no admin information found
-                // Optionally set default values or handle differently
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            // Close resources
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    %>
-
     <!-- Profile -->
     <section class="section profile">
         <div class="row">
             <div class="col-xl-4">
                 <div class="card">
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-                        <img style="width: 1000px" src="<%= session.getAttribute("adminGender")
-                        .equals("Female") ? "admin-assets/img/female.png" : "admin-assets/img/male.png" %>" alt="Profile" class="rounded-circle">
-                        <h2><%= session.getAttribute("adminFullName") %></h2>
+                        <img
+                                style="width: 200px"
+                                src="<%= request.getAttribute("adminGender").equals("Female") ? "admin-assets/img/female.png" : "admin-assets/img/male.png" %>"
+                                alt="Profile"
+                                class="rounded-circle"
+                        >
+                        <h2><%= request.getAttribute("adminFirstName") %> <%= request.getAttribute("adminLastName") %></h2>
                         <!-- Display admin's job title or role here if available -->
                         <div class="social-links mt-2">
                             <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
@@ -427,43 +368,43 @@
                                 <h5 class="card-title">Profile Details</h5>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label ">Full Name</div>
-                                    <div class="col-lg-9 col-md-8"><%= session.getAttribute("adminFullName") %></div>
+                                    <div class="col-lg-3 col-md-4 label">Full Name</div>
+                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminFirstName") %> <%= request.getAttribute("adminLastName") %></div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Email</div>
-                                    <div class="col-lg-9 col-md-8"><%= session.getAttribute("adminEmail") %></div>
+                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminEmail") %></div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Phone</div>
-                                    <div class="col-lg-9 col-md-8"><%= session.getAttribute("adminPhone") %></div>
+                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminPhone") %></div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Gender</div>
-                                    <div class="col-lg-9 col-md-8"><%= session.getAttribute("adminGender") %></div>
+                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminGender") %></div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Date Joined</div>
-                                    <div class="col-lg-9 col-md-8"><%= session.getAttribute("dateTime") %></div>
+                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminDateTime") %></div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Address</div>
-                                    <div class="col-lg-9 col-md-8"><%= session.getAttribute("adminAddress") %></div>
+                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminAddress") %></div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">City</div>
-                                    <div class="col-lg-9 col-md-8"><%= session.getAttribute("adminCity") %></div>
+                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminCity") %></div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">State</div>
-                                    <div class="col-lg-9 col-md-8"><%= session.getAttribute("adminState") %></div>
+                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminState") %></div>
                                 </div>
 
                             </div><!-- End Profile Overview -->
@@ -480,17 +421,17 @@
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
-<script src="admin-assets/vendor/apexcharts/apexcharts.min.js"></script>
-<script src="admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="admin-assets/vendor/chart.js/chart.umd.js"></script>
-<script src="admin-assets/vendor/echarts/echarts.min.js"></script>
-<script src="admin-assets/vendor/quill/quill.js"></script>
-<script src="admin-assets/vendor/simple-datatables/simple-datatables.js"></script>
-<script src="admin-assets/vendor/tinymce/tinymce.min.js"></script>
-<script src="admin-assets/vendor/php-email-form/validate.js"></script>
+<script src="/admin-assets/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="/admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/admin-assets/vendor/chart.js/chart.umd.js"></script>
+<script src="/admin-assets/vendor/echarts/echarts.min.js"></script>
+<script src="/admin-assets/vendor/quill/quill.js"></script>
+<script src="/admin-assets/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="/admin-assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="/admin-assets/vendor/php-email-form/validate.js"></script>
 
 <!-- Template Main JS File -->
-<script src="admin-assets/js/main.js"></script>
+<script src="/admin-assets/js/main.js"></script>
 
 </body>
 

@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "SELLER",urlPatterns = {"/app/seller"})
+@WebServlet(name = "seller",urlPatterns = {"/app/seller/main"})
 public class SellerServlet  extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

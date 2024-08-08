@@ -98,7 +98,7 @@ a:hover,
 a:focus {
 	text-decoration: none;
 	outline: none;
-	color: #ffffff;
+	color: #6f3cce;
 }
 
 ul,
@@ -344,7 +344,7 @@ ol {
 	top: 1px;
 	height: 20px;
 	width: 1px;
-	background: #000000;
+	background: #6f3cce;
 	opacity: 0.1;
 	content: "";
 }
@@ -355,20 +355,20 @@ ol {
 
 .header__top__right__language div {
 	font-size: 14px;
-	color: #1c1c1c;
+	color: #6f3cce;
 	display: inline-block;
 	margin-right: 4px;
 }
 
 .header__top__right__language span {
 	font-size: 14px;
-	color: #1c1c1c;
+	color: #6f3cce;
 	position: relative;
 	top: 2px;
 }
 
 .header__top__right__language ul {
-	background: #222222;
+	background: #6f3cce;
 	width: 100px;
 	text-align: left;
 	padding: 5px 0;
@@ -402,7 +402,7 @@ ol {
 .header__top__right__auth a {
 	display: block;
 	font-size: 14px;
-	color: #1c1c1c;
+	color: #6f3cce;
 }
 
 .header__top__right__auth a i {
@@ -432,7 +432,7 @@ ol {
 	position: absolute;
 	left: 0;
 	top: 50px;
-	background: #222222;
+	background: #6f3cce;
 	width: 180px;
 	z-index: 9;
 	padding: 5px 0;
@@ -481,7 +481,7 @@ ol {
 
 .header__menu ul li a {
 	font-size: 14px;
-	color: #252525;
+	color: #6f3cce;
 	text-transform: uppercase;
 	font-weight: 700;
 	letter-spacing: 2px;
@@ -520,7 +520,24 @@ ol {
 
 .header__cart ul li a i {
 	font-size: 18px;
-	color: #1c1c1c;
+	color: #6f3cce;
+}
+.header__cart {
+	display: inline-block;
+	margin: 5px;
+}
+
+.header__cart a {
+	display: block;
+	padding: 10px 20px;
+	text-decoration: none;
+	color: black;
+	transition: background-color 0.3s ease;
+}
+
+.header__cart a:hover {
+	background-color: gray;
+	color: white; /* Optional: Change text color on hover */
 }
 
 .header__cart ul li a span {
@@ -546,7 +563,7 @@ ol {
 }
 
 .header__cart .header__cart__price span {
-	color: #252525;
+	color: #6f3cce;
 	font-weight: 700;
 }
 

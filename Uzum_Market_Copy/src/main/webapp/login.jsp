@@ -14,7 +14,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(45deg, #9dee52, #f873a7, #23a6d5, #23d5ab);
+            background: linear-gradient(45deg, #863caf, #975fb7, #7f24b4, #6f3cce);
             background-size: 400% 400%;
             animation: gradientAnimation 15s ease infinite;
             height: 100vh;
@@ -84,7 +84,7 @@
         </div>
         <button class="btn btn-primary" type="submit">Login</button>
         <div class="create-account">
-            <p>Don't have an account? <a href="signup.jsp" class="btn btn-link">Create Account</a></p>
+            <p>Don't have an account? <a href="/signup" class="btn btn-link">Create Account</a></p>
         </div>
     </form>
 </div>

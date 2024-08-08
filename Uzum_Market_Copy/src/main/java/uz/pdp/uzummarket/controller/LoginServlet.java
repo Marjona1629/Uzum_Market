@@ -32,6 +32,7 @@ public class LoginServlet extends HttpServlet {
             }
 
             HttpSession session = request.getSession();
+            session.setAttribute("username", user.getUsername());
             session.setAttribute("user", user);
             session.setAttribute("user_id",user.getId());
             session.setAttribute("role", user.getRole().toString());
@@ -46,7 +47,7 @@ public class LoginServlet extends HttpServlet {
             if ("ADMIN".equalsIgnoreCase(user.getRole().toString())) {
                 response.sendRedirect("/app/admin/main");
             } else if ("SELLER".equalsIgnoreCase(user.getRole().toString())) {
-                response.sendRedirect("/app/seller");
+                response.sendRedirect("/app/seller/main");
             } else {
                 response.sendRedirect("/app/home");
             }

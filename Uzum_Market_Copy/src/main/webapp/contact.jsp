@@ -1,26 +1,102 @@
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Ogani Template">
-    <meta name="keywords" content="Ogani, unica, creative, html">
+    <meta name="description" content="Uzum Market">
+    <meta name="keywords" content="html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Contact</title>
+    <title>Uzum Market</title>
 
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
 
     <!-- Css Styles -->
-    <link rel="stylesheet" href="assets/css_files/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/nice-select.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/jquery-ui.min.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="assets/css_files/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css_files/css/style.css" type="text/css">
+
+    <style>
+        .header__nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-around; /* or space-between if you prefer */
+        }
+
+        .header__nav__item {
+            margin: 0 10px; /* Adjust spacing between items */
+        }
+
+        .header__nav__item a {
+            text-decoration: none;
+            color: black;
+            transition: background-color 0.3s ease;
+        }
+
+        .header__nav__item a:hover {
+            background-color: #b6b4b7; /* Adjust hover color as needed */
+        }
+
+        .header__top__right__language ul {
+            display: none; /* Hide dropdown by default */
+            position: absolute;
+            background-color: white;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ccc;
+            z-index: 1000;
+        }
+
+        .header__top__right__language:hover ul {
+            display: block; /* Show dropdown on hover */
+        }
+
+        #search-suggestions {
+            position: absolute;
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: #6f3cce;
+            z-index: 1000;
+            width: calc(100% - 22px); /* Adjust according to input width */
+        }
+
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover {
+            background-color: #6f3cce;
+        }
+        .header__cart {
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .header__cart a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: black;
+            transition: background-color 0.3s ease;
+        }
+
+        .header__cart a:hover {
+            background-color: #b6b4b7;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -29,130 +105,56 @@
     <div class="loader"></div>
 </div>
 
-<!-- Humberger Begin -->
-
-<!-- Header Section Begin -->
-<header class="header" >
+<<!-- Header Section Begin -->
+<header class="header">
     <div class="container">
-        <div class="row align-items-center">
-            <!-- Logo Section -->
-            <div class="col-lg-3 d-flex align-items-center">
+        <div class="row">
+            <div class="col-lg-3">
                 <div class="header__logo">
                     <a href="${pageContext.request.contextPath}/home.jsp">
-                        <img src="assets/img/uzum_market_logo.png" alt="Uzum Market Logo">
+                        <img src="/assets/img/uzum_market_logo.png" alt="">
                     </a>
                 </div>
             </div>
 
-            <!-- Menu Section -->
-            <div class="col-lg-6 d-flex align-items-center">
-                <nav class="header__menu w-100">
-                    <ul class="d-flex justify-content-around m-0 p-0">
-                        <li><a href="./index.html">Home</a></li>
-                        <li><a href="./shop-grid.html">Shop</a></li>
-                        <li><a href="#">Pages</a>
-                            <ul class="header__menu__dropdown">
-                                <li><a href="./shop-details.jsp">Shop Details</a></li>
-                                <li><a href="./shoping-cart.jsp">Shopping Cart</a></li>
-                                <li><a href="./checkout.html">Check Out</a></li>
-                                <li><a href="./blog-details.html">Blog Details</a></li>
-                            </ul>
-                        </li>
-                        <li class="active"><a href="./blog.html">Blog</a></li>
-                        <li><a href="./contact.jsp">Contact</a></li>
-                    </ul>
-                </nav>
-            </div>
-
-            <!-- Auth and Cart Section -->
-            <div class="col-lg-3 d-flex align-items-center justify-content-end">
-                <!-- Cart Section -->
-                <div class="header__cart d-flex align-items-center me-3">
-                    <ul class="d-flex m-0 p-0">
-                        <li class="me-3"><a href="#"><i class="fa fa-heart"></i></a></li>
-                        <li><a href="basket.jsp"><i class="fa fa-shopping-bag"></i></a></li>
-                    </ul>
+            <div class="col-lg-9 d-flex align-items-center justify-content-end header__nav">
+                <div class="header__nav__item">
+                    <%
+                        String username = (String) session.getAttribute("username");
+                        if (username != null) {
+                    %>
+                    <a href="/app/profile"><i class="fa fa-user-o"></i> <%= username %></a>
+                    <%
+                    } else {
+                    %>
+                    <a href="/login"><i class="fa fa-user-o"></i> Cabinet</a>
+                    <%
+                        }
+                    %>
                 </div>
-
-                <!-- Language Selector -->
-                <div class="header__top__right__language d-flex align-items-center me-3">
-                    <img src="assets/img/language.png" alt="Language" class="me-2">
-                    <div class="me-2">English</div>
-                    <span class="arrow_carrot-down"></span>
-                    <ul class="dropdown-menu m-0 p-0">
-                        <li><a href="#">Russian</a></li>
+                <div class="header__nav__item">
+                    <a href="favorite.jsp"><i class="fa fa-heart-o"></i> Favorite</a>
+                </div>
+                <div class="header__nav__item">
+                    <a href="basket.jsp"><i class="fa fa-shopping-basket"></i> Basket</a>
+                </div>
+                <div class="header__nav__item">
+                    <a href="contact.jsp"><i class="fa fa-connectdevelop"></i> Contact</a>
+                </div>
+                <div class="header__nav__item header__top__right__language">
+                    <img src="/assets/img/language.png" alt=""><a>English</a>
+                    <ul>
+                        <li><a href="#">Uzbek</a></li>
                         <li><a href="#">English</a></li>
+                        <li><a href="#">Russian</a></li>
                     </ul>
                 </div>
-
-                <!-- Authentication Links -->
-                <div class="d-flex flex-column" style="max-width: 250px">
-                    <div class="header__top__right__auth mb-2">
-                        <a href="/login"><i class="fa fa-user"></i> Login</a>
-                    </div>
-                    <div class="header__top__right__auth">
-                        <a href="/signup"><i class="fa fa-user-plus"></i> Sign Up</a>
-                    </div>
-                </div>
             </div>
-
         </div>
     </div>
 </header>
 <!-- Header Section End -->
 
-<!-- Hero Section Begin -->
-<section class="hero hero-normal">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3">
-                <div class="hero__categories">
-                    <div class="hero__categories__all">
-                        <i class="fa fa-bars"></i>
-                        <span>All departments</span>
-                    </div>
-                    <ul>
-                        <li><a href="#">Fresh Meat</a></li>
-                        <li><a href="#">Vegetables</a></li>
-                        <li><a href="#">Fruit & Nut Gifts</a></li>
-                        <li><a href="#">Fresh Berries</a></li>
-                        <li><a href="#">Ocean Foods</a></li>
-                        <li><a href="#">Butter & Eggs</a></li>
-                        <li><a href="#">Fastfood</a></li>
-                        <li><a href="#">Fresh Onion</a></li>
-                        <li><a href="#">Papayaya & Crisps</a></li>
-                        <li><a href="#">Oatmeal</a></li>
-                        <li><a href="#">Fresh Bananas</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-9">
-                <div class="hero__search">
-                    <div class="hero__search__form">
-                        <form action="#">
-                            <div class="hero__search__categories">
-                                All Categories
-                                <span class="arrow_carrot-down"></span>
-                            </div>
-                            <input type="text" placeholder="What do yo u need?">
-                            <button type="submit" class="site-btn">SEARCH</button>
-                        </form>
-                    </div>
-                    <div class="hero__search__phone">
-                        <div class="hero__search__phone__icon">
-                            <i class="fa fa-phone"></i>
-                        </div>
-                        <div class="hero__search__phone__text">
-                            <h5>+65 11.188.888</h5>
-                            <span>support 24/7 time</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Hero Section End -->
 
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-section set-bg" >

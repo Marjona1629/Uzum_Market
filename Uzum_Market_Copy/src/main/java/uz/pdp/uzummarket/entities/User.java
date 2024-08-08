@@ -60,6 +60,6 @@ public class User {
 
 	private Boolean hasConfirmed = Boolean.FALSE;
 
-	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Shop> shops;
 }
