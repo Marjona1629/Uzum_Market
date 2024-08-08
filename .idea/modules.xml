@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Uzum_Market_Copy/Uzum_Market_Copy.iml" filepath="$PROJECT_DIR$/Uzum_Market_Copy/Uzum_Market_Copy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Uzum_Market_Copy.iml" filepath="$PROJECT_DIR$/Uzum_Market_Copy.iml" />
     </modules>
   </component>
 </project>
