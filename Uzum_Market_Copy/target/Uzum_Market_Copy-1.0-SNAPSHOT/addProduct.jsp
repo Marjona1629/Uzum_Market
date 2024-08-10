@@ -409,30 +409,38 @@
     List<Category> categories = categoryService.getAllCategories();
     request.setAttribute("categories", categories);
 %>
-
 <div class="container">
     <h3>Add Product</h3>
-    <form action="add-product" method="post" enctype="multipart/form-data">
-        <input type="text" name="product_name" class="form-control" placeholder="Product name" required><br>
-        <input type="text" name="productDescription" class="form-control" placeholder="Product description" required><br>
-        <input type="text" name="productPrice" class="form-control" placeholder="Product price" required><br>
-        <input type="text" name="productDiscount" class="form-control" placeholder="Product discount" required><br>
-        <input type="text" name="productQuantity" class="form-control" placeholder="Product quantity" required><br>
-        <select name="category_all" class="form-control" required>
-            <option value="">Select Category...</option>
-            <% for (Category category : categories) { %>
-            <option value="<%= category.getCategoryId() %>"><%= category.getCategoryName() %></option>
-            <% } %>
-        </select>
-        <div class="custom-file-input">
-            <label for="productImagesInput">Choose Product Image</label>
-            <input type="file" id="productImagesInput" name="productImages" class="form-control" accept="image/*" required>
-        </div>
-        <br>
 
-        <button class="btn btn-primary" type="submit">Add Product</button>
+    <form action="addProductServlet" method="post" enctype="multipart/form-data">
+        <input type="text" class="form-control" name="productName" placeholder="Product Name" required>
+        <textarea class="form-control" name="productDescription" placeholder="Product Description" required></textarea>
+        <input type="text" class="form-control" name="productPrice" placeholder="Product Price" required>
+        <input type="text" class="form-control" name="productDiscount" placeholder="Product Discount">
+
+        <input type="number" class="form-control" name="productQuantity" placeholder="Product Quantity" required>
+
+        <!-- Select Category dropdown -->
+        <select class="form-control" name="categoryId" required>
+            <option value="" disabled selected>Select Category</option>
+            <%
+                for (Category category : categories) {
+            %>
+            <option value="<%= category.getCategoryId() %>"><%= category.getCategoryName() %></option>
+            <%
+                }
+            %>
+        </select>
+
+        <div class="custom-file-input">
+            <label for="file">Choose Product Image</label>
+            <input type="file" id="file" name="productImage" required>
+        </div>
+
+        <button type="submit" class="btn btn-success" style="margin-top: 20px; font-size: 18px; padding: 12px 24px;">Add Product</button>
     </form>
 </div>
+
 
 <!-- Bootstrap Bundle JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
