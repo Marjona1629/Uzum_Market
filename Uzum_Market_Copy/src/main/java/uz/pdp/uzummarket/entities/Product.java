@@ -16,26 +16,26 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id; // productId
+    private Integer id;
 
     @Column(nullable = false)
-    private String name; // productName
+    private String name;
 
     @Column(nullable = false)
-    private String description; // productDescription
+    private String description;
 
     @Column(nullable = false)
-    private float price; // productPrice
+    private float price;
 
-    private int discount; // productDiscount
-
-    @Column(nullable = false)
-    private int quantity; // productQuantity
+    private int discount;
 
     @Column(nullable = false)
-    private String images; // productImages
+    private int quantity;
 
-    private float priceAfterDiscount; // productPriceAfterDiscount
+    @Column(nullable = false)
+    private String images;
+
+    private float priceAfterDiscount;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)

@@ -15,9 +15,12 @@ public class ShopRepository implements BaseRepository<Shop> {
     @Transactional
     @Override
     public void save(Shop shop) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(shop);
-        entityManager.getTransaction().commit();
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.persist(shop);
+        } finally {
+            entityManager.getTransaction().commit();
+        }
     }
 
     @Transactional

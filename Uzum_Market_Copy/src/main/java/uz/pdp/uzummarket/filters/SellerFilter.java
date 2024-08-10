@@ -18,12 +18,11 @@ public class SellerFilter implements Filter {
         HttpSession session = request.getSession();
         Object role = session.getAttribute("role");
 
-        if ( role != null && role.equals("SELLER")) {
+        if (role != null && role.equals("SELLER")) {
             System.out.println("Logged in as " + role);
             filterChain.doFilter(request, response);
-        }else {
-            response.sendError(403,"You are not SELLER");
+        } else {
+            response.sendError(403, "You are not SELLER");
         }
     }
-
 }

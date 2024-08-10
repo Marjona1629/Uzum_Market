@@ -18,6 +18,5 @@ public class LoggingFilter implements Filter {
         System.out.println("Method: " + method);
 
         filterChain.doFilter(request, response);
-
     }
 }

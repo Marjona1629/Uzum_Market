@@ -5,6 +5,7 @@
 <%@ page import="uz.pdp.uzummarket.entities.Category" %>
 <%@ page import="java.util.List" %>
 <%@ page import="uz.pdp.uzummarket.service.CategoryService" %>
+<%@ page import="uz.pdp.uzummarket.entities.User" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -280,37 +281,51 @@
 
             </li><!-- End Messages Nav -->
 
-            <%
+                <%
                 Connection conn = null;
                 Statement stmt = null;
                 ResultSet rs = null;
 
+                User user = (User) session.getAttribute("user");
+
+                if (user == null || user.getId() == null) {
+                    return;
+                }
+
+                String sellerFirstName = "";
+                String sellerLastName = "";
+                String sellerRole = "";
+
                 try {
-                    // Get database connection
                     conn = DBConnection.getConnection();
                     stmt = conn.createStatement();
 
-                    // Query to get admin information
-                    String sql = "SELECT * FROM users WHERE role = 'SELLER' LIMIT 1";
+                    String sql = "SELECT * FROM users WHERE role = 'SELLER' AND user_id = '" + user.getId() + "'";
                     rs = stmt.executeQuery(sql);
 
-                    // Assuming there is only one admin in your system, LIMIT 1 is used
                     if (rs.next()) {
-                        String adminFirstName = rs.getString("first_name");
-                        String adminLastName = rs.getString("last_name");
-                        String adminRole = rs.getString("role");
-            %>
-
+                        sellerFirstName = rs.getString("first_name");
+                        sellerLastName = rs.getString("last_name");
+                        sellerRole = rs.getString("role");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+                    if (stmt != null) try { stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+                    if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+                }
+%>
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-person-circle fs-4 me-2"></i> <!-- Admin Icon -->
-                    <span class="d-none d-md-block dropdown-toggle ps-2"><%= adminFirstName %> <%= adminLastName %></span>
+                    <i class="bi bi-person-circle fs-4 me-2"></i> <!-- Seller Icon -->
+                    <span class="d-none d-md-block dropdown-toggle ps-2"><%= sellerFirstName %> <%= sellerLastName %></span>
                 </a><!-- End Profile Image Icon -->
 
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
-                        <h6><%= adminFirstName %> <%= adminLastName %></h6>
-                        <span><%= adminRole %></span>
+                        <h6><%= sellerFirstName %> <%= sellerLastName %></h6>
+                        <span><%= sellerRole %></span>
                     </li>
                     <li>
                         <hr class="dropdown-divider">
@@ -344,20 +359,6 @@
                     </li>
                 </ul><!-- End Profile Dropdown Items -->
             </li><!-- End Profile Nav -->
-
-            <%
-                    } // end if(rs.next())
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-                    if (stmt != null) try { stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-                    if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
-                }
-            %>
-
-        </ul>
-    </nav><!-- End Icons Navigation -->
 
 </header><!-- End Header -->
 
@@ -434,7 +435,7 @@
 
         <div class="custom-file-input">
             <label for="file">Choose Product Image</label>
-            <input type="file" id="file" name="productImage" required>
+            <input type="file" id="file" name="productImage">
         </div>
 
         <button type="submit" class="btn btn-success" style="margin-top: 20px; font-size: 18px; padding: 12px 24px;">Add Product</button>
