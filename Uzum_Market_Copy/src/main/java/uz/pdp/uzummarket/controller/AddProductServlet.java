@@ -17,7 +17,7 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 
-@WebServlet("/addProductServlet")
+@WebServlet(urlPatterns = {"/app/seller/addProductServlet"})
 @MultipartConfig
 public class AddProductServlet extends HttpServlet {
     private final ProductService productService = new ProductService();

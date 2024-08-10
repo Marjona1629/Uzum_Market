@@ -413,7 +413,7 @@
 <div class="container">
     <h3>Add Product</h3>
 
-    <form action="addProductServlet" method="post" enctype="multipart/form-data">
+    <form action="/app/seller/addProductServlet" method="post" enctype="multipart/form-data">
         <input type="text" class="form-control" name="productName" placeholder="Product Name" required>
         <textarea class="form-control" name="productDescription" placeholder="Product Description" required></textarea>
         <input type="text" class="form-control" name="productPrice" placeholder="Product Price" required>

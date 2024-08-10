@@ -13,7 +13,7 @@ import uz.pdp.uzummarket.service.ShopService;
 
 import java.io.IOException;
 
-@WebServlet("/add-shop")
+@WebServlet(urlPatterns = {"/app/seller/add-shop"})
 public class ShopServlet extends HttpServlet {
 
     private ShopService shopService;
@@ -50,6 +50,6 @@ public class ShopServlet extends HttpServlet {
 
         shopService.createShop(shop);
 
-        resp.sendRedirect("seller.jsp");
+        resp.sendRedirect("/seller.jsp");
     }
 }

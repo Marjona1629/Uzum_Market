@@ -387,7 +387,7 @@
 
 <div class="container">
     <h3>Add shop</h3>
-    <form action="add-shop" method="post">
+    <form action="/app/seller/add-shop" method="post">
         <input type="text" name="name" class="form-control" placeholder="Shop name" required><br>
         <input type="text" name="description" class="form-control" placeholder="Shop description" required><br>
         <input type="text" name="address" class="form-control" placeholder="Shop address" required><br>
