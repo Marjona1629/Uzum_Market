@@ -1,9 +1,9 @@
-<%@ page import="java.sql.*, javax.sql.*" %>
 <%@ page import="java.text.DecimalFormat" %>
-<%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
 <%@ page import="uz.pdp.uzummarket.service.AdminService" %>
-<%@ page import="java.util.Map" %>
+<%@ page import="uz.pdp.uzummarket.entities.Shop" %>
 <%@ page import="java.util.List" %>
+<%@ page import="uz.pdp.uzummarket.entities.User" %>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -37,8 +37,9 @@
     <link href="/admin-assets/css/style.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <style>
         body {
             background-color: #f8f9fa;
@@ -371,20 +372,6 @@
 
 </aside><!-- End Sidebar -->
 
-<main id="main" class="main">
-
-    <div class="pagetitle">
-        <h1>Admin Dashboard</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.jsp">Home</a></li>
-                <li class="breadcrumb-item active">Admin Dashboard</li>
-            </ol>
-        </nav>
-    </div><!-- End Page Title -->
-
-
-</main><!-- End #main -->
 
 <!-- Vendor JS Files -->
 <script src="/admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

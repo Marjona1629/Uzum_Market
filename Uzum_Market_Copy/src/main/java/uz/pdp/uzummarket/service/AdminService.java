@@ -7,14 +7,17 @@ import jakarta.persistence.TypedQuery;
 import uz.pdp.uzummarket.entities.Shop;
 import uz.pdp.uzummarket.entities.User;
 import uz.pdp.uzummarket.enums.Role;
+import uz.pdp.uzummarket.repositories.AdminRepository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class AdminService {
 
+    private static AdminRepository adminRepository = new AdminRepository();
     private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("uzummarket");
     private static AdminService instance;
 
@@ -26,6 +29,7 @@ public class AdminService {
         }
         return instance;
     }
+
     public User getAdminInfo() {
         EntityManager entityManager = null;
         User adminInfo = null;
@@ -35,12 +39,12 @@ public class AdminService {
             entityManager.getTransaction().begin();
 
             String query = "SELECT u FROM User u WHERE u.role = :role";
-            List<User> admins = entityManager.createQuery(query, User.class)
-                    .setParameter("role", Role.ADMIN)
-                    .getResultList();
+            TypedQuery<User> typedQuery = entityManager.createQuery(query, User.class);
+            typedQuery.setParameter("role", Role.ADMIN);
+            List<User> admins = typedQuery.getResultList();
 
             if (!admins.isEmpty()) {
-                adminInfo = admins.get(0);
+                adminInfo = admins.get(0); // Assume there is at least one admin
             }
 
             entityManager.getTransaction().commit();
@@ -65,7 +69,7 @@ public class AdminService {
         try {
             String jpql = "SELECT u FROM User u WHERE u.role = :role";
             TypedQuery<User> query = entityManager.createQuery(jpql, User.class);
-            query.setParameter("role", "SELLER");
+            query.setParameter("role", Role.SELLER); // Use Role.SELLER enum
             sellers = query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,105 +80,83 @@ public class AdminService {
         return sellers;
     }
 
+    public int getTotalCustomers() throws SQLException {
+        return adminRepository.getTotalCustomers();
+    }
 
-    public int getTotalCount(String tableName, String role) {
-        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
-        int totalCount = 0;
-        String jpql = "SELECT COUNT(u) FROM " + tableName + " u" + (role != null ? " WHERE u.role = :role" : "");
+    public int getPreviousYearCustomers() throws SQLException {
+        return adminRepository.getPreviousYearCustomers();
+    }
 
+    public int getTotalSellers() throws SQLException {
+        return adminRepository.getTotalSellers();
+    }
+
+    public int getPreviousYearSellers() throws SQLException {
+        return adminRepository.getPreviousYearSellers();
+    }
+
+    public int getTotalShops() throws SQLException {
+        return adminRepository.getTotalShops();
+    }
+
+    public int getPreviousYearShops() throws SQLException {
+        return adminRepository.getPreviousYearShops();
+    }
+
+    public ResultSet getShopsList() throws SQLException {
+        return adminRepository.getShopsList();
+    }
+
+    public double calculatePercentageChange(int current, int previous) {
+        if (previous == 0) return 0.0;
+        return ((double)(current - previous) / previous) * 100;
+    }
+
+    public String formatPercentage(double percentage) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        return df.format(Math.abs(percentage)) + "%";
+    }
+
+    public List<Shop> displayDashboard() {
+        List<Shop> shopList = new ArrayList<>();
         try {
-            TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
-            if (role != null) {
-                query.setParameter("role", role);
+            // Fetch totals and percentages if needed
+            int totalCustomers = getTotalCustomers();
+            int previousYearCustomers = getPreviousYearCustomers();
+            double percentageChangeCustomers = calculatePercentageChange(totalCustomers, previousYearCustomers);
+            String formattedPercentageChangeCustomers = formatPercentage(percentageChangeCustomers);
+
+            int totalSellers = getTotalSellers();
+            int previousYearSellers = getPreviousYearSellers();
+            double percentageChangeSellers = calculatePercentageChange(totalSellers, previousYearSellers);
+            String formattedPercentageChangeSellers = formatPercentage(percentageChangeSellers);
+
+            int totalShops = getTotalShops();
+            int previousYearShops = getPreviousYearShops();
+            double percentageChangeShops = calculatePercentageChange(totalShops, previousYearShops);
+            String formattedPercentageChangeShops = formatPercentage(percentageChangeShops);
+
+            // Process shops list
+            ResultSet shopsList = getShopsList();
+            while (shopsList.next()) {
+                Shop shop = new Shop();
+                shop.setId(shopsList.getInt("id"));
+                shop.setName(shopsList.getString("name"));
+                shop.setAddress(shopsList.getString("address"));
+
+                User owner = new User();
+                owner.setFirstName(shopsList.getString("first_name"));
+                owner.setLastName(shopsList.getString("last_name"));
+                shop.setOwner(owner);
+
+                shopList.add(shop);
             }
-            totalCount = query.getSingleResult().intValue();
-        } catch (Exception e) {
+
+        } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            entityManager.close();
         }
-        return totalCount;
+        return shopList;
     }
 
-    public int getPreviousYearCount(String tableName, String role) {
-        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
-        int previousYearCount = 0;
-        String jpql = "SELECT COUNT(u) FROM " + tableName + " u WHERE u.dateTime >= :oneYearAgo" +
-                (role != null ? " AND u.role = :role" : "");
-
-        try {
-            TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
-            query.setParameter("oneYearAgo", java.time.LocalDateTime.now().minusYears(1));
-            if (role != null) {
-                query.setParameter("role", role);
-            }
-            previousYearCount = query.getSingleResult().intValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            entityManager.close();
-        }
-        return previousYearCount;
-    }
-
-    public double calculatePercentageChange(int totalCount, int previousYearCount) {
-        if (previousYearCount == 0) {
-            return 0.0;
-        }
-        return ((double)(totalCount - previousYearCount) / previousYearCount) * 100;
-    }
-
-    public int getTotalCustomers() {
-        return getTotalCount("User", "CUSTOMER");
-    }
-
-    public int getPreviousYearCustomers() {
-        return getPreviousYearCount("User", "CUSTOMER");
-    }
-
-    public int getTotalSellers() {
-        return getTotalCount("User", "SELLER");
-    }
-
-    public int getPreviousYearSellers() {
-        return getPreviousYearCount("User", "SELLER");
-    }
-
-    public int getTotalShops() {
-        return getTotalCount("Shop", null);
-    }
-
-    public int getPreviousYearShops() {
-        return getPreviousYearCount("Shop", null);
-    }
-
-    public List<Map<String, Object>> getShopListWithOwners() {
-        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
-        List<Map<String, Object>> shops = new ArrayList<>();
-        String jpql = "SELECT s FROM Shop s JOIN s.owner o";
-
-        try {
-            TypedQuery<Object[]> query = entityManager.createQuery(jpql, Object[].class);
-            List<Object[]> results = query.getResultList();
-
-            for (Object[] result : results) {
-                Map<String, Object> shopData = new HashMap<>();
-                Shop shop = (Shop) result[0];
-                User owner = (User) result[1];
-
-                shopData.put("id", shop.getId());
-                shopData.put("name", shop.getName());
-                shopData.put("address", shop.getAddress());
-                shopData.put("firstName", owner.getFirstName());
-                shopData.put("lastName", owner.getLastName());
-
-                shops.add(shopData);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            entityManager.close();
-        }
-        return shops;
-    }
 }

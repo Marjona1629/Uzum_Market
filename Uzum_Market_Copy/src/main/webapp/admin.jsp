@@ -1,9 +1,9 @@
-<%@ page import="java.sql.*, javax.sql.*" %>
 <%@ page import="java.text.DecimalFormat" %>
-<%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
 <%@ page import="uz.pdp.uzummarket.service.AdminService" %>
-<%@ page import="java.util.Map" %>
+<%@ page import="uz.pdp.uzummarket.entities.Shop" %>
 <%@ page import="java.util.List" %>
+<%@ page import="uz.pdp.uzummarket.entities.User" %>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -37,8 +37,9 @@
     <link href="/admin-assets/css/style.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <style>
         body {
             background-color: #f8f9fa;
@@ -373,16 +374,216 @@
 
 <main id="main" class="main">
 
-    <div class="pagetitle">
-        <h1>Admin Dashboard</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.jsp">Home</a></li>
-                <li class="breadcrumb-item active">Admin Dashboard</li>
-            </ol>
-        </nav>
-    </div><!-- End Page Title -->
+    <section class="section dashboard">
+        <div class="row">
 
+            <!-- Left side columns -->
+            <div class="col-lg-8">
+                <div class="row">
+
+                    <%
+                        AdminService adminService = AdminService.getInstance();
+
+                        int totalCustomers = adminService.getTotalCustomers();
+                        int previousYearCustomers = adminService.getPreviousYearCustomers();
+                        double percentageChangeCustomers = adminService.calculatePercentageChange(totalCustomers, previousYearCustomers);
+                        DecimalFormat df = new DecimalFormat("0.00");
+                        String formattedPercentageChangeCustomers = df.format(Math.abs(percentageChangeCustomers));
+
+                        int totalSellers = adminService.getTotalSellers();
+                        int previousYearSellers = adminService.getPreviousYearSellers();
+                        double percentageChangeSellers = adminService.calculatePercentageChange(totalSellers, previousYearSellers);
+                        String formattedPercentageChangeSellers = df.format(Math.abs(percentageChangeSellers));
+
+                        int totalShops = adminService.getTotalShops();
+                        int previousYearShops = adminService.getPreviousYearShops();
+                        double percentageChangeShops = adminService.calculatePercentageChange(totalShops, previousYearShops);
+                        String formattedPercentageChangeShops = df.format(Math.abs(percentageChangeShops));
+                    %>
+
+                    <!-- Customers Card -->
+                    <div class="col-xxl-4 col-xl-12">
+                        <div class="card info-card customers-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Customers <span>| This Year</span></h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6><%= totalCustomers %></h6>
+                                        <span class="<%= percentageChangeCustomers < 0 ? "text-danger" : "text-success" %> small pt-1 fw-bold">
+                                        <%= formattedPercentageChangeCustomers %>%
+                                    </span>
+                                        <span class="text-muted small pt-2 ps-1"><%= percentageChangeCustomers < 0 ? "decrease" : "increase" %></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Customers Card -->
+
+                    <!-- Sellers Card -->
+                    <div class="col-xxl-4 col-xl-12">
+                        <div class="card info-card sellers-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Sellers <span>| This Year</span></h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6><%= totalSellers %></h6>
+                                        <span class="<%= percentageChangeSellers < 0 ? "text-danger" : "text-success" %> small pt-1 fw-bold">
+                                        <%= formattedPercentageChangeSellers %>%
+                                    </span>
+                                        <span class="text-muted small pt-2 ps-1"><%= percentageChangeSellers < 0 ? "decrease" : "increase" %></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Sellers Card -->
+
+                    <!-- Shops Card -->
+                    <div class="col-xxl-4 col-xl-12">
+                        <div class="card info-card shops-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Shops <span>| This Year</span></h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-shop"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6><%= totalShops %></h6>
+                                        <span class="<%= percentageChangeShops < 0 ? "text-danger" : "text-success" %> small pt-1 fw-bold">
+                                        <%= formattedPercentageChangeShops %>%
+                                    </span>
+                                        <span class="text-muted small pt-2 ps-1"><%= percentageChangeShops < 0 ? "decrease" : "increase" %></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Shops Card -->
+
+                    <!-- Shop List -->
+                    <div class="col-12">
+                        <div class="card recent-sales overflow-auto">
+                            <div class="card-body">
+                                <h5 class="card-title">Shops List</h5>
+
+                                <table class="table table-borderless datatable">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Shop Name</th>
+                                        <th>Owner Name</th>
+                                        <th>Address</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <%
+                                        adminService = AdminService.getInstance();
+                                        List<Shop> shopList = adminService.displayDashboard();
+
+                                        for (Shop shop : shopList) {
+                                            Integer id = shop.getId();
+                                            String shopName = shop.getName();
+                                            User owner = shop.getOwner();
+                                            String ownerName = owner.getFirstName() + " " + owner.getLastName();
+                                            String address = shop.getAddress();
+                                    %>
+                                    <tr>
+                                        <th scope="row"><a href="#"><%= id %></a></th>
+                                        <td><%= shopName %></td>
+                                        <td><%= ownerName %></td>
+                                        <td><%= address %></td>
+                                    </tr>
+                                    <%
+                                        }
+                                    %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Shop List -->
+
+
+                </div>
+            </div><!-- End Left side columns -->
+
+            <!-- Right side columns -->
+            <div class="col-lg-4">
+
+                <!-- Website Traffic -->
+                <div class="card">
+                    <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="#">Today</a></li>
+                            <li><a class="dropdown-item" href="#">This Month</a></li>
+                            <li><a class="dropdown-item" href="#">This Year</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="card-body pb-0">
+                        <h5 class="card-title">Website Traffic <span>| Today</span></h5>
+
+                        <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                echarts.init(document.querySelector("#trafficChart")).setOption({
+                                    tooltip: {
+                                        trigger: 'item'
+                                    },
+                                    legend: {
+                                        top: '5%',
+                                        left: 'center'
+                                    },
+                                    series: [{
+                                        name: 'Access From',
+                                        type: 'pie',
+                                        radius: ['40%', '70%'],
+                                        avoidLabelOverlap: false,
+                                        label: {
+                                            show: false,
+                                            position: 'center'
+                                        },
+                                        emphasis: {
+                                            label: {
+                                                show: true,
+                                                fontSize: '18',
+                                                fontWeight: 'bold'
+                                            }
+                                        },
+                                        labelLine: {
+                                            show: false
+                                        },
+                                        data: [
+                                            { value: 1048, name: 'Search Engine' },
+                                            { value: 735, name: 'Direct' },
+                                            { value: 580, name: 'Email' },
+                                            { value: 484, name: 'Union Ads' },
+                                            { value: 300, name: 'Video Ads' }
+                                        ]
+                                    }]
+                                });
+                            });
+                        </script>
+
+                    </div>
+                </div><!-- End Website Traffic -->
+
+            </div><!-- End Right side columns -->
+
+        </div>
+    </section>
 
 </main><!-- End #main -->
 
