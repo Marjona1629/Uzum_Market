@@ -311,7 +311,7 @@
     request.setAttribute("categories", categories);
 
     ShopService shopService = new ShopService();
-    List<Shop> sellerShops = shopService.getShopsBySellerId(user);
+    List<Shop> sellerShops = shopService.getShopsBySeller(user);
     request.setAttribute("sellerShops", sellerShops);
 %>
 

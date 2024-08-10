@@ -21,7 +21,7 @@ public class AdminService {
     private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("uzummarket");
     private static AdminService instance;
 
-    private AdminService() { }
+    public AdminService() { }
 
     public static synchronized AdminService getInstance() {
         if (instance == null) {
@@ -159,4 +159,6 @@ public class AdminService {
         return shopList;
     }
 
+//    public List<Shop> getSellerShops(String sellerId) {
+//    }
 }

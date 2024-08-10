@@ -373,14 +373,10 @@
 </aside><!-- End Sidebar -->
 
 <main id="main" class="main">
-
     <section class="section dashboard">
         <div class="row">
-
-            <!-- Left side columns -->
             <div class="col-lg-8">
                 <div class="row">
-
                     <%
                         AdminService adminService = AdminService.getInstance();
 
@@ -421,9 +417,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- End Customers Card -->
 
-                    <!-- Sellers Card -->
                     <div class="col-xxl-4 col-xl-12">
                         <div class="card info-card sellers-card">
                             <div class="card-body">
@@ -443,9 +437,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- End Sellers Card -->
 
-                    <!-- Shops Card -->
                     <div class="col-xxl-4 col-xl-12">
                         <div class="card info-card shops-card">
                             <div class="card-body">
@@ -465,9 +457,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- End Shops Card -->
 
-                    <!-- Shop List -->
                     <div class="col-12">
                         <div class="card recent-sales overflow-auto">
                             <div class="card-body">
@@ -508,16 +498,12 @@
                             </div>
                         </div>
                     </div>
-                    <!-- End Shop List -->
-
 
                 </div>
-            </div><!-- End Left side columns -->
+            </div>
 
-            <!-- Right side columns -->
             <div class="col-lg-4">
 
-                <!-- Website Traffic -->
                 <div class="card">
                     <div class="filter">
                         <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -584,7 +570,6 @@
 
         </div>
     </section>
-
 </main><!-- End #main -->
 
 <!-- Vendor JS Files -->

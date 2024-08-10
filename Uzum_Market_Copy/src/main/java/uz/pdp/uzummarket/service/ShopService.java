@@ -34,7 +34,7 @@ public class ShopService {
         shopRepository.update(shop);
     }
 
-    public List<Shop> getShopsBySellerId(User user) {
+    public List<Shop> getShopsBySeller(User user) {
         return shopRepository.getSellerShops(user);
     }
 }

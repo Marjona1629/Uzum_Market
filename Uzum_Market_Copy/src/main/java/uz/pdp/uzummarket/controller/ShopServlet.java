@@ -1,5 +1,6 @@
 package uz.pdp.uzummarket.controller;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,6 +13,7 @@ import uz.pdp.uzummarket.enums.Status;
 import uz.pdp.uzummarket.service.ShopService;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(urlPatterns = {"/app/seller/add-shop"})
 public class ShopServlet extends HttpServlet {

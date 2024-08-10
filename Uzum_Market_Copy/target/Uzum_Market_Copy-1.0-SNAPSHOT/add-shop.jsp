@@ -2,6 +2,10 @@
 <%@ page import="java.text.DecimalFormat" %>
 <%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
 <%@ page import="uz.pdp.uzummarket.entities.User" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="uz.pdp.uzummarket.entities.Shop" %>
+<%@ page import="java.util.List" %>
+<%@ page import="uz.pdp.uzummarket.service.ShopService" %>
 
 
 <!DOCTYPE html>
@@ -36,74 +40,60 @@
     <link href="admin-assets/css/style.css" rel="stylesheet">
 
     <style>
-        /* Your provided styles here */
-        body {
-            font-family: Arial, sans-serif;
-            background-size: 400% 400%;
-            animation: gradientAnimation 15s ease infinite;
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .container .form-control::placeholder {
+            padding-top: 10mm; /* Adjust as needed */
         }
 
-        @keyframes gradientAnimation {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+        .shop-details {
+            margin-left: 20px; /* Adjust the value as needed */
         }
 
-        .container {
-            width: 400px;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
+        .shop-list-wrapper {
+            padding-left: 20px;
         }
 
-        .container h3 {
-            margin-bottom: 20px;
+        .shop-card {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
         }
 
-        .form-control {
-            margin-bottom: 10px;
+        .shop-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .custom-file-input {
-            position: relative;
-            overflow: hidden;
-            margin-top: 10px;
+        .shop-name {
+            color: #333;
+            font-weight: bold;
+            font-size: 1.2em;
         }
 
-        .custom-file-input input[type='file'] {
-            position: absolute;
-            font-size: 100px;
-            opacity: 0;
-            right: 0;
-            top: 0;
+        .shop-description {
+            color: #666;
+            margin-top: 5px;
+            font-size: 1em;
         }
 
-        .custom-file-input label {
-            display: block;
-            background-color: #4CAF50;
-            color: white;
+        .shop-address {
+            color: #888;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
             border-radius: 5px;
-            padding: 12px 20px;
-            cursor: pointer;
-            width: 100%;
-            text-align: center;
+            display: inline-block;
+            transition: background-color 0.3s;
         }
 
-        .custom-file-input label:hover {
-            background-color: #45a049;
+        .btn-primary:hover {
+            background-color: #0056b3;
         }
     </style>
 
@@ -385,73 +375,72 @@
 
 </aside><!-- End Sidebar -->
 
-<div class="container">
-    <h3>Add shop</h3>
-    <form action="/app/seller/add-shop" method="post">
-        <input type="text" name="name" class="form-control" placeholder="Shop name" required><br>
-        <input type="text" name="description" class="form-control" placeholder="Shop description" required><br>
-        <input type="text" name="address" class="form-control" placeholder="Shop address" required><br>
-        <button class="btn btn-primary" type="submit">Add shop</button>
-    </form>
-</div>
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Add Shop</h1>
+    </div><!-- End Page Title -->
 
-
-<%
-    HttpSession session1 = request.getSession();
-    Integer loggedInOwnerId = (Integer) session1.getAttribute("user_id");
-%>
-
-<section id="shops" class="section">
-    <div class="container">
-        <h2>All Shops</h2>
+    <section class="section dashboard">
         <div class="row">
-            <%
-                Connection connection = null;
-                Statement statement = null;
-                ResultSet resultSet = null;
-
-                try {
-                    // Get database connection
-                    connection = DBConnection.getConnection();
-                    statement = connection.createStatement();
-
-                    // Query to get shops owned by logged-in user
-                    String sql = "SELECT * FROM shops WHERE owner_id = " + loggedInOwnerId;
-                    resultSet = statement.executeQuery(sql);
-
-                    // Iterate through result set and display shops
-                    while (resultSet.next()) {
-                        int shopId = resultSet.getInt("id");
-                        String shopName = resultSet.getString("name");
-                        String shopDescription = resultSet.getString("description");
-                        String shopAddress = resultSet.getString("address");
-                        Integer ownerId = resultSet.getInt("owner_id");
-
-                        // Display shop information
-            %>
-            <div class="col-lg-4 col-md-6">
-                <div class="shop-item">
-                    <h3>Name: <%= shopName %></h3>
-                    <p>Description: <%= shopDescription %></p>
-                    <p>Address: <%= shopAddress %></p>
-                    <!-- You can add more details or actions here if needed -->
+            <div class="col-lg-12">
+                <div class="shop-form-wrapper">
+                    <form action="/app/seller/add-shop" method="post">
+                        <div class="mb-3">
+                            <input type="text" name="name" class="form-control" placeholder="Shop Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" name="description" class="form-control" placeholder="Shop Description" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" name="address" class="form-control" placeholder="Shop Address" required>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Add Shop</button>
+                    </form>
                 </div>
             </div>
-            <%
-                    } // end while(rs.next())
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (resultSet != null) try { resultSet.close(); } catch (SQLException e) { e.printStackTrace(); }
-                    if (statement != null) try { statement.close(); } catch (SQLException e) { e.printStackTrace(); }
-                    if (connection != null) try { connection.close(); } catch (SQLException e) { e.printStackTrace(); }
-                }
-            %>
-        </div><!-- End Row -->
-    </div><!-- End Container -->
-</section>
+        </div>
+    </section>
+</main><!-- End #main -->
+
+<%
+    if (user != null) {
+        ShopService shopService = new ShopService();
+        List<Shop> sellerShops = shopService.getShopsBySeller(user);
+        request.setAttribute("sellerShops", sellerShops);
+        System.out.println("Number of shops: " + (sellerShops != null ? sellerShops.size() : "0"));
+%>
 
 
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Your Shops</h1>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="shop-list-wrapper">
+                    <c:choose>
+                        <c:when test="${not empty sellerShops}">
+                            <c:forEach var="shop" items="${sellerShops}">
+                                <div class="shop-card p-3 mb-3">
+                                    <div class="shop-name">${shop.name}</div>
+                                    <div class="shop-description">Description: ${shop.description}</div>
+                                    <div class="shop-address">Address: ${shop.address}</div>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <p>No shops found.</p>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
+        </div>
+    </section>
+</main><!-- End #main -->
+
+<% } %>
 
 <!-- Bootstrap Bundle JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
