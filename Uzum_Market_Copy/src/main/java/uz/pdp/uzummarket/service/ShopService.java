@@ -1,6 +1,7 @@
 package uz.pdp.uzummarket.service;
 
 import uz.pdp.uzummarket.entities.Shop;
+import uz.pdp.uzummarket.entities.User;
 import uz.pdp.uzummarket.repositories.ShopRepository;
 
 import java.util.List;
@@ -31,5 +32,9 @@ public class ShopService {
 
     public void updateShop(Shop shop) {
         shopRepository.update(shop);
+    }
+
+    public List<Shop> getShopsBySellerId(User user) {
+        return shopRepository.getSellerShops(user);
     }
 }

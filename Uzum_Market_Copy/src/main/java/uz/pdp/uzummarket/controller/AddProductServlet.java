@@ -5,8 +5,8 @@ import uz.pdp.uzummarket.entities.Category;
 import uz.pdp.uzummarket.entities.Product;
 import uz.pdp.uzummarket.entities.Shop;
 import uz.pdp.uzummarket.service.ProductService;
-import uz.pdp.uzummarket.service.CategoryService; // Assuming you have a CategoryService
-import uz.pdp.uzummarket.service.ShopService; // Assuming you have a ShopService
+import uz.pdp.uzummarket.service.CategoryService; // Ensure this service exists
+import uz.pdp.uzummarket.service.ShopService; // Ensure this service exists
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,8 +21,8 @@ import java.io.IOException;
 @MultipartConfig
 public class AddProductServlet extends HttpServlet {
     private final ProductService productService = new ProductService();
-    private final CategoryService categoryService = new CategoryService(); // Replace with actual service
-    private final ShopService shopService = new ShopService(); // Replace with actual service
+    private final CategoryService categoryService = new CategoryService();
+    private final ShopService shopService = new ShopService();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -48,31 +48,28 @@ public class AddProductServlet extends HttpServlet {
         }
 
         try {
-            if (priceStr != null) {
+            if (priceStr != null && !priceStr.isEmpty()) {
                 price = Double.parseDouble(priceStr);
             }
-            if (discountStr != null) {
+            if (discountStr != null && !discountStr.isEmpty()) {
                 discount = Double.parseDouble(discountStr);
             }
-            if (quantityStr != null) {
+            if (quantityStr != null && !quantityStr.isEmpty()) {
                 quantity = Integer.parseInt(quantityStr);
             }
-            if (categoryIdStr != null) {
+            if (categoryIdStr != null && !categoryIdStr.isEmpty()) {
                 categoryId = Integer.parseInt(categoryIdStr);
             }
-            if (shopIdStr != null) {
+            if (shopIdStr != null && !shopIdStr.isEmpty()) {
                 shopId = Integer.parseInt(shopIdStr);
             }
         } catch (NumberFormatException e) {
             valid = false;
             req.setAttribute("error", "Invalid number format.");
-            req.getRequestDispatcher("addProduct.jsp").forward(req, resp);
-            return;
         }
 
-        // Check if Category and Shop exist
-        Category category = categoryService.getCategoryById(categoryId); // Replace with actual method
-        Shop shop = shopService.getShopById(shopId); // Replace with actual method
+        Category category = categoryService.getCategoryById(categoryId);
+        Shop shop = shopService.getShopById(shopId);
         if (category == null) {
             valid = false;
             req.setAttribute("error", "Invalid category.");
@@ -83,18 +80,36 @@ public class AddProductServlet extends HttpServlet {
         }
 
         if (!valid) {
-            req.getRequestDispatcher("addProduct.jsp").forward(req, resp);
+            req.getRequestDispatcher("/addProduct.jsp").forward(req, resp);
             return;
         }
 
-        // Handle file upload
         Part filePart = req.getPart("productImage");
         if (filePart != null && filePart.getSize() > 0) {
             String imageFileName = filePart.getSubmittedFileName();
-            String imageFilePath = getServletContext().getRealPath("/images/") + File.separator + imageFileName;
-            filePart.write(imageFilePath);
+            String realPath = getServletContext().getRealPath("/images/");
 
-            // Create Product object
+            System.out.println("Realpath:" + realPath);
+
+            if(realPath == null){
+                req.getRequestDispatcher("addProduct.jsp").forward(req, resp);
+                return;
+            }
+
+            File dir = new File(realPath);
+            if (!dir.exists()) {
+                boolean dirCreated = dir.mkdirs();
+                if (!dirCreated) {
+                    req.setAttribute("error", "Failed to create the directory for image uploads.");
+                    req.getRequestDispatcher("addProduct.jsp").forward(req, resp);
+                    return;
+                }
+            }
+
+            File imageFile = new File(realPath + File.separator + imageFileName);
+
+            filePart.write(imageFile.getAbsolutePath());
+
             Product product = new Product();
             product.setName(name);
             product.setDescription(description);
@@ -103,16 +118,14 @@ public class AddProductServlet extends HttpServlet {
             product.setQuantity(quantity);
             product.setCategory(category);
             product.setShop(shop);
-            product.setImages(imageFileName); // Set just the file name or path depending on your storage
+            product.setImages(imageFileName);
 
-            // Save the product using ProductService
             productService.createProduct(product);
 
-            // Redirect to a success page or a confirmation page
-            resp.sendRedirect("seller.jsp");
+            resp.sendRedirect(req.getContextPath() + "/seller.jsp");
         } else {
             req.setAttribute("error", "Product image is required.");
-            req.getRequestDispatcher("addProduct.jsp").forward(req, resp);
+            req.getRequestDispatcher("/addProduct.jsp").forward(req, resp);
         }
     }
 }

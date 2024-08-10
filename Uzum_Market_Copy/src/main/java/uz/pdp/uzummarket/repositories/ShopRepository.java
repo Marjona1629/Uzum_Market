@@ -1,10 +1,9 @@
 package uz.pdp.uzummarket.repositories;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import uz.pdp.uzummarket.entities.Shop;
+import uz.pdp.uzummarket.entities.User;
 
 import java.util.List;
 
@@ -62,5 +61,13 @@ public class ShopRepository implements BaseRepository<Shop> {
         } else {
             entityManager.getTransaction().rollback();
         }
+    }
+
+    public List<Shop> getSellerShops(User user) {
+        String sql = "SELECT * FROM shops WHERE owner_id = ?";
+        Query query = entityManager.createNativeQuery(sql, Shop.class);
+        query.setParameter(1, user.getId());
+
+        return query.getResultList();
     }
 }

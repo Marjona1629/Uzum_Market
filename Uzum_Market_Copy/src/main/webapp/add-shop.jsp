@@ -36,6 +36,51 @@
     <link href="admin-assets/css/style.css" rel="stylesheet">
 
     <style>
+        .shop-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: #fff;
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .shop-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .shop-card h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        .shop-card p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .shop-card .shop-actions {
+            margin-top: 15px;
+        }
+
+        .shop-card .shop-actions a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .shop-card .shop-actions a:hover {
+            text-decoration: underline;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+
         /* Your provided styles here */
         body {
             font-family: Arial, sans-serif;
@@ -400,7 +445,6 @@
     HttpSession session1 = request.getSession();
     Integer loggedInOwnerId = (Integer) session1.getAttribute("user_id");
 %>
-
 <section id="shops" class="section">
     <div class="container">
         <h2>All Shops</h2>
@@ -425,16 +469,16 @@
                         String shopName = resultSet.getString("name");
                         String shopDescription = resultSet.getString("description");
                         String shopAddress = resultSet.getString("address");
-                        Integer ownerId = resultSet.getInt("owner_id");
-
-                        // Display shop information
             %>
             <div class="col-lg-4 col-md-6">
-                <div class="shop-item">
-                    <h3>Name: <%= shopName %></h3>
-                    <p>Description: <%= shopDescription %></p>
-                    <p>Address: <%= shopAddress %></p>
-                    <!-- You can add more details or actions here if needed -->
+                <div class="shop-card">
+                    <h3><%= shopName %></h3>
+                    <p><strong>Description:</strong> <%= shopDescription %></p>
+                    <p><strong>Address:</strong> <%= shopAddress %></p>
+                    <div class="shop-actions">
+                        <!-- Add more actions or links if needed -->
+                        <a href="#">View Details</a>
+                    </div>
                 </div>
             </div>
             <%
@@ -449,7 +493,7 @@
             %>
         </div><!-- End Row -->
     </div><!-- End Container -->
-</section>
+</section><!-- End Shops Section -->
 
 
 
