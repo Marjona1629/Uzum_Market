@@ -175,6 +175,20 @@
             cursor: pointer;
             border: solid 1px #BA68C8;
         }
+        .back-button {
+            background-color: #6f3cce; /* Adjust background color */
+            color: white; /* Text color */
+            border: none; /* Remove border */
+            padding: 10px 20px; /* Padding */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+            font-size: 16px; /* Font size */
+            margin-top: 10px; /* Margin on top */
+        }
+
+        .back-button:hover {
+            background-color: #6f3cce; /* Darker color on hover */
+        }
     </style>
 
 </head>
@@ -191,9 +205,7 @@
         <div class="row">
             <div class="col-lg-3">
                 <div class="header__logo">
-                    <a href="${pageContext.request.contextPath}/home.jsp">
-                        <img src="/assets/img/uzum_market_logo.png" alt="">
-                    </a>
+                    <img src="/assets/img/uzum_market_logo.png" alt="">
                 </div>
             </div>
 
@@ -203,11 +215,11 @@
                         String username = (String) session.getAttribute("username");
                         if (username != null) {
                     %>
-                    <a href="profile.jsp"><i class="fa fa-user-o"></i> <%= username %></a>
+                    <a href="/app/profile"><i class="fa fa-user-o"></i> <%= username %></a>
                     <%
                     } else {
                     %>
-                    <a href="login.jsp"><i class="fa fa-user-o"></i> Cabinet</a>
+                    <a href="/login"><i class="fa fa-user-o"></i> Cabinet</a>
                     <%
                         }
                     %>
@@ -240,22 +252,9 @@
         <div class="row">
             <div class="col-lg-3">
                 <div class="hero__categories">
-                    <div class="hero__categories__all">
-                        <i class="fa fa-bars"></i>
-                        <span>All Categories</span>
-
-                        <%
-                            CategoryService categoryService = new CategoryService();
-                            List<Category> categories = categoryService.getAllCategories();
-                            request.setAttribute("categories", categories);
-                        %>
-
-                    </div>
-                    <ul>
-                        <% for (Category category : categories) { %>
-                        <li><a href="?categoryId=<%= category.getCategoryId() %>"><%= category.getCategoryName() %></a></li>
-                        <% } %>
-                    </ul>
+                    <button onclick="window.location.href='/app/home'" class="back-button">
+                        Back to Home
+                    </button>
                 </div>
             </div>
             <div class="col-lg-9">
@@ -275,7 +274,7 @@
                         </div>
                         <div class="hero__search__phone__text">
                             <h5>+99894 022 11 44</h5>
-                            <span>support 24/7</span>
+                            <span>Support 24/7</span>
                         </div>
                     </div>
                 </div>
@@ -283,7 +282,7 @@
         </div>
     </div>
 </section>
-<!-- Hero Section End -->
+
 <form action="/app/updateProfile" method="post">
     <%
         User user = (User) session.getAttribute("user");
@@ -449,6 +448,7 @@
     });
 </script>
 
+<script src="/admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="/assets/css_files/js/jquery-3.3.1.min.js"></script>
 <script src="/assets/css_files/js/bootstrap.min.js"></script>
 <script src="/assets/css_files/js/jquery.nice-select.min.js"></script>

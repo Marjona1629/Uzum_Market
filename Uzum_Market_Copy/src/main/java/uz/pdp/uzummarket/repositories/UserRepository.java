@@ -60,21 +60,32 @@ public class UserRepository implements BaseRepository<User> {
     @Override
     public User get(Integer id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
+        User user;
         try {
-            return entityManager.find(User.class, id);
+            user = entityManager.find(User.class, id);
         } finally {
             entityManager.close();
         }
+        return user;
     }
 
     @Override
     public List<User> getAll() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<User> users;
         try {
-            return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+            entityManager.getTransaction().begin();
+            users = entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            throw e;
         } finally {
             entityManager.close();
         }
+        return users;
     }
 
     @Override

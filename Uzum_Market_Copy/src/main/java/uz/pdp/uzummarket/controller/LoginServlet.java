@@ -12,14 +12,12 @@ import java.io.IOException;
 @WebServlet(name = "login", value = "/login")
 public class LoginServlet extends HttpServlet {
 
-    private UserService userService =  UserService.getInstance();
+    private final UserService userService = UserService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("/login.jsp").forward(request, response);
     }
-
-    // huiftdre
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -27,32 +25,33 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         User user = userService.login(username, password);
 
-        if (user != null && user.isDeleted() != true) {
+        if (user != null && !user.isDeleted()) {
             if (user.getStatus() == Status.BLOCKED) {
                 response.sendRedirect("/blockedUser.jsp");
                 return;
             }
 
-            HttpSession session = request.getSession();
+            HttpSession session = request.getSession(true);
             session.setAttribute("username", user.getUsername());
             session.setAttribute("user", user);
-            session.setAttribute("user_id",user.getId());
+            session.setAttribute("user_id", user.getId());
             session.setAttribute("role", user.getRole().toString());
 
-            int expiry = 24 * 60 * 60;
-            session.setMaxInactiveInterval(expiry);
+            session.setMaxInactiveInterval(24 * 60 * 60);
 
-            Cookie jsessionid = new Cookie("JSESSIONID", session.getId());
-            jsessionid.setMaxAge(expiry);
-            response.addCookie(jsessionid);
-
-            if ("ADMIN".equalsIgnoreCase(user.getRole().toString())) {
-                response.sendRedirect("/app/admin/main");
-            } else if ("SELLER".equalsIgnoreCase(user.getRole().toString())) {
-                response.sendRedirect("/app/seller/main");
-            } else {
-                response.sendRedirect("/app/home");
+            String redirectPath;
+            switch (user.getRole()) {
+                case ADMIN:
+                    redirectPath = "/app/admin/main";
+                    break;
+                case SELLER:
+                    redirectPath = "/app/seller/main";
+                    break;
+                default:
+                    redirectPath = "/app/home";
+                    break;
             }
+            response.sendRedirect(redirectPath);
         } else {
             request.setAttribute("errorMessage", "Invalid username or password");
             request.setAttribute("username", username);

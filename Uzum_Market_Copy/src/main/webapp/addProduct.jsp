@@ -9,6 +9,9 @@
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
 <%@ page import="java.sql.SQLException" %>
+<%@ page import="uz.pdp.uzummarket.entities.Product" %>
+<%@ page import="java.util.Properties" %>
+<%@ page import="uz.pdp.uzummarket.service.ProductService" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -157,8 +160,45 @@
             background-color: #45a049;
             border-color: #45a049;
         }
+
+        .shop-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px;
+            position: relative;
+        }
+
+        .shop-actions {
+            margin-top: 15px;
+            text-align: right;
+        }
+
+        .shop-actions .btn {
+            margin-left: 10px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
     </style>
-</head>
 </head>
 
 <body>
@@ -248,25 +288,12 @@
                     <i class="bi bi-person-circle fs-4 me-2"></i>
                     <span class="d-none d-md-block dropdown-toggle ps-2">
                         <%
-                            Connection conn = null;
-                            Statement stmt = null;
-                            ResultSet rs = null;
-                            String sellerName = "Seller";
-                            try {
-                                conn = DBConnection.getConnection();
-                                stmt = conn.createStatement();
-                                String sql = "SELECT firstName, lastName FROM users WHERE role = 'SELLER' LIMIT 1";
-                                rs = stmt.executeQuery(sql);
-                                if (rs.next()) {
-                                    sellerName = rs.getString("firstName") + " " + rs.getString("lastName");
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            } finally {
-                                if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-                                if (stmt != null) try { stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-                                if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+                            User user = (User) session.getAttribute("user");
+                            if (user == null || user.getId() == null) {
+                                response.sendRedirect("login.jsp");
+                                return;
                             }
+                            String sellerName = user.getFirstName() + " " + user.getLastName();
                         %>
                         <%= sellerName %>
                     </span>
@@ -292,20 +319,13 @@
     <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-item"><a class="nav-link collapsed" href="/seller.jsp"><i class="bi bi-grid"></i><span>Dashboard</span></a></li>
         <li class="nav-item"><a class="nav-link collapsed" href="/addProduct.jsp"><i class="bi bi-menu-button-wide"></i><span>Add Product</span></a></li>
-        <li class="nav-item"><a class="nav-link collapsed" href="/add-shop.jsp"><i class="bi bi-receipt"></i><span>Add Shop</span></a></li>
+        <li class="nav-item"><a class="nav-link collapsed" href="/add-shop.jsp"><i class="bi bi-receipt"></i><span>Manage Shops</span></a></li>
         <li class="nav-item"><a class="nav-link collapsed" href="/seller-profile.jsp"><i class="bi bi-person"></i><span>Profile</span></a></li>
         <li class="nav-item"><a class="nav-link collapsed" href="logout.jsp"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a></li>
     </ul>
 </aside>
 
 <%
-    User user = (User) session.getAttribute("user");
-
-    if (user == null || user.getId() == null) {
-        response.sendRedirect("login.jsp");
-        return;
-    }
-
     CategoryService categoryService = new CategoryService();
     List<Category> categories = categoryService.getAllCategories();
     request.setAttribute("categories", categories);
@@ -402,6 +422,7 @@
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
+<script src="/admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="admin-assets/vendor/apexcharts/apexcharts.min.js"></script>
 <script src="admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="admin-assets/vendor/chart.js/chart.umd.js"></script>

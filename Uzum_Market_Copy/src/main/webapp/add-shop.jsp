@@ -1,6 +1,3 @@
-<%@ page import="java.sql.*, javax.sql.*" %>
-<%@ page import="java.text.DecimalFormat" %>
-<%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
 <%@ page import="uz.pdp.uzummarket.entities.User" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="uz.pdp.uzummarket.entities.Shop" %>
@@ -40,12 +37,46 @@
     <link href="admin-assets/css/style.css" rel="stylesheet">
 
     <style>
-        .container .form-control::placeholder {
-            padding-top: 10mm; /* Adjust as needed */
+        .shop-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px;
+            position: relative;
         }
 
-        .shop-details {
-            margin-left: 20px; /* Adjust the value as needed */
+        .shop-actions {
+            margin-top: 15px;
+            text-align: right;
+        }
+
+        .shop-actions .btn {
+            margin-left: 10px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        .container .form-control::placeholder {
+            padding-top: 10mm; /* Adjust as needed */
         }
 
         .shop-list-wrapper {
@@ -104,14 +135,13 @@
 
 <!-- ======= Header ======= -->
 <header id="header" class="header fixed-top d-flex align-items-center">
-
     <div class="d-flex align-items-center justify-content-between">
-        <a href="index.html" class="logo d-flex align-items-center">
-            <img src="admin-assets/img/logo.png" alt="">
+        <div class="logo d-flex align-items-center">
+            <img src="/admin-assets/img/logo.png" alt="Logo" style="max-height: 40px;">
             <span class="d-none d-lg-block">SELLER</span>
-        </a>
+        </div>
         <i class="bi bi-list toggle-sidebar-btn"></i>
-    </div><!-- End Logo -->
+    </div>
 
     <div class="search-bar">
         <form class="search-form d-flex align-items-center" method="POST" action="#">
@@ -205,7 +235,6 @@
             </li><!-- End Notification Nav -->
 
             <li class="nav-item dropdown">
-
                 <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                     <i class="bi bi-chat-left-text"></i>
                     <span class="badge bg-success badge-number">3</span>
@@ -270,62 +299,36 @@
 
             </li><!-- End Messages Nav -->
 
-            <%
-                User user = (User) session.getAttribute("user");
-
-                if (user != null) {
-                    String sellerFirstName = user.getFirstName();
-                    String sellerLastName = user.getLastName();
-                    String sellerRole = String.valueOf(user.getRole());
-            %>
-
+            <!-- User Profile Dropdown -->
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-person-circle fs-4 me-2"></i> <!-- Admin Icon -->
-                    <span class="d-none d-md-block dropdown-toggle ps-2"><%= sellerFirstName %> <%= sellerLastName %></span>
-                </a><!-- End Profile Image Icon -->
+                    <i class="bi bi-person-circle fs-4 me-2"></i>
+                    <span class="d-none d-md-block dropdown-toggle ps-2">
+                        <%
+                            User user = (User) session.getAttribute("user");
+                            if (user == null || user.getId() == null) {
+                                response.sendRedirect("login.jsp");
+                                return;
+                            }
 
+                            String sellerName = user.getFirstName() + " " + user.getLastName();
+                        %>
+                        <%= sellerName %>
+                    </span>
+                </a>
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
-                        <h6><%= sellerFirstName %> <%= sellerLastName %></h6>
-                        <span><%= sellerRole %></span>
+                        <h6><%= sellerName %></h6>
+                        <span>SELLER</span>
                     </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                            <i class="bi bi-person"></i>
-                            <span>My Profile</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                            <i class="bi bi-gear"></i>
-                            <span>Account Settings</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="logout.jsp">
-                            <i class="bi bi-box-arrow-right"></i>
-                            <span>Sign Out</span>
-                        </a>
-                    </li>
-                </ul><!-- End Profile Dropdown Items -->
-            </li><!-- End Profile Nav -->
-
-            <%}
-            %>
-
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item d-flex align-items-center" href="/seller-profile.jsp"><i class="bi bi-person"></i><span>My Profile</span></a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item d-flex align-items-center" href="/users-profile.jsp"><i class="bi bi-gear"></i><span>Account Settings</span></a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item d-flex align-items-center" href="logout.jsp"><i class="bi bi-box-arrow-right"></i><span>Sign Out</span></a></li>
+                </ul>
+            </li>
         </ul>
     </nav><!-- End Icons Navigation -->
 
@@ -353,7 +356,7 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="add-shop.jsp">
                 <i class="bi bi-receipt"></i>
-                <span>Add shop</span>
+                <span>Manage Shops</span>
             </a>
         </li>
         <li class="nav-item">
@@ -427,6 +430,10 @@
                                     <div class="shop-name">${shop.name}</div>
                                     <div class="shop-description">Description: ${shop.description}</div>
                                     <div class="shop-address">Address: ${shop.address}</div>
+                                    <div class="shop-actions mt-2">
+                                        <a href="/editShop?id=${shop.id}" class="btn btn-primary">Edit</a>
+                                        <a href="/deleteShop?id=${shop.id}" class="btn btn-danger">Delete</a>
+                                    </div>
                                 </div>
                             </c:forEach>
                         </c:when>
@@ -451,6 +458,7 @@
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
+<script src="/admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="admin-assets/vendor/apexcharts/apexcharts.min.js"></script>
 <script src="admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="admin-assets/vendor/chart.js/chart.umd.js"></script>

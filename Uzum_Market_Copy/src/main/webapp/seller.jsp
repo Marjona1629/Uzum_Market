@@ -1,6 +1,7 @@
 <%@ page import="java.sql.*, javax.sql.*" %>
 <%@ page import="java.text.DecimalFormat" %>
 <%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
+<%@ page import="uz.pdp.uzummarket.entities.User" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE html>
@@ -118,25 +119,12 @@
                     <i class="bi bi-person-circle fs-4 me-2"></i>
                     <span class="d-none d-md-block dropdown-toggle ps-2">
                         <%
-                            Connection conn = null;
-                            Statement stmt = null;
-                            ResultSet rs = null;
-                            String sellerName = "Seller";
-                            try {
-                                conn = DBConnection.getConnection();
-                                stmt = conn.createStatement();
-                                String sql = "SELECT firstName, lastName FROM users WHERE role = 'SELLER' LIMIT 1";
-                                rs = stmt.executeQuery(sql);
-                                if (rs.next()) {
-                                    sellerName = rs.getString("firstName") + " " + rs.getString("lastName");
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            } finally {
-                                if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-                                if (stmt != null) try { stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-                                if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+                            User user = (User) session.getAttribute("user");
+                            if (user == null || user.getId() == null) {
+                                response.sendRedirect("login.jsp");
+                                return;
                             }
+                            String sellerName = user.getFirstName() + " " + user.getLastName();
                         %>
                         <%= sellerName %>
                     </span>
@@ -163,7 +151,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-item"><a class="nav-link collapsed" href="/seller.jsp"><i class="bi bi-grid"></i><span>Dashboard</span></a></li>
         <li class="nav-item"><a class="nav-link collapsed" href="/addProduct.jsp"><i class="bi bi-menu-button-wide"></i><span>Add Product</span></a></li>
-        <li class="nav-item"><a class="nav-link collapsed" href="/add-shop.jsp"><i class="bi bi-receipt"></i><span>Add Shop</span></a></li>
+        <li class="nav-item"><a class="nav-link collapsed" href="/add-shop.jsp"><i class="bi bi-receipt"></i><span>Manage Shops</span></a></li>
         <li class="nav-item"><a class="nav-link collapsed" href="/seller-profile.jsp"><i class="bi bi-person"></i><span>Profile</span></a></li>
         <li class="nav-item"><a class="nav-link collapsed" href="logout.jsp"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a></li>
     </ul>

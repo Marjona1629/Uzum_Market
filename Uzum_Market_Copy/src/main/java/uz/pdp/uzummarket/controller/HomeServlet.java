@@ -18,13 +18,21 @@ public class HomeServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ProductService productService = new ProductService();
-        List<Product> discountedProducts = productService.getDiscountedProducts();
+        List<Product> discountedProducts;
 
-        request.setAttribute("discountedProducts", discountedProducts);
+        try {
+            discountedProducts = productService.getDiscountedProducts();
+            if (!discountedProducts.isEmpty()) {
+                request.setAttribute("discountedProducts", discountedProducts);
+            } else {
+                request.setAttribute("message", "No discounted products available.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Unable to fetch discounted products.");
+        }
 
-        // Forward to JSP
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/home.jsp");
-        dispatcher.forward(request, response);
+        request.getRequestDispatcher("/home.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

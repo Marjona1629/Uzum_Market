@@ -5,8 +5,11 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.transaction.Transactional;
 import uz.pdp.uzummarket.entities.Product;
+import uz.pdp.uzummarket.entities.Shop;
+import uz.pdp.uzummarket.entities.User;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProductRepository implements BaseRepository<Product> {
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("HIBERNATE-UNIT");
@@ -89,8 +92,26 @@ public class ProductRepository implements BaseRepository<Product> {
                 .getResultList();
     }
 
+    @Transactional
     public List<Product> findDiscountedProducts() {
         return entityManager.createQuery("SELECT p FROM Product p WHERE p.discount > 0", Product.class)
+                .getResultList();
+    }
+
+    @Transactional
+    public List<Product> findProductsBySeller(User user) {
+        List<Shop> shops = entityManager.createQuery(
+                        "SELECT s FROM Shop s WHERE s.owner = :owner", Shop.class)
+                .setParameter("owner", user)
+                .getResultList();
+
+        List<Integer> shopIds = shops.stream()
+                .map(Shop::getId)
+                .collect(Collectors.toList());
+
+        return entityManager.createQuery(
+                        "SELECT p FROM Product p WHERE p.shop.id IN :shopIds", Product.class)
+                .setParameter("shopIds", shopIds)
                 .getResultList();
     }
 }
