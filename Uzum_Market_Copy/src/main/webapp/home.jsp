@@ -116,9 +116,7 @@
         <div class="row">
             <div class="col-lg-3">
                 <div class="header__logo">
-                    <a href="${pageContext.request.contextPath}/home.jsp">
-                        <img src="/assets/img/uzum_market_logo.png" alt="">
-                    </a>
+                    <img src="/assets/img/uzum_market_logo.png" alt="">
                 </div>
             </div>
 
