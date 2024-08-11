@@ -95,6 +95,21 @@
         .header__cart a:hover {
             background-color: #b6b4b7;
         }
+
+        .back-button {
+            background-color: #6f3cce; /* Adjust background color */
+            color: white; /* Text color */
+            border: none; /* Remove border */
+            padding: 10px 20px; /* Padding */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+            font-size: 16px; /* Font size */
+            margin-top: 10px; /* Margin on top */
+        }
+
+        .back-button:hover {
+            background-color: #6f3cce; /* Darker color on hover */
+        }
     </style>
 
 </head>
@@ -110,10 +125,10 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-3">
-                <div class="header__logo">
-                    <a href="${pageContext.request.contextPath}/home.jsp">
-                        <img src="/assets/img/uzum_market_logo.png" alt="">
-                    </a>
+                <div class="hero__categories">
+                    <button onclick="window.location.href='/app/home'" class="back-button">
+                        Back to Home
+                    </button>
                 </div>
             </div>
 

@@ -59,26 +59,4 @@ public class AuthService {
         }
         return sb.toString();
     }
-
-    public User findByCode(String code) {
-        LOGGER.log(Level.INFO, "Looking up user by code: {0}", code);
-        return userRepository.findByCode(code);
-    }
-
-    public boolean confirmUser(String code) {
-        User user = findByCode(code);
-        if (user != null) {
-            if (!user.getHasConfirmed()) {
-                user.setHasConfirmed(true);
-                try {
-                    userRepository.updateUser(user); // Update user in the database
-                } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "Error updating user confirmation status: {0}", e.getMessage());
-                    return false;
-                }
-                return true;
-            }
-        }
-        return false;
-    }
 }

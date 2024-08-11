@@ -71,4 +71,8 @@ public class UserService {
         }
         return userService;
     }
+
+    public User findUserByCode(String code) {
+        return userRepository.findByCode(code);
+    }
 }
