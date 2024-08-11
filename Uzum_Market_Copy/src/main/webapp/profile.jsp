@@ -369,7 +369,7 @@
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <label class="labels">Country</label>
-                                <select name="country" id="country" class="form-control">
+                                <select name="country" id="country" class="form-control" onchange="updateCities()">
                                     <option value="" <%= user.getState() == null ? "selected" : "" %>>Select Country...</option>
                                     <option value="USA" <%= "USA".equals(user.getState()) ? "selected" : "" %>>USA</option>
                                     <option value="Canada" <%= "Canada".equals(user.getState()) ? "selected" : "" %>>Canada</option>
@@ -382,7 +382,6 @@
                             <div class="col-md-12">
                                 <label class="labels">City</label>
                                 <select name="city" id="city" class="form-control">
-                                    <option value="" <%= user.getCity() == null ? "selected" : "" %>>Select City...</option>
                                 </select>
                             </div>
                         </div>
@@ -418,36 +417,44 @@
     <% } %>
 </form>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const countrySelect = document.getElementById('country');
-        const citySelect = document.getElementById('city');
+    function updateCities() {
+        var country = document.getElementById("country").value;
+        var citySelect = document.getElementById("city");
+        citySelect.innerHTML = "";
 
-        const citiesByCountry = {
-            "USA": ["New York", "Los Angeles", "Chicago", "Houston"],
-            "Canada": ["Toronto", "Vancouver", "Montreal", "Calgary"],
-            "UK": ["London", "Manchester", "Birmingham", "Leeds"],
-            "Australia": ["Sydney", "Melbourne", "Brisbane", "Perth"]
+        var cities = {
+            "USA": ["New York", "Los Angeles", "Chicago"],
+            "Canada": ["Toronto", "Vancouver", "Montreal"],
+            "UK": ["London", "Manchester", "Birmingham"],
+            "Australia": ["Sydney", "Melbourne", "Brisbane"]
         };
 
-        function updateCities() {
-            const selectedCountry = countrySelect.value;
-            const cities = citiesByCountry[selectedCountry] || [];
+        var defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.text = "Select City...";
+        citySelect.add(defaultOption);
 
-            citySelect.innerHTML = '<option value="">Select City...</option>';
-
-            cities.forEach(city => {
-                const option = document.createElement('option');
+        if (cities[country]) {
+            cities[country].forEach(function(city) {
+                var option = document.createElement("option");
                 option.value = city;
-                option.textContent = city;
-                citySelect.appendChild(option);
+                option.text = city;
+                citySelect.add(option);
             });
-        }
 
-        countrySelect.addEventListener('change', updateCities);
+            var selectedCity = "<%= user.getCity() != null ? user.getCity() : "" %>";
+            if (selectedCity) {
+                citySelect.value = selectedCity;
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
         updateCities();
     });
 </script>
 
+<script src="/admin-assets/vendor/quill/quill.min.js"></script>
 <script src="/admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="/assets/css_files/js/jquery-3.3.1.min.js"></script>
 <script src="/assets/css_files/js/bootstrap.min.js"></script>

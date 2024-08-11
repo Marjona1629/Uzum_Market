@@ -33,160 +33,180 @@
 
     <!-- Template Main CSS File -->
     <link href="/admin-assets/css/style.css" rel="stylesheet">
+    <style>/* Profile Container */
+    .profile-container {
+        background-color: #cedcea; /* Light background for profile details */
+        border-radius: 12px; /* Rounded corners */
+        padding: 40px; /* Padding inside the container */
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+        max-width: 1000px; /* Maximum width */
+        width: 100%; /* Full width */
+        box-sizing: border-box; /* Include padding and border in width and height */
+        margin-top: -25mm; /* Move container up an additional 25 mm */
+    }
 
-    <style>
-        /* Profile Section Container */
-        .profile-section {
-            margin-top: -20px;
-            margin-left: 300px; /* Offset for sidebar */
-            display: flex;
-            justify-content: center; /* Center content horizontally */
-            padding: 40px; /* Padding around the profile section */
-            width: calc(100% - 300px); /* Adjust width to account for sidebar */
-            box-sizing: border-box; /* Include padding and border in element's total width and height */
-        }
+    /* Profile Image */
+    .profile-header img {
+        margin-top: -25px; /* Move image up */
+        width: 120px; /* Width of profile picture */
+        height: 120px; /* Height of profile picture */
+        border-radius: 50%; /* Circular profile picture */
+        margin-right: 25px; /* Space between image and text */
+    }
 
-        /* Profile Container */
-        .profile-container {
-            background-color: #cedcea; /* Light background for profile details */
-            border-radius: 12px; /* Rounded corners */
-            padding: 40px; /* Padding inside the container */
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1); /* Shadow for depth */
-            max-width: 1000px; /* Maximum width */
-            width: 100%; /* Full width */
-            box-sizing: border-box; /* Include padding and border in width and height */
-            margin-top: -25mm; /* Move container up an additional 5 mm */
-        }
+    /* Profile Header Title */
+    .profile-header h2 {
+        margin-top: -10px; /* Move title up */
+        font-size: 36px; /* Font size for heading */
+        color: #333; /* Text color */
+    }
 
-        /* Profile Header */
-        .profile-header {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin-bottom: 30px; /* Space below header */
-            margin-top: -25px; /* Move header up */
-        }
+    /* Info Item */
+    .profile-info .info-item {
+        margin-bottom: 20px; /* Space between info items */
+        font-size: 20px; /* Font size for profile info */
+    }
 
-        /* Profile Image */
-        .profile-header img {
-            margin-top: -25px; /* Move image up */
-            width: 120px; /* Width of profile picture */
-            height: 120px; /* Height of profile picture */
-            border-radius: 50%; /* Circular profile picture */
-            margin-right: 25px; /* Space between image and text */
-        }
+    .profile-info .info-item span {
+        font-weight: bold; /* Bold labels */
+        color: #333; /* Label color */
+    }
 
-        /* Profile Header Title */
-        .profile-header h2 {
-            margin-top: -10px; /* Move title up */
-            font-size: 36px; /* Font size for heading */
-            color: #333; /* Text color */
-        }
+    /* Primary Button */
+    .btn-primary {
+        display: inline-block;
+        padding: 15px 30px; /* Padding inside button */
+        font-size: 20px; /* Font size */
+        color: #fff; /* Text color */
+        background-color: #007bff; /* Background color */
+        border: none; /* No border */
+        border-radius: 8px; /* Rounded corners */
+        text-align: center;
+        text-decoration: none; /* No underline */
+        transition: background-color 0.3s ease; /* Transition effect */
+    }
 
-        /* Profile Info */
-        .profile-info {
-            margin-bottom: 30px; /* Space below info section */
-        }
+    .btn-primary:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+    }
 
-        /* Info Item */
-        .profile-info .info-item {
-            margin-bottom: 20px; /* Space between info items */
-            font-size: 20px; /* Font size for profile info */
-        }
+    /* Container for forms and other elements */
+    .container {
+        width: 100%;
+        max-width: 800px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 0 auto;
+    }
 
-        .profile-info .info-item span {
-            font-weight: bold; /* Bold labels */
-            color: #333; /* Label color */
-        }
+    /* Form Group Styles */
+    .form-group {
+        margin-bottom: 15px; /* Space between form groups */
+    }
 
-        /* Primary Button */
-        .btn-primary {
-            display: inline-block;
-            padding: 15px 30px; /* Padding inside button */
-            font-size: 20px; /* Font size */
-            color: #fff; /* Text color */
-            background-color: #007bff; /* Background color */
-            border: none; /* No border */
-            border-radius: 8px; /* Rounded corners */
-            text-align: center;
-            text-decoration: none; /* No underline */
-            transition: background-color 0.3s ease; /* Transition effect */
-        }
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        font-size: 1rem;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        box-sizing: border-box; /* Include padding and border in width and height */
+    }
 
-        .btn-primary:hover {
-            background-color: #0056b3; /* Darker blue on hover */
-        }
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group select {
+        height: 40px; /* Height for text and number inputs */
+    }
 
-        /* Container for forms and other elements */
-        .container {
-            width: 100%;
-            max-width: 800px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin: 0 auto;
-        }
+    .form-group textarea {
+        height: 100px;
+        resize: vertical; /* Allow vertical resize */
+    }
 
-        /* Form Group Styles */
-        .form-group input[type="text"],
-        .form-group input[type="number"],
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            font-size: 1rem;
-            border-radius: 5px;
-            border: 1px solid #ced4da;
-            box-sizing: border-box; /* Include padding and border in width and height */
-        }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+    }
 
-        .form-group input[type="text"],
-        .form-group input[type="number"],
-        .form-group select {
-            height: 40px; /* Height for text and number inputs */
-        }
+    /* General Select Styles */
+    select {
+        width: 100%;
+        height: 40px; /* Height for dropdown */
+        font-size: 1rem; /* Font size */
+        border-radius: 5px; /* Rounded corners */
+        border: 1px solid #ced4da; /* Border color */
+        box-sizing: border-box; /* Include padding and border in width and height */
+        padding: 0 10px; /* Padding inside the dropdown */
+        background-color: #fff; /* Background color */
+        color: #555; /* Text color */
+    }
 
-        .form-group textarea {
-            height: 100px;
-            resize: vertical; /* Allow vertical resize */
-        }
+    select:focus {
+        border-color: #007bff; /* Border color on focus */
+        outline: none; /* Remove default focus outline */
+        box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25); /* Shadow on focus */
+    }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
+    /* Custom File Input Styles */
+    .custom-file-input {
+        position: relative;
+        display: inline-block;
+    }
 
-        /* Custom File Input Styles */
-        .custom-file-input {
-            position: relative;
-            display: inline-block;
-        }
+    .custom-file-input input[type='file'] {
+        position: absolute;
+        font-size: 100px;
+        opacity: 0;
+        right: 0;
+        top: 0;
+    }
 
-        .custom-file-input input[type='file'] {
-            position: absolute;
-            font-size: 100px;
-            opacity: 0;
-            right: 0;
-            top: 0;
-        }
+    .custom-file-input label {
+        display: block;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 5px;
+        padding: 12px 20px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 1rem;
+    }
 
-        .custom-file-input label {
-            display: block;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 5px;
-            padding: 12px 20px;
-            cursor: pointer;
-            text-align: center;
-            font-size: 1rem;
-        }
-
-        .custom-file-input label:hover {
-            background-color: #45a049; /* Hover color */
-        }
+    .custom-file-input label:hover {
+        background-color: #45a049; /* Hover color */
+    }
     </style>
+
+    <script>
+        function updateCities() {
+            var country = document.getElementById("country").value;
+            var citySelect = document.getElementById("city");
+            var cities = {
+                "USA": ["New York", "Los Angeles", "Chicago"],
+                "Canada": ["Toronto", "Vancouver", "Montreal"],
+                "UK": ["London", "Manchester", "Birmingham"],
+                "Australia": ["Sydney", "Melbourne", "Brisbane"]
+            };
+
+            citySelect.innerHTML = "";
+
+            if (country && cities[country]) {
+                cities[country].forEach(function(city) {
+                    var option = document.createElement("option");
+                    option.value = city;
+                    option.text = city;
+                    citySelect.appendChild(option);
+                });
+            }
+        }
+    </script>
 
 </head>
 
@@ -314,52 +334,149 @@
     </ul>
 </aside>
 
-<%
-    if (user != null) {
-        String femaleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar3.png";
-        String maleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar6.png";
-%>
+<form action="/app/updateProfile" method="post">
+    <%
+        if (user != null) {
+            String userGender = user.getGender();
+            String femaleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar3.png";
+            String maleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar6.png";
+    %>
 
-<!-- Profile Section Begin -->
-<section class="profile-section">
-    <div class="container">
-        <div class="profile-header">
+    <div class="container profile-container rounded bg-white mt-5 mb-5">
+        <div class="row">
             <div class="col-md-3 border-right">
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                     <img
                             class="rounded-circle mt-5"
                             width="150px"
-                            src="<%= user.getGender() != null && user.getGender().equalsIgnoreCase("female") ? femaleAvatarUrl : maleAvatarUrl %>"
+                            src="<%= userGender != null && userGender.equalsIgnoreCase("female") ? femaleAvatarUrl : maleAvatarUrl %>"
                             alt="Profile Picture"
                     >
+                    <br>
+                    <span class="font-weight-bold"><%= user.getUsername() %></span>
                 </div>
             </div>
-            <h2>Welcome, <%= user.getUsername() %></h2>
-        </div>
-
-        <div class="profile-container">
-            <div class="profile-info">
-                <div class="info-item">
-                    <span>First Name:</span> <%= user.getFirstName() %></div>
-                <div class="info-item">
-                    <span>Last Name:</span> <%= user.getLastName() %></div>
-                <div class="info-item">
-                    <span>Email:</span> <%= user.getEmail() %></div>
-                <div class="info-item">
-                    <span>Phone:</span> <%= user.getPhone() %></div>
-                <div class="info-item">
-                    <span>Address:</span> <%= user.getAddress() %></div>
+            <div class="col-md-9 border-right">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Profile Settings</h4>
+                    </div>
+                    <form action="updateProfile" method="post">
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <label class="labels">First Name</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter First Name"
+                                        name="firstName"
+                                        value="<%= user.getFirstName() != null ? user.getFirstName() : "" %>"
+                                >
+                            </div>
+                            <div class="col-md-6">
+                                <label class="labels">Last Name</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter Last Name"
+                                        name="lastName"
+                                        value="<%= user.getLastName() != null ? user.getLastName() : "" %>"
+                                >
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Email</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Email ID"
+                                        name="email"
+                                        value="<%= user.getEmail() %>"
+                                >
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Phone Number</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter Phone Number"
+                                        name="phone"
+                                        value="<%= user.getPhone() != null ? user.getPhone() : "" %>"
+                                >
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Address</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter Address Line 1"
+                                        name="address"
+                                        value="<%= user.getAddress() != null ? user.getAddress() : "" %>"
+                                >
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Country</label>
+                                <select name="country" id="country" class="form-control" onchange="updateCities()">
+                                    <option value="" <%= user.getState() == null ? "selected" : "" %>>Select Country...</option>
+                                    <option value="USA" <%= "USA".equals(user.getState()) ? "selected" : "" %>>USA</option>
+                                    <option value="Canada" <%= "Canada".equals(user.getState()) ? "selected" : "" %>>Canada</option>
+                                    <option value="UK" <%= "UK".equals(user.getState()) ? "selected" : "" %>>UK</option>
+                                    <option value="Australia" <%= "Australia".equals(user.getState()) ? "selected" : "" %>>Australia</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">City</label>
+                                <select name="city" id="city" class="form-control">
+                                    <!-- Options will be populated dynamically by JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Gender</label>
+                                <select name="gender" class="form-control">
+                                    <option value="male" <%= "male".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Male</option>
+                                    <option value="female" <%= "female".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn-primary">Update Profile</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <a href="editProfile.jsp" class="btn btn-primary">Edit Profile</a>
         </div>
     </div>
-</section>
+    <%
+        }
+    %>
+</form>
 
-<%}%>
-
-<!-- Profile Section End -->
 <script src="/admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/admin-assets/vendor/quill/quill.min.js"></script>
+
+<script src="/admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/css_files/js/jquery-3.3.1.min.js"></script>
+<script src="/assets/css_files/js/bootstrap.min.js"></script>
+<script src="/assets/css_files/js/jquery.nice-select.min.js"></script>
+<script src="/assets/css_files/js/jquery-ui.min.js"></script>
+<script src="/assets/css_files/js/jquery.slicknav.js"></script>
+<script src="/assets/css_files/js/mixitup.min.js"></script>
+<script src="/assets/css_files/js/owl.carousel.min.js"></script>
+<script src="/assets/css_files/js/main.js"></script>
+
 <script src="/assets/js/jquery-3.3.1.min.js"></script>
 <script src="/assets/js/bootstrap.min.js"></script>
 <script src="/assets/js/jquery.nice-select.min.js"></script>
