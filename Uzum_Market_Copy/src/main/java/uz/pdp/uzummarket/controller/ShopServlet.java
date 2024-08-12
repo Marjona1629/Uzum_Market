@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpSession;
 import uz.pdp.uzummarket.entities.Shop;
 import uz.pdp.uzummarket.entities.User;
 import uz.pdp.uzummarket.enums.Status;
+import uz.pdp.uzummarket.repositories.NotificationRepository;
+import uz.pdp.uzummarket.service.NotificationService;
 import uz.pdp.uzummarket.service.ShopService;
 
 import java.io.IOException;
@@ -26,12 +28,15 @@ public class ShopServlet extends HttpServlet {
         this.shopService = new ShopService();
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("post");
+    final NotificationService notificationService = new NotificationService(new NotificationRepository());
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");
+
+        long unreadCount = notificationService.countUnreadNotificationsByUserId(user.getId());
+        req.setAttribute("unreadCount", unreadCount);
 
         if (user == null) {
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged in.");

@@ -1,18 +1,18 @@
 package uz.pdp.uzummarket.controller;
 
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.*;
 import uz.pdp.uzummarket.entities.Category;
 import uz.pdp.uzummarket.entities.Product;
 import uz.pdp.uzummarket.entities.Shop;
+import uz.pdp.uzummarket.entities.User;
+import uz.pdp.uzummarket.repositories.NotificationRepository;
+import uz.pdp.uzummarket.service.NotificationService;
 import uz.pdp.uzummarket.service.ProductService;
 import uz.pdp.uzummarket.service.CategoryService; // Ensure this service exists
 import uz.pdp.uzummarket.service.ShopService; // Ensure this service exists
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +24,16 @@ public class AddProductServlet extends HttpServlet {
     private final CategoryService categoryService = new CategoryService();
     private final ShopService shopService = new ShopService();
 
+    final NotificationService notificationService = new NotificationService(new NotificationRepository());
+
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("user");
+
+        long unreadCount = notificationService.countUnreadNotificationsByUserId(user.getId());
+        req.setAttribute("unreadCount", unreadCount);
+
         String name = req.getParameter("productName");
         String description = req.getParameter("productDescription");
         String priceStr = req.getParameter("productPrice");

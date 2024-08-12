@@ -4,6 +4,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="uz.pdp.uzummarket.service.ShopService" %>
 <%@ page import="uz.pdp.uzummarket.entities.Shop" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="java.sql.Connection" %>
 <%@ page import="java.sql.Statement" %>
 <%@ page import="java.sql.ResultSet" %>
@@ -12,6 +13,8 @@
 <%@ page import="uz.pdp.uzummarket.entities.Product" %>
 <%@ page import="java.util.Properties" %>
 <%@ page import="uz.pdp.uzummarket.service.ProductService" %>
+<%@ page import="uz.pdp.uzummarket.service.NotificationService" %>
+<%@ page import="uz.pdp.uzummarket.repositories.NotificationRepository" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,10 +43,10 @@
         /* Overall Container */
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 700px; /* Slightly smaller width */
             padding: 20px;
             background-color: #fff;
-            border-radius: 10px;
+            border-radius: 8px; /* Slightly smaller border radius */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin: 0 auto;
         }
@@ -51,16 +54,15 @@
         /* Title */
         .container h3 {
             margin-bottom: 20px;
-            font-size: 1.8rem;
+            font-size: 1.6rem; /* Slightly smaller font size */
             color: #333;
         }
 
         /* Form Layout */
-        /* Form Layout */
         .form-row {
             display: flex;
-            justify-content: space-between;
-            gap: 20px;
+            flex-wrap: wrap;
+            gap: 15px; /* Reduced gap */
             margin-bottom: 15px;
         }
 
@@ -68,10 +70,9 @@
             flex: 1;
         }
 
-        /* Ensure consistency in height */
+        /* Form Groups */
         .form-group {
             margin-bottom: 15px;
-            position: relative;
         }
 
         .form-group input[type="text"],
@@ -79,26 +80,20 @@
         .form-group select,
         .form-group textarea {
             width: 100%;
-            font-size: 1rem;
-            border-radius: 5px;
+            font-size: 0.9rem; /* Slightly smaller font size */
+            border-radius: 4px; /* Slightly smaller border radius */
             border: 1px solid #ced4da;
-            box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+            box-sizing: border-box;
         }
 
-        .form-group input[type="text"] {
-            height: 40px; /* Adjust height to ensure alignment */
-        }
-
-        .form-group input[type="number"] {
-            height: 40px; /* Adjust height to ensure alignment */
-        }
-
+        .form-group input[type="text"],
+        .form-group input[type="number"],
         .form-group select {
-            height: 40px; /* Adjust height to ensure alignment */
+            height: 35px; /* Adjust height */
         }
 
         .form-group textarea {
-            height: 100px;
+            height: 90px; /* Adjust height */
             resize: vertical;
         }
 
@@ -109,7 +104,7 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
             color: #555;
         }
@@ -129,18 +124,18 @@
         }
 
         .custom-file-input label {
-            display: block;
-            background-color: #4CAF50;
+            display: inline-block;
+            background-color: #007bff; /* Blue color */
             color: white;
-            border-radius: 5px;
-            padding: 12px 20px;
+            border-radius: 4px; /* Adjusted border radius */
+            padding: 8px 16px; /* Smaller padding */
             cursor: pointer;
             text-align: center;
-            font-size: 1rem;
+            font-size: 0.9rem; /* Smaller font size */
         }
 
         .custom-file-input label:hover {
-            background-color: #45a049;
+            background-color: #0056b3;
         }
 
         .file-notification {
@@ -152,8 +147,8 @@
             background-color: #4CAF50;
             border-color: #4CAF50;
             font-size: 1rem;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 20px; /* Larger padding */
+            border-radius: 4px; /* Adjusted border radius */
         }
 
         .btn-success:hover {
@@ -161,6 +156,7 @@
             border-color: #45a049;
         }
 
+        /* Shop Card Styles (Optional) */
         .shop-card {
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -199,6 +195,7 @@
             border-color: #bd2130;
         }
     </style>
+
 </head>
 
 <body>
@@ -222,64 +219,41 @@
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
 
+            <%
+                // Assuming you have a method to get unread notifications count
+                NotificationService notificationService = new NotificationService(NotificationRepository.getInstance());
+                User user = (User) session.getAttribute("user");
+                if (user == null || user.getId() == null) {
+                    response.sendRedirect("login.jsp");
+                    return;
+                }
+                long unreadCount = notificationService.countUnreadNotificationsByUserId(user.getId());
+                request.setAttribute("unreadCount", unreadCount);
+            %>
+
             <!-- Notifications Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                <a class="nav-link nav-icon" href="/show-notifications">
                     <i class="bi bi-bell"></i>
-                    <span class="badge bg-primary badge-number">4</span>
+                    <c:if test="${unreadCount > 0}">
+                        <span class="badge bg-primary badge-number">
+                            <c:out value="${unreadCount}" />
+                        </span>
+                    </c:if>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                    <li class="dropdown-header">
-                        You have 4 new notifications
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <c:forEach var="notification" items="${notifications}">
-                        <li class="notification-item">
-                            <i class="bi ${notification.icon} text-${notification.color}"></i>
-                            <div>
-                                <h4>${notification.title}</h4>
-                                <p>${notification.message}</p>
-                                <p>${notification.time}</p>
-                            </div>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                    </c:forEach>
-                    <li class="dropdown-footer">
-                        <a href="#">Show all notifications</a>
-                    </li>
-                </ul>
             </li>
+
 
             <!-- Messages Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                <a class="nav-link nav-icon" href="/show-messages">
                     <i class="bi bi-chat-left-text"></i>
-                    <span class="badge bg-success badge-number">3</span>
+                    <c:if test="${messageCount > 0}">
+                        <span class="badge bg-success badge-number">
+                            <c:out value="${messageCount}" />
+                        </span>
+                    </c:if>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                    <li class="dropdown-header">
-                        You have 3 new messages
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <c:forEach var="message" items="${messages}">
-                        <li class="message-item">
-                            <a href="#">
-                                <img src="${message.image}" alt="" class="rounded-circle">
-                                <div>
-                                    <h4>${message.sender}</h4>
-                                    <p>${message.content}</p>
-                                    <p>${message.time}</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                    </c:forEach>
-                    <li class="dropdown-footer">
-                        <a href="#">Show all messages</a>
-                    </li>
-                </ul>
             </li>
 
             <!-- User Profile Dropdown -->
@@ -288,11 +262,6 @@
                     <i class="bi bi-person-circle fs-4 me-2"></i>
                     <span class="d-none d-md-block dropdown-toggle ps-2">
                         <%
-                            User user = (User) session.getAttribute("user");
-                            if (user == null || user.getId() == null) {
-                                response.sendRedirect("login.jsp");
-                                return;
-                            }
                             String sellerName = user.getFirstName() + " " + user.getLastName();
                         %>
                         <%= sellerName %>
@@ -312,8 +281,8 @@
                 </ul>
             </li>
         </ul>
-    </nav>
-</header>
+    </nav><!-- End Icons Navigation -->
+</header><!-- End Header -->
 
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">

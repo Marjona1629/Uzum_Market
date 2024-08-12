@@ -55,62 +55,26 @@
 
             <!-- Notifications Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                <a class="nav-link nav-icon" href="/show-notifications">
                     <i class="bi bi-bell"></i>
-                    <span class="badge bg-primary badge-number">4</span>
+                    <c:if test="${unreadCount > 0}">
+                        <span class="badge bg-primary badge-number">
+                            <c:out value="${unreadCount}" />
+                        </span>
+                    </c:if>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                    <li class="dropdown-header">
-                        You have 4 new notifications
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <c:forEach var="notification" items="${notifications}">
-                        <li class="notification-item">
-                            <i class="bi ${notification.icon} text-${notification.color}"></i>
-                            <div>
-                                <h4>${notification.title}</h4>
-                                <p>${notification.message}</p>
-                                <p>${notification.time}</p>
-                            </div>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                    </c:forEach>
-                    <li class="dropdown-footer">
-                        <a href="#">Show all notifications</a>
-                    </li>
-                </ul>
             </li>
 
             <!-- Messages Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                <a class="nav-link nav-icon" href="/show-messages">
                     <i class="bi bi-chat-left-text"></i>
-                    <span class="badge bg-success badge-number">3</span>
+                    <c:if test="${messageCount > 0}">
+                        <span class="badge bg-success badge-number">
+                            <c:out value="${messageCount}" />
+                        </span>
+                    </c:if>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                    <li class="dropdown-header">
-                        You have 3 new messages
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <c:forEach var="message" items="${messages}">
-                        <li class="message-item">
-                            <a href="#">
-                                <img src="${message.image}" alt="" class="rounded-circle">
-                                <div>
-                                    <h4>${message.sender}</h4>
-                                    <p>${message.content}</p>
-                                    <p>${message.time}</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                    </c:forEach>
-                    <li class="dropdown-footer">
-                        <a href="#">Show all messages</a>
-                    </li>
-                </ul>
             </li>
 
             <!-- User Profile Dropdown -->

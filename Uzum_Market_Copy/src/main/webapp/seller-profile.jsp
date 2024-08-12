@@ -1,12 +1,15 @@
 <%@ page import="java.util.List" %>
 <%@ page import="uz.pdp.uzummarket.service.CategoryService" %>
 <%@ page import="uz.pdp.uzummarket.entities.Category" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="uz.pdp.uzummarket.entities.User" %>
 <%@ page import="java.sql.Connection" %>
 <%@ page import="java.sql.Statement" %>
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
 <%@ page import="java.sql.SQLException" %>
+<%@ page import="uz.pdp.uzummarket.service.NotificationService" %>
+<%@ page import="uz.pdp.uzummarket.repositories.NotificationRepository" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,6 +24,9 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Vendor CSS Files -->
     <link href="/admin-assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -231,64 +237,40 @@
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
 
+            <%
+                // Assuming you have a method to get unread notifications count
+                NotificationService notificationService = new NotificationService(NotificationRepository.getInstance());
+                User user = (User) session.getAttribute("user");
+                if (user == null || user.getId() == null) {
+                    response.sendRedirect("login.jsp");
+                    return;
+                }
+                long unreadCount = notificationService.countUnreadNotificationsByUserId(user.getId());
+                request.setAttribute("unreadCount", unreadCount);
+            %>
+
             <!-- Notifications Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                <a class="nav-link nav-icon" href="/show-notifications">
                     <i class="bi bi-bell"></i>
-                    <span class="badge bg-primary badge-number">4</span>
+                    <c:if test="${unreadCount > 0}">
+                        <span class="badge bg-primary badge-number">
+                            <c:out value="${unreadCount}" />
+                        </span>
+                    </c:if>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                    <li class="dropdown-header">
-                        You have 4 new notifications
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <c:forEach var="notification" items="${notifications}">
-                        <li class="notification-item">
-                            <i class="bi ${notification.icon} text-${notification.color}"></i>
-                            <div>
-                                <h4>${notification.title}</h4>
-                                <p>${notification.message}</p>
-                                <p>${notification.time}</p>
-                            </div>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                    </c:forEach>
-                    <li class="dropdown-footer">
-                        <a href="#">Show all notifications</a>
-                    </li>
-                </ul>
             </li>
 
             <!-- Messages Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                <a class="nav-link nav-icon" href="/show-messages">
                     <i class="bi bi-chat-left-text"></i>
-                    <span class="badge bg-success badge-number">3</span>
+                    <c:if test="${messageCount > 0}">
+                        <span class="badge bg-success badge-number">
+                            <c:out value="${messageCount}" />
+                        </span>
+                    </c:if>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                    <li class="dropdown-header">
-                        You have 3 new messages
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <c:forEach var="message" items="${messages}">
-                        <li class="message-item">
-                            <a href="#">
-                                <img src="${message.image}" alt="" class="rounded-circle">
-                                <div>
-                                    <h4>${message.sender}</h4>
-                                    <p>${message.content}</p>
-                                    <p>${message.time}</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                    </c:forEach>
-                    <li class="dropdown-footer">
-                        <a href="#">Show all messages</a>
-                    </li>
-                </ul>
             </li>
 
             <!-- User Profile Dropdown -->
@@ -297,11 +279,6 @@
                     <i class="bi bi-person-circle fs-4 me-2"></i>
                     <span class="d-none d-md-block dropdown-toggle ps-2">
                         <%
-                            User user = (User) session.getAttribute("user");
-                            if (user == null || user.getId() == null) {
-                                response.sendRedirect("login.jsp");
-                                return;
-                            }
                             String sellerName = user.getFirstName() + " " + user.getLastName();
                         %>
                         <%= sellerName %>

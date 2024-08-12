@@ -3,6 +3,8 @@
 <%@ page import="uz.pdp.uzummarket.entities.Shop" %>
 <%@ page import="java.util.List" %>
 <%@ page import="uz.pdp.uzummarket.service.ShopService" %>
+<%@ page import="uz.pdp.uzummarket.service.NotificationService" %>
+<%@ page import="uz.pdp.uzummarket.repositories.NotificationRepository" %>
 
 
 <!DOCTYPE html>
@@ -152,51 +154,42 @@
 
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
-            <li class="nav-item d-block d-lg-none">
-                <a class="nav-link nav-icon search-bar-toggle " href="#">
-                    <i class="bi bi-search"></i>
-                </a>
-            </li><!-- End Search Icon-->
 
+            <%
+                // Assuming you have a method to get unread notifications count
+                NotificationService notificationService = new NotificationService(NotificationRepository.getInstance());
+                User user = (User) session.getAttribute("user");
+                if (user == null || user.getId() == null) {
+                    response.sendRedirect("login.jsp");
+                    return;
+                }
+                long unreadCount = notificationService.countUnreadNotificationsByUserId(user.getId());
+                request.setAttribute("unreadCount", unreadCount);
+            %>
+
+            <!-- Notifications Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                <a class="nav-link nav-icon" href="/show-notifications">
                     <i class="bi bi-bell"></i>
-                    <span class="badge bg-primary badge-number">4</span>
-                </a><!-- End Notification Icon -->
+                    <c:if test="${unreadCount > 0}">
+                        <span class="badge bg-primary badge-number">
+                            <c:out value="${unreadCount}" />
+                        </span>
+                    </c:if>
+                </a>
+            </li>
 
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                    <li class="dropdown-header">
-                        You have 4 new notifications
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li class="dropdown-footer">
-                        <a href="#">Show all notifications</a>
-                    </li>
-                </ul><!-- End Notification Dropdown Items -->
-            </li><!-- End Notification Nav -->
-
+            <!-- Messages Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                <a class="nav-link nav-icon" href="/show-messages">
                     <i class="bi bi-chat-left-text"></i>
-                    <span class="badge bg-success badge-number">3</span>
-                </a><!-- End Messages Icon -->
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                    <li class="dropdown-header">
-                        You have 3 new messages
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li class="dropdown-footer">
-                        <a href="#">Show all messages</a>
-                    </li>
-                </ul><!-- End Messages Dropdown Items -->
-            </li><!-- End Messages Nav -->
+                    <c:if test="${messageCount > 0}">
+                        <span class="badge bg-success badge-number">
+                            <c:out value="${messageCount}" />
+                        </span>
+                    </c:if>
+                </a>
+            </li>
 
             <!-- User Profile Dropdown -->
             <li class="nav-item dropdown pe-3">
@@ -204,12 +197,6 @@
                     <i class="bi bi-person-circle fs-4 me-2"></i>
                     <span class="d-none d-md-block dropdown-toggle ps-2">
                         <%
-                            User user = (User) session.getAttribute("user");
-                            if (user == null || user.getId() == null) {
-                                response.sendRedirect("login.jsp");
-                                return;
-                            }
-
                             String sellerName = user.getFirstName() + " " + user.getLastName();
                         %>
                         <%= sellerName %>
