@@ -1,5 +1,6 @@
 <%@ page import="uz.pdp.uzummarket.entities.User" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="uz.pdp.uzummarket.service.NotificationService" %>
+<%@ page import="uz.pdp.uzummarket.repositories.NotificationRepository" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE html>
@@ -51,6 +52,17 @@
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
 
+            <%
+                User user = (User) session.getAttribute("user");
+                if (user == null || user.getId() == null) {
+                    response.sendRedirect("login.jsp");
+                    return;
+                }
+                NotificationService notificationService = new NotificationService(new NotificationRepository());
+                long unreadCount = notificationService.countUnreadNotificationsByUserId(user.getId());
+                request.setAttribute("unreadCount", unreadCount);
+            %>
+
             <!-- Notifications Dropdown -->
             <li class="nav-item dropdown">
                 <a class="nav-link nav-icon" href="/show-notifications">
@@ -81,11 +93,6 @@
                     <i class="bi bi-person-circle fs-4 me-2"></i>
                     <span class="d-none d-md-block dropdown-toggle ps-2">
                         <%
-                            User user = (User) session.getAttribute("user");
-                            if (user == null || user.getId() == null) {
-                                response.sendRedirect("login.jsp");
-                                return;
-                            }
                             String sellerName = user.getFirstName() + " " + user.getLastName();
                         %>
                         <%= sellerName %>
