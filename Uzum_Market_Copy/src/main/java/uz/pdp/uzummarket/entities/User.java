@@ -60,6 +60,8 @@ public class User {
 
 	private Boolean hasConfirmed = Boolean.FALSE;
 
+	private Double balance;
+
 	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Shop> shops;
 }

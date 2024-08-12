@@ -22,7 +22,7 @@ public class ShopService {
         return shopRepository.delete(shop);
     }
 
-    public Shop getShopById(int id) {
+    public Shop getShopById(Integer id) {
         return shopRepository.get(id);
     }
 

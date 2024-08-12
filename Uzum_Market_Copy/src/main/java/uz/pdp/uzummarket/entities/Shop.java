@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.List;
 import uz.pdp.uzummarket.enums.Status;
 
 @Data
@@ -25,6 +26,9 @@ public class Shop {
     private String address;
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
+
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products;
 
     @ManyToOne
     @JoinColumn(nullable = false)

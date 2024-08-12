@@ -17,6 +17,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Favicons -->
     <link href="/admin-assets/img/favicon.png" rel="icon">
@@ -40,37 +43,36 @@
     <!-- Template Main CSS File -->
     <link href="/admin-assets/css/style.css" rel="stylesheet">
     <style>/* Profile Container */
+    /* Profile Container */
     .profile-container {
-        background-color: #cedcea; /* Light background for profile details */
+        background-color: #f0f4f8; /* Light background for profile details */
         border-radius: 12px; /* Rounded corners */
         padding: 40px; /* Padding inside the container */
         box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1); /* Shadow for depth */
         max-width: 1000px; /* Maximum width */
         width: 100%; /* Full width */
         box-sizing: border-box; /* Include padding and border in width and height */
-        margin-top: -25mm; /* Move container up an additional 25 mm */
+        margin: 20px auto; /* Center container with margin */
     }
 
     /* Profile Image */
     .profile-header img {
-        margin-top: -25px; /* Move image up */
         width: 120px; /* Width of profile picture */
         height: 120px; /* Height of profile picture */
         border-radius: 50%; /* Circular profile picture */
-        margin-right: 25px; /* Space between image and text */
+        margin-right: 20px; /* Space between image and text */
     }
 
     /* Profile Header Title */
     .profile-header h2 {
-        margin-top: -10px; /* Move title up */
         font-size: 36px; /* Font size for heading */
         color: #333; /* Text color */
     }
 
     /* Info Item */
     .profile-info .info-item {
-        margin-bottom: 20px; /* Space between info items */
-        font-size: 20px; /* Font size for profile info */
+        margin-bottom: 15px; /* Space between info items */
+        font-size: 18px; /* Font size for profile info */
     }
 
     .profile-info .info-item span {
@@ -82,7 +84,7 @@
     .btn-primary {
         display: inline-block;
         padding: 15px 30px; /* Padding inside button */
-        font-size: 20px; /* Font size */
+        font-size: 18px; /* Font size */
         color: #fff; /* Text color */
         background-color: #007bff; /* Background color */
         border: none; /* No border */
@@ -104,7 +106,7 @@
         background-color: #fff;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin: 0 auto;
+        margin: 20px auto;
     }
 
     /* Form Group Styles */
@@ -112,6 +114,14 @@
         margin-bottom: 15px; /* Space between form groups */
     }
 
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+    }
+
+    /* Form Controls */
     .form-group input[type="text"],
     .form-group input[type="number"],
     .form-group select,
@@ -121,6 +131,9 @@
         border-radius: 5px;
         border: 1px solid #ced4da;
         box-sizing: border-box; /* Include padding and border in width and height */
+        padding: 8px 10px; /* Padding inside the fields */
+        background-color: #fff; /* Background color */
+        color: #555; /* Text color */
     }
 
     .form-group input[type="text"],
@@ -134,13 +147,6 @@
         resize: vertical; /* Allow vertical resize */
     }
 
-    .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #555;
-    }
-
     /* General Select Styles */
     select {
         width: 100%;
@@ -148,8 +154,7 @@
         font-size: 1rem; /* Font size */
         border-radius: 5px; /* Rounded corners */
         border: 1px solid #ced4da; /* Border color */
-        box-sizing: border-box; /* Include padding and border in width and height */
-        padding: 0 10px; /* Padding inside the dropdown */
+        padding: 8px 10px; /* Padding inside the dropdown */
         background-color: #fff; /* Background color */
         color: #555; /* Text color */
     }
@@ -192,25 +197,29 @@
 
     <script>
         function updateCities() {
-            var country = document.getElementById("country").value;
-            var citySelect = document.getElementById("city");
-            var cities = {
-                "USA": ["New York", "Los Angeles", "Chicago"],
-                "Canada": ["Toronto", "Vancouver", "Montreal"],
-                "UK": ["London", "Manchester", "Birmingham"],
-                "Australia": ["Sydney", "Melbourne", "Brisbane"]
-            };
+            const country = document.getElementById("country").value;
+            const cityDropdown = document.getElementById("city");
 
-            citySelect.innerHTML = "";
+            cityDropdown.innerHTML = "";
 
-            if (country && cities[country]) {
-                cities[country].forEach(function(city) {
-                    var option = document.createElement("option");
-                    option.value = city;
-                    option.text = city;
-                    citySelect.appendChild(option);
-                });
+            let cities = [];
+
+            if (country === "USA") {
+                cities = ["San Francisco", "New York", "Los Angeles"];
+            } else if (country === "Canada") {
+                cities = ["Toronto", "Vancouver", "Montreal"];
+            } else if (country === "UK") {
+                cities = ["London", "Manchester", "Birmingham"];
+            } else if (country === "Australia") {
+                cities = ["Sydney", "Melbourne", "Brisbane"];
             }
+
+            cities.forEach(function(city) {
+                const option = document.createElement("option");
+                option.value = city;
+                option.textContent = city;
+                cityDropdown.appendChild(option);
+            });
         }
     </script>
 
@@ -312,11 +321,10 @@
 </aside>
 
 <form action="/app/updateProfile" method="post">
-    <%
-        if (user != null) {
-            String userGender = user.getGender();
-            String femaleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar3.png";
-            String maleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar6.png";
+    <%if (user != null) {
+        String userGender = user.getGender();
+        String femaleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar3.png";
+        String maleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar6.png";
     %>
 
     <div class="container profile-container rounded bg-white mt-5 mb-5">
@@ -338,107 +346,103 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="text-right">Profile Settings</h4>
                     </div>
-                    <form action="updateProfile" method="post">
-                        <div class="row mt-2">
-                            <div class="col-md-6">
-                                <label class="labels">First Name</label>
-                                <input
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="Enter First Name"
-                                        name="firstName"
-                                        value="<%= user.getFirstName() != null ? user.getFirstName() : "" %>"
-                                >
-                            </div>
-                            <div class="col-md-6">
-                                <label class="labels">Last Name</label>
-                                <input
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="Enter Last Name"
-                                        name="lastName"
-                                        value="<%= user.getLastName() != null ? user.getLastName() : "" %>"
-                                >
-                            </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label class="labels">First Name</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Enter First Name"
+                                    name="firstName"
+                                    value="<%= user.getFirstName() != null ? user.getFirstName() : "" %>"
+                            >
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <label class="labels">Email</label>
-                                <input
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="Email ID"
-                                        name="email"
-                                        value="<%= user.getEmail() %>"
-                                >
-                            </div>
+                        <div class="col-md-6">
+                            <label class="labels">Last Name</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Enter Last Name"
+                                    name="lastName"
+                                    value="<%= user.getLastName() != null ? user.getLastName() : "" %>"
+                            >
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <label class="labels">Phone Number</label>
-                                <input
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="Enter Phone Number"
-                                        name="phone"
-                                        value="<%= user.getPhone() != null ? user.getPhone() : "" %>"
-                                >
-                            </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label class="labels">Email</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Email ID"
+                                    name="email"
+                                    value="<%= user.getEmail() %>"
+                            >
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <label class="labels">Address</label>
-                                <input
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="Enter Address Line 1"
-                                        name="address"
-                                        value="<%= user.getAddress() != null ? user.getAddress() : "" %>"
-                                >
-                            </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label class="labels">Phone Number</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Enter Phone Number"
+                                    name="phone"
+                                    value="<%= user.getPhone() != null ? user.getPhone() : "" %>"
+                            >
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <label class="labels">Country</label>
-                                <select name="country" id="country" class="form-control" onchange="updateCities()">
-                                    <option value="" <%= user.getState() == null ? "selected" : "" %>>Select Country...</option>
-                                    <option value="USA" <%= "USA".equals(user.getState()) ? "selected" : "" %>>USA</option>
-                                    <option value="Canada" <%= "Canada".equals(user.getState()) ? "selected" : "" %>>Canada</option>
-                                    <option value="UK" <%= "UK".equals(user.getState()) ? "selected" : "" %>>UK</option>
-                                    <option value="Australia" <%= "Australia".equals(user.getState()) ? "selected" : "" %>>Australia</option>
-                                </select>
-                            </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label class="labels">Address</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Enter Address Line 1"
+                                    name="address"
+                                    value="<%= user.getAddress() != null ? user.getAddress() : "" %>"
+                            >
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <label class="labels">City</label>
-                                <select name="city" id="city" class="form-control">
-                                    <!-- Options will be populated dynamically by JavaScript -->
-                                </select>
-                            </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label class="labels">Country</label>
+                            <select name="country" id="country" class="form-control" onchange="updateCities()">
+                                <option value="" <%= user.getState() == null ? "selected" : "" %>>Select Country...</option>
+                                <option value="USA" <%= "USA".equals(user.getState()) ? "selected" : "" %>>USA</option>
+                                <option value="Canada" <%= "Canada".equals(user.getState()) ? "selected" : "" %>>Canada</option>
+                                <option value="UK" <%= "UK".equals(user.getState()) ? "selected" : "" %>>UK</option>
+                                <option value="Australia" <%= "Australia".equals(user.getState()) ? "selected" : "" %>>Australia</option>
+                            </select>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <label class="labels">Gender</label>
-                                <select name="gender" class="form-control">
-                                    <option value="male" <%= "male".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Male</option>
-                                    <option value="female" <%= "female".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Female</option>
-                                </select>
-                            </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label class="labels">City</label>
+                            <select name="city" id="city" class="form-control">
+                                <!-- Options will be populated dynamically by JavaScript -->
+                            </select>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12 text-center">
-                                <button type="submit" class="btn-primary">Update Profile</button>
-                            </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label class="labels">Gender</label>
+                            <select name="gender" class="form-control">
+                                <option value="male" <%= "male".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Male</option>
+                                <option value="female" <%= "female".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Female</option>
+                            </select>
                         </div>
-                    </form>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12 text-center">
+                            <button type="submit" class="btn-primary">Update Profile</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <%
-        }
-    %>
+    <% } %>
 </form>
 
 <script src="/admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -461,11 +465,6 @@
 <script src="/assets/js/jquery.slicknav.js"></script>
 <script src="/assets/js/owl.carousel.min.js"></script>
 <script src="/assets/js/main.js"></script>
-<script>
-    function searchProducts() {
-        // Your JavaScript code for search suggestions
-    }
-</script>
 
 </body>
 </html>

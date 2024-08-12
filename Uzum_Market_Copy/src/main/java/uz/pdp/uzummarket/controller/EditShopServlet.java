@@ -8,15 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import uz.pdp.uzummarket.entities.Shop;
 import uz.pdp.uzummarket.entities.User;
-import uz.pdp.uzummarket.enums.Status;
-import uz.pdp.uzummarket.repositories.NotificationRepository;
-import uz.pdp.uzummarket.service.NotificationService;
 import uz.pdp.uzummarket.service.ShopService;
 
 import java.io.IOException;
-
-@WebServlet("/app/seller/add-shop")
-public class ShopServlet extends HttpServlet {
+@WebServlet("/editShop")
+public class EditShopServlet extends HttpServlet {
 
     private ShopService shopService;
 
@@ -26,22 +22,26 @@ public class ShopServlet extends HttpServlet {
         this.shopService = new ShopService();
     }
 
-    final NotificationService notificationService = new NotificationService(new NotificationRepository());
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");
-
-        long unreadCount = notificationService.countUnreadNotificationsByUserId(user.getId());
-        req.setAttribute("unreadCount", unreadCount);
 
         if (user == null) {
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged in.");
             return;
         }
 
-        req.getRequestDispatcher("/add-shop.jsp").forward(req, resp);
+        Integer id = Integer.valueOf(req.getParameter("id"));
+        Shop shop = shopService.getShopById(id);
+
+        if (shop == null || !shop.getOwner().equals(user)) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Shop not found or not authorized.");
+            return;
+        }
+
+        req.setAttribute("shop", shop);
+        req.getRequestDispatcher("/edit-shop.jsp").forward(req, resp);
     }
 
     @Override
@@ -49,27 +49,34 @@ public class ShopServlet extends HttpServlet {
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");
 
-        long unreadCount = notificationService.countUnreadNotificationsByUserId(user.getId());
-        req.setAttribute("unreadCount", unreadCount);
-
         if (user == null) {
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged in.");
             return;
         }
 
+        String idParam = req.getParameter("id");
+        if (idParam == null || idParam.isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Shop ID is required.");
+            return;
+        }
+        Integer id = Integer.valueOf(idParam);
+
         String name = req.getParameter("name");
         String description = req.getParameter("description");
         String address = req.getParameter("address");
 
-        Shop shop = Shop.builder()
-                .name(name)
-                .description(description)
-                .address(address)
-                .status(Status.ACTIVE)
-                .owner(user)
-                .build();
+        Shop shop = shopService.getShopById(id);
 
-        shopService.createShop(shop);
+        if (shop == null || !shop.getOwner().equals(user)) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Shop not found or not authorized.");
+            return;
+        }
+
+        shop.setName(name);
+        shop.setDescription(description);
+        shop.setAddress(address);
+
+        shopService.updateShop(shop);
 
         resp.sendRedirect("/add-shop.jsp");
     }
