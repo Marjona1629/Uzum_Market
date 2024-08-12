@@ -72,7 +72,19 @@ public class ProductRepository implements BaseRepository<Product> {
 
     @Override
     public List<Product> getAll() {
-        return entityManager.createQuery("SELECT p FROM Product p", Product.class).getResultList();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            return entityManager.createQuery("SELECT p FROM Product p", Product.class).getResultList();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return Collections.emptyList();
+        } finally {
+            transaction.commit();
+        }
     }
 
     @Transactional

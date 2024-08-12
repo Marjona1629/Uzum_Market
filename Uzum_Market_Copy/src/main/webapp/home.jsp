@@ -3,6 +3,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="uz.pdp.uzummarket.service.CategoryService" %>
 <%@ page import="uz.pdp.uzummarket.entities.Category" %>
+<%@ page import="java.util.Collections" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,10 +16,7 @@
     <title>Uzum Market</title>
 
     <!-- Google Font -->
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
 
     <!-- Css Styles -->
     <link rel="stylesheet" href="/assets/css_files/css/bootstrap.min.css" type="text/css">
@@ -99,7 +97,175 @@
 
         .header__cart a:hover {
             background-color: #b6b4b7;
+        }/* Container and Section Styles */
+        .container.my-products-margin {
+            margin-top: 0; /* Reset if you had a default margin */
+            margin-top: -20px;
         }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        /* Product Row Styles */
+        .product-row {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        /* Space for filters on the left */
+        .filter-space {
+            width: 20%; /* Adjust as needed for your filters */
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .filter-space .filter {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        /* Product List Styles */
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* Space between product cards */
+            width: 80%; /* Adjust width to fill the remaining space */
+            padding: 10px;
+        }
+
+        .product-card {
+            cursor: pointer;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            flex: 1 1 calc(25% - 20px); /* Adjust to fit 4 products per line */
+            box-sizing: border-box;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .card-price {
+            font-size: 1.1em;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Basic modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .product-image {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-content p {
+            margin: 5px 0;
+        }
+
+        /* Sliding Panel Styles */
+        .sliding-panel {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px; /* Width of the sliding panel */
+            height: 100%;
+            background-color: #fefefe;
+            border-left: 1px solid #888;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.5);
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            transform: translateX(100%); /* Hide panel initially */
+            z-index: 1000; /* Ensure it's above other content */
+        }
+
+        .sliding-panel.show {
+            transform: translateX(0); /* Slide in */
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            float: right;
+            margin: 10px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+
     </style>
 
 </head>
@@ -221,13 +387,6 @@
 
 <section class="featured spad">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="section-title">
-                    <h2>Products</h2>
-                </div>
-            </div>
-        </div>
 
         <div class="row featured__filter">
             <%
@@ -262,47 +421,57 @@
         </div>
     </div><br><br><br>
 </section>
-
-
 <!-- Featured Section End -->
 
-<!-- Categories Section Begin -->
-<section class="categories">
-    <div class="container">
-        <div class="row">
-            <div class="categories__slider owl-carousel">
-                <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="img/categories/cat-1.jpg">
-                        <h5><a href="#">Diamond Ring</a></h5>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="/assets/img/categories/cat-2.jpg">
-                        <h5><a href="#">Blouse</a></h5>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="/assets/img/categories/cat-3.jpg">
-                        <h5><a href="#">Watch</a></h5>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="/assets/img/categories/cat-4.jpg">
-                        <h5><a href="#">Coca Cola</a></h5>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="categories__item set-bg" data-setbg="/assets/img/categories/cat-5.jpg">
-                        <h5><a href="#">Parfum</a></h5>
-                    </div>
+<!-- Products Container -->
+<div class="container my-products-margin">
+    <h3 class="section-title">Products</h3>
+    <div class="product-row">
+        <!-- Filters Section -->
+        <div class="filter-space">
+            <!-- Filters will be placed here -->
+            <div class="filter">Color</div>
+            <div class="filter">Price</div>
+            <div class="filter">Count</div>
+            <div class="filter">Place</div>
+        </div>
+        <!-- Product List -->
+        <div class="product-list">
+            <%
+                ProductService productService = new ProductService();
+                List<Product> products = productService.getAllProducts();
+                Collections.shuffle(products);
+
+                for (Product product : products) {
+                    String imageUrl = product.getImages() != null && !product.getImages().trim().isEmpty()
+                            ? request.getContextPath() + "/image/" + product.getImages()
+                            : "https://via.placeholder.com/150"; // Placeholder image
+            %>
+            <!-- Product Card -->
+            <div class="product-card" onclick="window.location.href='product-details.jsp?id=<%= product.getId() %>'">
+                <img src="<%= imageUrl %>" alt="<%= product.getName() %>" class="product-image" onError="this.src='https://via.placeholder.com/150';">
+                <div class="card-body">
+                    <h5 class="card-title"><%= product.getName() %></h5>
+                    <p class="card-price">$<%= product.getPrice() %></p>
                 </div>
             </div>
+            <%
+                }
+            %>
         </div>
-    </div><br><br><br>
-</section>
-<!-- Categories Section End -->
+    </div>
+</div>
 
-<!-- Include footer -->
+
+<!-- JS Scripts -->
+<script src="/assets/js_files/js/jquery-3.3.1.min.js"></script>
+<script src="/assets/js_files/js/bootstrap.min.js"></script>
+<script src="/assets/js_files/js/owl.carousel.min.js"></script>
+<script src="/assets/js_files/js/jquery-ui.min.js"></script>
+<script src="/assets/js_files/js/jquery.nice-select.min.js"></script>
+<script src="/assets/js_files/js/main.js"></script>
+
+
 <script>
     function searchProducts() {
         const query = document.getElementById('search-input').value;
