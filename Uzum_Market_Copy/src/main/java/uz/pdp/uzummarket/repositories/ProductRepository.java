@@ -4,11 +4,16 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
-import uz.pdp.uzummarket.entities.Product;
-import uz.pdp.uzummarket.entities.Shop;
-import uz.pdp.uzummarket.entities.User;
+import lombok.SneakyThrows;
+import uz.pdp.uzummarket.entities.*;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
@@ -36,19 +41,28 @@ public class ProductRepository implements BaseRepository<Product> {
         }
     }
 
-
-    @Transactional
-    @Override
     public boolean delete(Product product) {
-        entityManager.getTransaction().begin();
-        Product managedProduct = entityManager.find(Product.class, product.getId());
-        if (managedProduct != null) {
-            entityManager.remove(managedProduct);
-            entityManager.getTransaction().commit();
-            return true;
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+
+            Product managedProduct = entityManager.find(Product.class, product.getId());
+            if (managedProduct != null) {
+                // Remove the entity if it exists
+                entityManager.remove(managedProduct);
+                transaction.commit();
+                return true;
+            } else {
+                transaction.rollback();
+                return false; // Product not found
+            }
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback(); // Rollback on exception
+            }
+            e.printStackTrace(); // Log the exception
+            return false; // Indicate failure
         }
-        entityManager.getTransaction().rollback();
-        return false;
     }
 
     @Override

@@ -1,15 +1,13 @@
 package uz.pdp.uzummarket.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.SneakyThrows;
 import uz.pdp.uzummarket.entities.Product;
 import uz.pdp.uzummarket.entities.User;
 import uz.pdp.uzummarket.repositories.ProductRepository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 

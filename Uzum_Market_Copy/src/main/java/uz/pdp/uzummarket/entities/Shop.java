@@ -1,5 +1,6 @@
 package uz.pdp.uzummarket.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,13 +25,19 @@ public class Shop {
     private String description;
     @Column(nullable = false)
     private String address;
-    @Enumerated(EnumType.STRING)
+    @Enumerated(value = EnumType.STRING)
     private Status status = Status.ACTIVE;
 
-    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<Product> products;
 
     @ManyToOne
     @JoinColumn(nullable = false)
     private User owner;
+
+    @Override
+    public String toString() {
+        return "Shop{id=" + id + ", name='" + name + "', description='" + description + "', address='" + address + "', status=" + status + "}";
+    }
 }

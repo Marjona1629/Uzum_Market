@@ -16,9 +16,34 @@ public class DeleteProductServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Integer productId = Integer.parseInt(req.getParameter("id"));
+        String idParam = req.getParameter("id");
+
+        if (idParam == null || idParam.trim().isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Product ID is required.");
+            return;
+        }
+
+        Integer productId;
+        try {
+            productId = Integer.parseInt(idParam);
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid product ID format.");
+            return;
+        }
+
         Product product = productService.getProductById(productId);
-        productService.deleteProduct(product);
-        resp.sendRedirect(req.getContextPath() + "/app/seller/addProductServlet");
+        System.out.println(product);
+        if (product == null) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Product not found.");
+            return;
+        }
+
+        try {
+            if (productService.deleteProduct(product)) {
+                resp.sendRedirect("/addProduct.jsp");
+            }
+        } catch (Exception e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to delete product.");
+        }
     }
 }

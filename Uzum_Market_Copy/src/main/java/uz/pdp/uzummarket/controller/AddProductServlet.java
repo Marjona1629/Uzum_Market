@@ -113,25 +113,10 @@ public class AddProductServlet extends HttpServlet {
         Part filePart = req.getPart("productImage");
         if (filePart != null && filePart.getSize() > 0) {
             String imageFileName = filePart.getSubmittedFileName();
-            String realPath = getServletContext().getRealPath("/images/");
+            String imageFilePath = "D:/Uzum_Market_Images/" + imageFileName;
 
-            if (realPath == null) {
-                req.setAttribute("error", "Image path not found.");
-                req.getRequestDispatcher("/addProduct.jsp").forward(req, resp);
-                return;
-            }
-
-            File dir = new File(realPath);
-            if (!dir.exists()) {
-                boolean dirCreated = dir.mkdirs();
-                if (!dirCreated) {
-                    req.setAttribute("error", "Failed to create directory for image uploads.");
-                    req.getRequestDispatcher("/addProduct.jsp").forward(req, resp);
-                    return;
-                }
-            }
-
-            File imageFile = new File(realPath + File.separator + imageFileName);
+            File imageFile = new File(imageFilePath);
+            imageFile.getParentFile().mkdirs(); // Ensure the directory exists
 
             filePart.write(imageFile.getAbsolutePath());
 
@@ -146,7 +131,6 @@ public class AddProductServlet extends HttpServlet {
             product.setImages(imageFileName);
 
             productService.createProduct(product);
-
             resp.sendRedirect(req.getContextPath() + "/addProduct.jsp");
         } else {
             req.setAttribute("error", "Product image is required.");

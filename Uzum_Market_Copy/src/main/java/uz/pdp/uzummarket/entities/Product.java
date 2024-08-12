@@ -1,5 +1,6 @@
 package uz.pdp.uzummarket.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,9 +40,11 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
+    @JsonManagedReference
     private Category category;
 
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
+    @JsonManagedReference
     private Shop shop;
 }

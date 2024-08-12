@@ -80,39 +80,6 @@
             padding-top: 10mm; /* Adjust as needed */
         }
 
-        .shop-list-wrapper {
-            padding-left: 20px;
-        }
-
-        .shop-card {
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: box-shadow 0.3s;
-        }
-
-        .shop-card:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .shop-name {
-            color: #333;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-        .shop-description {
-            color: #666;
-            margin-top: 5px;
-            font-size: 1em;
-        }
-
-        .shop-address {
-            color: #888;
-            margin-top: 5px;
-            font-size: 0.9em;
-        }
-
         .btn-primary {
             background-color: #007bff;
             border: none;

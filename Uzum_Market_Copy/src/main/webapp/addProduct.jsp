@@ -7,6 +7,8 @@
 <%@ page import="uz.pdp.uzummarket.entities.Product" %>
 <%@ page import="uz.pdp.uzummarket.service.ProductService" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<img src="${pageContext.request.contextPath}/images/${product.getImages()}" alt="${product.getName()}">
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -157,20 +159,6 @@
             border-color: #45a049;
         }
 
-        .shop-card {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 15px;
-            position: relative;
-        }
-
-        .shop-actions {
-            margin-top: 15px;
-            text-align: right;
-        }
-
         .shop-actions .btn {
             margin-left: 10px;
         }
@@ -238,7 +226,7 @@
         }
 
          .add-product-margin {
-             margin-top: 13mm;
+             margin-top: 5mm;
          }
 
         .my-products-margin {
@@ -497,16 +485,20 @@
         <%
             List<Product> products = productService.getProductsBySeller(user);
             for (Product product : products) {
+                String imageUrl = request.getContextPath() + "/image/" + product.getImages();
+                if (product.getImages() == null || product.getImages().trim().isEmpty()) {
+                    imageUrl = "https://via.placeholder.com/150"; // Placeholder image
+                }
         %>
         <div class="col-md-4">
             <div class="product-card">
-                <img src="<%= product.getImages() %>" alt="<%= product.getName() %>">
+                <img src="<%= imageUrl %>" alt="<%= product.getName() %>" style="width: 100%; height: auto;" onError="this.src='https://via.placeholder.com/150';">
                 <div class="card-body">
                     <h5 class="card-title"><%= product.getName() %></h5>
                     <p class="card-text"><%= product.getDescription() %></p>
                     <p class="card-price">$<%= product.getPrice() %></p>
-                    <a href="/editProduct.jsp?id=<%= product.getId() %>" class="btn btn-primary">Edit</a>
-                    <a href="/deleteProductServlet?id=<%= product.getId() %>" class="btn btn-danger">Delete</a>
+                    <a href="/editProduct?id=<%= product.getId() %>" class="btn btn-primary">Edit</a>
+                    <a href="/deleteProduct?id=<%= product.getId() %>" class="btn btn-danger">Delete</a>
                 </div>
             </div>
         </div>
