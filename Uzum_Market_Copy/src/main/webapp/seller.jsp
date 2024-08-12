@@ -1,6 +1,3 @@
-<%@ page import="java.sql.*, javax.sql.*" %>
-<%@ page import="java.text.DecimalFormat" %>
-<%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
 <%@ page import="uz.pdp.uzummarket.entities.User" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 

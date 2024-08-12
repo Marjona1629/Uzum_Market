@@ -4,17 +4,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="uz.pdp.uzummarket.service.ShopService" %>
 <%@ page import="uz.pdp.uzummarket.entities.Shop" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="java.sql.Connection" %>
-<%@ page import="java.sql.Statement" %>
-<%@ page import="java.sql.ResultSet" %>
-<%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
-<%@ page import="java.sql.SQLException" %>
 <%@ page import="uz.pdp.uzummarket.entities.Product" %>
-<%@ page import="java.util.Properties" %>
 <%@ page import="uz.pdp.uzummarket.service.ProductService" %>
-<%@ page import="uz.pdp.uzummarket.service.NotificationService" %>
-<%@ page import="uz.pdp.uzummarket.repositories.NotificationRepository" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,6 +14,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Dashboard</title>
+    <link href="/admin-assets/css/style.css" rel="stylesheet">
 
     <link href="/admin-assets/img/favicon.png" rel="icon">
     <link href="/admin-assets/img/apple-touch-icon.png" rel="apple-touch-icon">
@@ -43,10 +36,10 @@
         /* Overall Container */
         .container {
             width: 100%;
-            max-width: 700px; /* Slightly smaller width */
+            max-width: 800px;
             padding: 20px;
             background-color: #fff;
-            border-radius: 8px; /* Slightly smaller border radius */
+            border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin: 0 auto;
         }
@@ -54,15 +47,16 @@
         /* Title */
         .container h3 {
             margin-bottom: 20px;
-            font-size: 1.6rem; /* Slightly smaller font size */
+            font-size: 1.8rem;
             color: #333;
         }
 
         /* Form Layout */
+        /* Form Layout */
         .form-row {
             display: flex;
-            flex-wrap: wrap;
-            gap: 15px; /* Reduced gap */
+            justify-content: space-between;
+            gap: 20px;
             margin-bottom: 15px;
         }
 
@@ -70,9 +64,10 @@
             flex: 1;
         }
 
-        /* Form Groups */
+        /* Ensure consistency in height */
         .form-group {
             margin-bottom: 15px;
+            position: relative;
         }
 
         .form-group input[type="text"],
@@ -80,20 +75,26 @@
         .form-group select,
         .form-group textarea {
             width: 100%;
-            font-size: 0.9rem; /* Slightly smaller font size */
-            border-radius: 4px; /* Slightly smaller border radius */
+            font-size: 1rem;
+            border-radius: 5px;
             border: 1px solid #ced4da;
-            box-sizing: border-box;
+            box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
         }
 
-        .form-group input[type="text"],
-        .form-group input[type="number"],
+        .form-group input[type="text"] {
+            height: 40px; /* Adjust height to ensure alignment */
+        }
+
+        .form-group input[type="number"] {
+            height: 40px; /* Adjust height to ensure alignment */
+        }
+
         .form-group select {
-            height: 35px; /* Adjust height */
+            height: 40px; /* Adjust height to ensure alignment */
         }
 
         .form-group textarea {
-            height: 90px; /* Adjust height */
+            height: 100px;
             resize: vertical;
         }
 
@@ -104,7 +105,7 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 600;
             color: #555;
         }
@@ -124,18 +125,18 @@
         }
 
         .custom-file-input label {
-            display: inline-block;
-            background-color: #007bff; /* Blue color */
+            display: block;
+            background-color: #4CAF50;
             color: white;
-            border-radius: 4px; /* Adjusted border radius */
-            padding: 8px 16px; /* Smaller padding */
+            border-radius: 5px;
+            padding: 12px 20px;
             cursor: pointer;
             text-align: center;
-            font-size: 0.9rem; /* Smaller font size */
+            font-size: 1rem;
         }
 
         .custom-file-input label:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
         }
 
         .file-notification {
@@ -147,8 +148,8 @@
             background-color: #4CAF50;
             border-color: #4CAF50;
             font-size: 1rem;
-            padding: 12px 20px; /* Larger padding */
-            border-radius: 4px; /* Adjusted border radius */
+            padding: 10px 20px;
+            border-radius: 5px;
         }
 
         .btn-success:hover {
@@ -156,7 +157,6 @@
             border-color: #45a049;
         }
 
-        /* Shop Card Styles (Optional) */
         .shop-card {
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -194,8 +194,131 @@
             background-color: #c82333;
             border-color: #bd2130;
         }
-    </style>
 
+        /* Product Cards */
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: auto;
+        }
+
+        .product-card .card-body {
+            padding: 15px;
+        }
+
+        .product-card .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .product-card .card-text {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .product-card .card-price {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #4CAF50;
+        }
+
+        .product-card .btn {
+            font-size: 0.875rem;
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+
+         .add-product-margin {
+             margin-top: 13mm;
+         }
+
+        .my-products-margin {
+            margin-top: 15mm;
+        }
+
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: auto;
+        }
+
+        .product-card .card-body {
+            padding: 15px;
+        }
+
+        .product-card .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .product-card .card-text {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .product-card .card-price {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #4CAF50;
+        }
+
+        .product-card .btn {
+            font-size: 0.875rem;
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+
+        .custom-file-input {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .custom-file-input input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .custom-file-input label {
+            background-color: #007bff; /* Blue color */
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            display: inline-block;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-success {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 
 <body>
@@ -219,18 +342,6 @@
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
 
-            <%
-                // Assuming you have a method to get unread notifications count
-                NotificationService notificationService = new NotificationService(NotificationRepository.getInstance());
-                User user = (User) session.getAttribute("user");
-                if (user == null || user.getId() == null) {
-                    response.sendRedirect("login.jsp");
-                    return;
-                }
-                long unreadCount = notificationService.countUnreadNotificationsByUserId(user.getId());
-                request.setAttribute("unreadCount", unreadCount);
-            %>
-
             <!-- Notifications Dropdown -->
             <li class="nav-item dropdown">
                 <a class="nav-link nav-icon" href="/show-notifications">
@@ -242,7 +353,6 @@
                     </c:if>
                 </a>
             </li>
-
 
             <!-- Messages Dropdown -->
             <li class="nav-item dropdown">
@@ -262,6 +372,11 @@
                     <i class="bi bi-person-circle fs-4 me-2"></i>
                     <span class="d-none d-md-block dropdown-toggle ps-2">
                         <%
+                            User user = (User) session.getAttribute("user");
+                            if (user == null || user.getId() == null) {
+                                response.sendRedirect("login.jsp");
+                                return;
+                            }
                             String sellerName = user.getFirstName() + " " + user.getLastName();
                         %>
                         <%= sellerName %>
@@ -281,8 +396,8 @@
                 </ul>
             </li>
         </ul>
-    </nav><!-- End Icons Navigation -->
-</header><!-- End Header -->
+    </nav>
+</header>
 
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
@@ -295,6 +410,7 @@
 </aside>
 
 <%
+    // Retrieve categories and seller shops
     CategoryService categoryService = new CategoryService();
     List<Category> categories = categoryService.getAllCategories();
     request.setAttribute("categories", categories);
@@ -302,11 +418,14 @@
     ShopService shopService = new ShopService();
     List<Shop> sellerShops = shopService.getShopsBySeller(user);
     request.setAttribute("sellerShops", sellerShops);
+
+    // Retrieve seller's products
+    ProductService productService = new ProductService();
+    List<Product> sellerProducts = productService.getProductsBySeller(user);
+    request.setAttribute("sellerProducts", sellerProducts);
 %>
 
-<div class="container">
-    <h3>Add Product</h3>
-
+<div class="container add-product-margin">
     <form action="/app/seller/addProductServlet" method="post" enctype="multipart/form-data">
         <div class="form-row">
             <div class="form-col">
@@ -370,6 +489,31 @@
         </div>
         <button type="submit" class="btn btn-success mt-3">Add Product</button>
     </form>
+</div>
+
+<div class="container my-products-margin">
+    <h3>My Products</h3>
+    <div class="row">
+        <%
+            List<Product> products = productService.getProductsBySeller(user);
+            for (Product product : products) {
+        %>
+        <div class="col-md-4">
+            <div class="product-card">
+                <img src="<%= product.getImages() %>" alt="<%= product.getName() %>">
+                <div class="card-body">
+                    <h5 class="card-title"><%= product.getName() %></h5>
+                    <p class="card-text"><%= product.getDescription() %></p>
+                    <p class="card-price">$<%= product.getPrice() %></p>
+                    <a href="/editProduct.jsp?id=<%= product.getId() %>" class="btn btn-primary">Edit</a>
+                    <a href="/deleteProductServlet?id=<%= product.getId() %>" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+        <%
+            }
+        %>
+    </div>
 </div>
 
 <script>

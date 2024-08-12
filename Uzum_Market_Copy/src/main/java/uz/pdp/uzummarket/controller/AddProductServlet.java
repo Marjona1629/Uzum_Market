@@ -6,6 +6,8 @@ import uz.pdp.uzummarket.entities.Category;
 import uz.pdp.uzummarket.entities.Product;
 import uz.pdp.uzummarket.entities.Shop;
 import uz.pdp.uzummarket.entities.User;
+import uz.pdp.uzummarket.enums.Role;
+import uz.pdp.uzummarket.enums.Status;
 import uz.pdp.uzummarket.repositories.NotificationRepository;
 import uz.pdp.uzummarket.service.NotificationService;
 import uz.pdp.uzummarket.service.ProductService;
@@ -16,23 +18,39 @@ import jakarta.servlet.annotation.WebServlet;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
-@WebServlet(urlPatterns = {"/app/seller/addProductServlet"})
+@WebServlet("/app/seller/addProductServlet")
 @MultipartConfig
 public class AddProductServlet extends HttpServlet {
     private final ProductService productService = new ProductService();
     private final CategoryService categoryService = new CategoryService();
     private final ShopService shopService = new ShopService();
-
-    final NotificationService notificationService = new NotificationService(new NotificationRepository());
+    private final NotificationService notificationService = new NotificationService(new NotificationRepository());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");
 
-        long unreadCount = notificationService.countUnreadNotificationsByUserId(user.getId());
+        List<Product> products = productService.getProductsBySeller(user);
+        req.setAttribute("products", products);
+
+        long unreadCount = notificationService.countUnreadNotificationsByUserId(user != null ? user.getId() : 0);
         req.setAttribute("unreadCount", unreadCount);
+
+        req.getRequestDispatcher("/addProduct.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("user");
+
+        if (user == null || !user.getRole().equals(Role.SELLER)) {
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged in or not authorized.");
+            return;
+        }
 
         String name = req.getParameter("productName");
         String description = req.getParameter("productDescription");
@@ -97,10 +115,9 @@ public class AddProductServlet extends HttpServlet {
             String imageFileName = filePart.getSubmittedFileName();
             String realPath = getServletContext().getRealPath("/images/");
 
-            System.out.println("Realpath:" + realPath);
-
-            if(realPath == null){
-                req.getRequestDispatcher("addProduct.jsp").forward(req, resp);
+            if (realPath == null) {
+                req.setAttribute("error", "Image path not found.");
+                req.getRequestDispatcher("/addProduct.jsp").forward(req, resp);
                 return;
             }
 
@@ -108,8 +125,8 @@ public class AddProductServlet extends HttpServlet {
             if (!dir.exists()) {
                 boolean dirCreated = dir.mkdirs();
                 if (!dirCreated) {
-                    req.setAttribute("error", "Failed to create the directory for image uploads.");
-                    req.getRequestDispatcher("addProduct.jsp").forward(req, resp);
+                    req.setAttribute("error", "Failed to create directory for image uploads.");
+                    req.getRequestDispatcher("/addProduct.jsp").forward(req, resp);
                     return;
                 }
             }
@@ -130,7 +147,7 @@ public class AddProductServlet extends HttpServlet {
 
             productService.createProduct(product);
 
-            resp.sendRedirect(req.getContextPath() + "/seller.jsp");
+            resp.sendRedirect(req.getContextPath() + "/addProduct.jsp");
         } else {
             req.setAttribute("error", "Product image is required.");
             req.getRequestDispatcher("/addProduct.jsp").forward(req, resp);

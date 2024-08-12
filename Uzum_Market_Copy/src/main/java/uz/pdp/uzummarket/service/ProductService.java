@@ -1,10 +1,16 @@
 package uz.pdp.uzummarket.service;
 
 import jakarta.transaction.Transactional;
+import lombok.SneakyThrows;
 import uz.pdp.uzummarket.entities.Product;
 import uz.pdp.uzummarket.entities.User;
 import uz.pdp.uzummarket.repositories.ProductRepository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductService {
@@ -23,7 +29,7 @@ public class ProductService {
         return productRepository.delete(product);
     }
 
-    public Product getProductById(int id) {
+    public Product getProductById(Integer id) {
         return productRepository.get(id);
     }
 
@@ -52,6 +58,7 @@ public class ProductService {
         return productRepository.findProductsByName(name);
     }
 
+    @SneakyThrows
     public List<Product> getProductsBySeller(User user) {
         return productRepository.findProductsBySeller(user);
     }

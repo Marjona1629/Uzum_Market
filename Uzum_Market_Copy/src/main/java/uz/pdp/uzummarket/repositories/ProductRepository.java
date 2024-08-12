@@ -2,26 +2,40 @@ package uz.pdp.uzummarket.repositories;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import jakarta.transaction.Transactional;
 import uz.pdp.uzummarket.entities.Product;
 import uz.pdp.uzummarket.entities.Shop;
 import uz.pdp.uzummarket.entities.User;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 public class ProductRepository implements BaseRepository<Product> {
+
+    private final ShopRepository shopRepository = new ShopRepository();
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("HIBERNATE-UNIT");
     private final EntityManager entityManager = entityManagerFactory.createEntityManager();
 
     @Transactional
     @Override
     public void save(Product product) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(product);
-        entityManager.getTransaction().commit();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.persist(product);
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            transaction.commit();
+        }
     }
+
 
     @Transactional
     @Override
@@ -100,18 +114,15 @@ public class ProductRepository implements BaseRepository<Product> {
 
     @Transactional
     public List<Product> findProductsBySeller(User user) {
-        List<Shop> shops = entityManager.createQuery(
-                        "SELECT s FROM Shop s WHERE s.owner = :owner", Shop.class)
-                .setParameter("owner", user)
-                .getResultList();
+        if (user == null) {
+            return Collections.emptyList();
+        }
+        List<Shop> shops = shopRepository.getSellerShops(user);
 
-        List<Integer> shopIds = shops.stream()
-                .map(Shop::getId)
-                .collect(Collectors.toList());
-
-        return entityManager.createQuery(
-                        "SELECT p FROM Product p WHERE p.shop.id IN :shopIds", Product.class)
-                .setParameter("shopIds", shopIds)
-                .getResultList();
+        List<Product> products = new ArrayList<>();
+        for (Shop shop : shops) {
+            products.addAll(shop.getProducts());
+        }
+        return products;
     }
 }
