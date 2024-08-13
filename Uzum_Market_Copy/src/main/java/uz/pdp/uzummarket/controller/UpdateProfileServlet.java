@@ -4,7 +4,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import uz.pdp.uzummarket.entities.User;
-import uz.pdp.uzummarket.enums.Role;
 import uz.pdp.uzummarket.service.UserService;
 
 import java.io.IOException;
@@ -43,11 +42,13 @@ public class UpdateProfileServlet extends HttpServlet {
 
             if (isUpdated) {
                 session.setAttribute("user", user);
-                if (user.getRole().equals(Role.SELLER)){
-                    response.sendRedirect("/seller-profile.jsp");
-                } else if (user.getRole().equals(Role.CUSTOMER)){
+
+                if ("ADMIN".equalsIgnoreCase(String.valueOf(user.getRole()))) {
+                    response.sendRedirect(request.getContextPath() + "/adminprofile.jsp");
+                } else {
                     response.sendRedirect(request.getContextPath() + "/profile.jsp");
                 }
+
             } else {
                 request.setAttribute("errorMessage", "Failed to update profile.");
                 request.getRequestDispatcher("/profile.jsp").forward(request, response);

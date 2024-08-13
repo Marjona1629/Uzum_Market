@@ -83,7 +83,6 @@
                     <img src="<%= userGender.equalsIgnoreCase("female") ? "https://bootdey.com/img/Content/avatar/avatar3.png" : "https://bootdey.com/img/Content/avatar/avatar6.png" %>" alt="Profile Picture" class="profile-image">
                     <h4 class="mt-3"><%= fullName %></h4>
                     <p class="text-muted font-size-sm"><%= userAddress %></p>
-                    <a href="edit-profile.jsp" class="btn btn-info">Edit Profile</a>
                 </div>
 
                 <div class="col-md-8">

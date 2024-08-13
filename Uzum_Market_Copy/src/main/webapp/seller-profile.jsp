@@ -1,13 +1,5 @@
-<%@ page import="java.util.List" %>
-<%@ page import="uz.pdp.uzummarket.service.CategoryService" %>
-<%@ page import="uz.pdp.uzummarket.entities.Category" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="uz.pdp.uzummarket.entities.User" %>
-<%@ page import="java.sql.Connection" %>
-<%@ page import="java.sql.Statement" %>
-<%@ page import="java.sql.ResultSet" %>
-<%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
-<%@ page import="java.sql.SQLException" %>
 <%@ page import="uz.pdp.uzummarket.service.NotificationService" %>
 <%@ page import="uz.pdp.uzummarket.repositories.NotificationRepository" %>
 <!DOCTYPE html>
@@ -19,6 +11,7 @@
     <title>Seller Dashboard</title>
     <link rel="stylesheet" href="styles.css">
 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Favicons -->
@@ -321,7 +314,7 @@
 </aside>
 
 <form action="/app/updateProfile" method="post">
-    <%if (user != null) {
+    <% if (user != null) {
         String userGender = user.getGender();
         String femaleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar3.png";
         String maleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar6.png";
@@ -416,6 +409,8 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- City Select -->
                     <div class="row mt-3">
                         <div class="col-md-12">
                             <label class="labels">City</label>
@@ -424,6 +419,8 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Gender Select -->
                     <div class="row mt-3">
                         <div class="col-md-12">
                             <label class="labels">Gender</label>
@@ -435,7 +432,7 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-12 text-center">
-                            <button type="submit" class="btn-primary">Update Profile</button>
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
                         </div>
                     </div>
                 </div>

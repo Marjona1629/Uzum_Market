@@ -1,7 +1,3 @@
-
-<%@ page import="java.util.List" %>
-<%@ page import="uz.pdp.uzummarket.service.CategoryService" %>
-<%@ page import="uz.pdp.uzummarket.entities.Category" %>
 <%@ page import="uz.pdp.uzummarket.entities.User" %>
 <!DOCTYPE html>
 <html lang="en">

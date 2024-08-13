@@ -14,8 +14,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-@WebServlet("/createCategoryServlet")
+@WebServlet(name = "createcategory",value = "/app/admin/createcategory")
 public class CreateCategoryServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("/create-category.jsp").forward(req, resp);
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String categoryName = request.getParameter("categoryName");
         Connection con = null;
@@ -51,4 +57,3 @@ public class CreateCategoryServlet extends HttpServlet {
         }
     }
 }
-

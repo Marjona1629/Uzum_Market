@@ -1,23 +1,32 @@
+<%@ page import="java.sql.*, javax.sql.*" %>
+<%@ page import="java.text.DecimalFormat" %>
 <%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
 <%@ page import="java.sql.*" %>
+<%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
+<%@ page import="java.text.DecimalFormat" %>
+<%@ page import="uz.pdp.uzummarket.entities.User" %>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta charset="UTF-8">
+    <meta name="description" content="Uzum Market">
+    <meta name="keywords" content="html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <title>ADMIN</title>
-    <meta content="" name="description">
-    <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="/admin-assets/img/favicon.png" rel="icon">
-    <link href="/admin-assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="/admin-assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="/admin-assets/img/favicon.png" >
+    <link rel="stylesheet" href="/admin-assets/img/apple-touch-icon.png" >
 
     <!-- Google Fonts -->
-    <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.gstatic.com" >
+    <link rel="stylesheet"href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" >
 
     <!-- Vendor CSS Files -->
     <link href="/admin-assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -29,7 +38,6 @@
     <link href="/admin-assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
     <!-- Template Main CSS File -->
-    <link href="/admin-assets/css/style.css" rel="stylesheet">
 
 </head>
 
@@ -40,7 +48,7 @@
 
     <div class="d-flex align-items-center justify-content-between">
         <a href="index.html" class="logo d-flex align-items-center">
-            <img src="admin-assets/img/logo.png" alt="">
+            <img src="/admin-assets/img/logo.png" alt="">
             <span class="d-none d-lg-block">ADMIN</span>
         </a>
         <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -219,15 +227,16 @@
 
                     // Assuming there is only one admin in your system, LIMIT 1 is used
                     if (rs.next()) {
-                        String adminFirstName = rs.getString("first_name");
-                        String adminLastName = rs.getString("last_name");
+                        String adminUsername = rs.getString("username");
+                        String adminLastName = rs.getString("lastname");
+                        String adminFirstName = rs.getString("firstname");
                         String adminRole = rs.getString("role");
             %>
 
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                     <i class="bi bi-person-circle fs-4 me-2"></i> <!-- Admin Icon -->
-                    <span class="d-none d-md-block dropdown-toggle ps-2"><%= adminFirstName %> <%= adminLastName %></span>
+                    <span class="d-none d-md-block dropdown-toggle ps-2"><%= adminUsername %></span>
                 </a><!-- End Profile Image Icon -->
 
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
@@ -240,7 +249,7 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="adminprofile.jsp">
+                        <a class="dropdown-item d-flex align-items-center" href="/app/admin/adminprofile">
                             <i class="bi bi-person"></i>
                             <span>My Profile</span>
                         </a>
@@ -250,7 +259,7 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="coming-soon.jsp">
+                        <a class="dropdown-item d-flex align-items-center" href="/app/admin/comingsoon">
                             <i class="bi bi-gear"></i>
                             <span>Account Settings</span>
                         </a>
@@ -260,7 +269,7 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="logout.jsp">
+                        <a class="dropdown-item d-flex align-items-center" href="/logout">
                             <i class="bi bi-box-arrow-right"></i>
                             <span>Sign Out</span>
                         </a>
@@ -282,7 +291,8 @@
         </ul>
     </nav><!-- End Icons Navigation -->
 
-</header><!-- End Header -->
+</header>
+<!-- End Header -->
 
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar">
@@ -290,41 +300,41 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="admin.jsp">
+            <a class="nav-link collapsed" href="/app/admin/dashboard">
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>
             </a>
         </li><!-- End Dashboard Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="show-sellers.jsp">
+            <a class="nav-link collapsed" href="/app/admin/showseller">
                 <i class="bi bi-menu-button-wide"></i>
                 <span>Show Sellers</span>
             </a>
         </li><!-- End Show Sellers Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="register-seller.jsp">
+            <a class="nav-link collapsed" href="/app/admin/registerseller">
                 <i class="bi bi-receipt"></i>
                 <span>Register Seller</span>
             </a>
         </li><!-- End Register Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="manage-user.jsp">
+            <a class="nav-link collapsed" href="/app/admin/manageusers">
                 <i class="bi bi-controller"></i>
                 <span>Manage Users</span>
             </a>
         </li><!-- End Manage Users Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="create-category.jsp">
+            <a class="nav-link collapsed" href="/app/admin/createcategory">
                 <i class="bi bi-database-fill-add"></i>
                 <span>Add Category</span>
             </a>
         </li><!-- End Profile Nav -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="setting.jsp">
+            <a class="nav-link collapsed" href="/app/admin/settings">
                 <i class="ri-settings-3-line"></i>
                 <span>Settings</span>
             </a>
@@ -335,89 +345,171 @@
 </aside><!-- End Sidebar -->
 
 
-<main id="main" class="main">
-    <!-- Profile -->
-    <section class="section profile">
+<!-- Hero Section End -->
+<form action="/app/updateProfile" method="post">
+    <%
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            String userGender = user.getGender();
+            String femaleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar3.png";
+            String maleAvatarUrl = "https://bootdey.com/img/Content/avatar/avatar6.png";
+    %>
+
+    <div class="container profile-container rounded bg-white mt-5 mb-5" style="max-width: 1000px">
         <div class="row">
-            <div class="col-xl-4">
-                <div class="card">
-                    <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-                        <img
-                                style="width: 200px"
-                                src="<%= request.getAttribute("adminGender").equals("Female") ? "admin-assets/img/female.png" : "admin-assets/img/male.png" %>"
-                                alt="Profile"
-                                class="rounded-circle"
-                        >
-                        <h2><%= request.getAttribute("adminFirstName") %> <%= request.getAttribute("adminLastName") %></h2>
-                        <!-- Display admin's job title or role here if available -->
-                        <div class="social-links mt-2">
-                            <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
-                            <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-                            <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-                            <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
-                        </div>
-                    </div>
+            <div class="col-md-3 border-right">
+                <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                    <img
+                            class="rounded-circle mt-5"
+                            width="150px"
+                            src="<%= userGender != null && userGender.equalsIgnoreCase("female") ? femaleAvatarUrl : maleAvatarUrl %>"
+                            alt="Profile Picture"
+                    >
+                    <br>
+                    <span class="font-weight-bold"><%= user.getUsername() %></span>
                 </div>
             </div>
+            <div class="col-md-9 border-right">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Profile Settings</h4>
+                    </div>
+                    <form action="updateProfile" method="post">
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <label class="labels">First Name</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter First Name"
+                                        name="firstName"
+                                        value="<%= user.getFirstName() != null ? user.getFirstName() : "" %>"                            >
+                            </div>
+                            <div class="col-md-6">
+                                <label class="labels">Last Name</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter Last Name"
+                                        name="lastName"
+                                        value="<%= user.getLastName() != null ? user.getLastName() : "" %>"                            >
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Email</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Email ID"
+                                        name="email"
+                                        value="<%= user.getEmail() %>"
+                                >
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Phone Number</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter Phone Number"
+                                        name="phone"
+                                        value="<%= user.getPhone() != null ? user.getPhone() : "" %>">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Address</label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter Address Line 1"
+                                        name="address"
+                                        value="<%= user.getAddress() != null ? user.getAddress() : "" %>">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Country</label>
+                                <select name="country" id="country" class="form-control">
+                                    <option value="" <%= user.getState() == null ? "selected" : "" %>>Select Country...</option>
+                                    <option value="USA" <%= "USA".equals(user.getState()) ? "selected" : "" %>>USA</option>
+                                    <option value="Canada" <%= "Canada".equals(user.getState()) ? "selected" : "" %>>Canada</option>
+                                    <option value="UK" <%= "UK".equals(user.getState()) ? "selected" : "" %>>UK</option>
+                                    <option value="Australia" <%= "Australia".equals(user.getState()) ? "selected" : "" %>>Australia</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">City</label>
+                                <select name="city" id="city" class="form-control">
+                                    <option value="" <%= user.getCity() == null ? "selected" : "" %>>Select City...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="labels">Gender</label>
+                                <select name="gender" class="form-control">
+                                    <option value="male" <%= "male".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Male</option>
+                                    <option value="female" <%= "female".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Female</option>
+                                    <option value="other" <%= "other".equalsIgnoreCase(user.getGender()) ? "selected" : "" %>>Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-5 text-center">
+                            <button class="btn btn-primary profile-button" type="submit">Save Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <div class="col-xl-8">
-                <div class="card">
-                    <div class="card-body pt-3">
-                        <div class="tab-content pt-2">
-                            <div class="tab-pane fade show active profile-overview" id="profile-overview">
-                                <h5 class="card-title">Profile Details</h5>
+    <% } else { %>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="alert alert-warning text-center" role="alert">
+                    User not found. Please <a href="/login" class="alert-link">Login</a> again.
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+</form>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const countrySelect = document.getElementById('country');
+        const citySelect = document.getElementById('city');
 
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Full Name</div>
-                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminFirstName") %> <%= request.getAttribute("adminLastName") %></div>
-                                </div>
+        const citiesByCountry = {
+            "USA": ["New York", "Los Angeles", "Chicago", "Houston"],
+            "Canada": ["Toronto", "Vancouver", "Montreal", "Calgary"],
+            "UK": ["London", "Manchester", "Birmingham", "Leeds"],
+            "Australia": ["Sydney", "Melbourne", "Brisbane", "Perth"]
+        };
 
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Email</div>
-                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminEmail") %></div>
-                                </div>
+        function updateCities() {
+            const selectedCountry = countrySelect.value;
+            const cities = citiesByCountry[selectedCountry] || [];
 
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Phone</div>
-                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminPhone") %></div>
-                                </div>
+            citySelect.innerHTML = '<option value="">Select City...</option>';
 
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Gender</div>
-                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminGender") %></div>
-                                </div>
+            cities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            });
+        }
 
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Date Joined</div>
-                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminDateTime") %></div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Address</div>
-                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminAddress") %></div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">City</div>
-                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminCity") %></div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">State</div>
-                                    <div class="col-lg-9 col-md-8"><%= request.getAttribute("adminState") %></div>
-                                </div>
-
-                            </div><!-- End Profile Overview -->
-
-                        </div><!-- End Tab Content -->
-                    </div><!-- End Card Body -->
-                </div><!-- End Card -->
-            </div><!-- End Col -->
-        </div><!-- End Row -->
-    </section><!-- End Profile Section -->
-
-</main><!-- End #main -->
-
+        countrySelect.addEventListener('change', updateCities);
+        updateCities();
+    });
+</script>
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->

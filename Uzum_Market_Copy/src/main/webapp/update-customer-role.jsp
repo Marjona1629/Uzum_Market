@@ -11,7 +11,7 @@
     if (userId != null && !userId.isEmpty()) {
         try {
             Connection con = DBConnection.getConnection();
-            String updateQuery = "UPDATE users SET isDeleted = TRUE WHERE user_id = ?";
+            String updateQuery = "UPDATE users SET isDeleted = TRUE WHERE id = ?";
             PreparedStatement pstmt = con.prepareStatement(updateQuery);
             pstmt.setInt(1, Integer.parseInt(userId));
             int rowsAffected = pstmt.executeUpdate();

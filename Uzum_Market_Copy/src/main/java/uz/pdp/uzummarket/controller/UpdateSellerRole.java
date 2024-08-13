@@ -1,17 +1,18 @@
 package uz.pdp.uzummarket.controller;
 
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
-@WebServlet(name = "ADMIN",urlPatterns = {"/app/admin/main"})
-public class AdminServlet extends HttpServlet {
+@WebServlet(name = "updatesellerrole",value = "/app/admin/updatesellerrole")
+public class UpdateSellerRole extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/admin.jsp").forward(req, resp);
+        req.getRequestDispatcher("/update-seller-role.jsp").forward(req, resp);
     }
 }

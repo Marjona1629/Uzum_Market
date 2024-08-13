@@ -17,7 +17,7 @@
             PreparedStatement pstmt = null;
 
             if (action.equals("block")) {
-                pstmt = con.prepareStatement("UPDATE users SET status = CASE WHEN status = 'ACTIVE' THEN 'BLOCKED' ELSE 'ACTIVE' END WHERE user_id = ?");
+                pstmt = con.prepareStatement("UPDATE users SET status = CASE WHEN status = 'ACTIVE' THEN 'BLOCKED' ELSE 'ACTIVE' END WHERE id = ?");
                 pstmt.setInt(1, Integer.parseInt(userId));
                 int rowsAffected = pstmt.executeUpdate();
 
@@ -35,7 +35,7 @@
                     message = "No rows affected. User ID may not exist.";
                 }
             } else if (action.equals("unblock")) {
-                pstmt = con.prepareStatement("UPDATE users SET status = 'ACTIVE' WHERE user_id = ?");
+                pstmt = con.prepareStatement("UPDATE users SET status = 'ACTIVE' WHERE id = ?");
                 pstmt.setInt(1, Integer.parseInt(userId));
                 int rowsAffected = pstmt.executeUpdate();
 
@@ -69,7 +69,7 @@
 
 <%!
     private String getStatusForUser(int userId, Connection con) throws SQLException {
-        PreparedStatement stmt = con.prepareStatement("SELECT status FROM users WHERE user_id = ?");
+        PreparedStatement stmt = con.prepareStatement("SELECT status FROM users WHERE id = ?");
         stmt.setInt(1, userId);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {

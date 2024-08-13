@@ -9,8 +9,13 @@ import uz.pdp.uzummarket.service.UserService;
 
 import java.io.IOException;
 
-@WebServlet("/registerSellerServlet")
-public class RegisterSellerServlet extends HttpServlet {
+@WebServlet(name = "registerseller",value = "/app/admin/registerseller")
+public class RegisterSellerSevlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("/register-seller.jsp").forward(req, resp);
+    }
+
     UserService userService =  UserService.getInstance();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

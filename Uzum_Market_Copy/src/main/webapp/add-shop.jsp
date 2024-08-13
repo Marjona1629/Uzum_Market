@@ -298,7 +298,6 @@
         System.out.println("Number of shops: " + (sellerShops != null ? sellerShops.size() : "0"));
 %>
 
-
 <main id="main" class="main">
     <div class="pagetitle">
         <h1>Your Shops</h1>

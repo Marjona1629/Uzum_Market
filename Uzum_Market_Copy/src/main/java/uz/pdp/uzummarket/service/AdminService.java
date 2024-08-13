@@ -13,15 +13,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AdminService {
 
-    private static AdminRepository adminRepository = new AdminRepository();
+    private static final AdminRepository adminRepository = new AdminRepository();
     private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("uzummarket");
     private static AdminService instance;
 
-    public AdminService() { }
+    private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
+    private AdminService() { }
 
     public static synchronized AdminService getInstance() {
         if (instance == null) {
@@ -114,11 +118,21 @@ public class AdminService {
     }
 
     public String formatPercentage(double percentage) {
-        DecimalFormat df = new DecimalFormat("#.##");
-        return df.format(Math.abs(percentage)) + "%";
+        return decimalFormat.format(Math.abs(percentage)) + "%";
     }
 
-    public List<Shop> displayDashboard() {
+    public String getFormattedPercentageChange(int current, int previous) {
+        double percentageChange = calculatePercentageChange(current, previous);
+        DecimalFormat df = new DecimalFormat("0.00");
+        return df.format(Math.abs(percentageChange)) + "%";
+    }
+
+    public String getPercentageChangeText(int currentYearValue, int previousYearValue) {
+        return calculatePercentageChange(currentYearValue, previousYearValue) < 0 ? "decrease" : "increase";
+    }
+
+    public Map<String, Object> displayDashboard() {
+        Map<String, Object> dashboardData = new HashMap<>();
         List<Shop> shopList = new ArrayList<>();
         try {
             // Fetch totals and percentages if needed
@@ -153,12 +167,43 @@ public class AdminService {
                 shopList.add(shop);
             }
 
+            dashboardData.put("totalCustomers", totalCustomers);
+            dashboardData.put("previousYearCustomers", previousYearCustomers);
+            dashboardData.put("percentageChangeCustomers", percentageChangeCustomers);
+            dashboardData.put("formattedPercentageChangeCustomers", formattedPercentageChangeCustomers);
+
+            dashboardData.put("totalSellers", totalSellers);
+            dashboardData.put("previousYearSellers", previousYearSellers);
+            dashboardData.put("percentageChangeSellers", percentageChangeSellers);
+            dashboardData.put("formattedPercentageChangeSellers", formattedPercentageChangeSellers);
+
+            dashboardData.put("totalShops", totalShops);
+            dashboardData.put("previousYearShops", previousYearShops);
+            dashboardData.put("percentageChangeShops", percentageChangeShops);
+            dashboardData.put("formattedPercentageChangeShops", formattedPercentageChangeShops);
+
+            dashboardData.put("shopList", shopList);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return shopList;
+        return dashboardData;
     }
+    public List<User> getCustomers() {
+        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        List<User> customers = new ArrayList<>();
 
-//    public List<Shop> getSellerShops(String sellerId) {
-//    }
+        try {
+            String jpql = "SELECT u FROM User u WHERE u.role = :role";
+            TypedQuery<User> query = entityManager.createQuery(jpql, User.class);
+            query.setParameter("role", Role.CUSTOMER); // Use Role.CUSTOMER enum
+            customers = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
+        }
+
+        return customers;
+    }
 }

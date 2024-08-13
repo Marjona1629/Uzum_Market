@@ -1,8 +1,5 @@
-<%@ page import="java.sql.Connection" %>
-<%@ page import="java.sql.ResultSet" %>
-<%@ page import="java.sql.SQLException" %>
-<%@ page import="java.sql.Statement" %>
 <%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
+<%@ page import="java.sql.*" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -49,41 +46,44 @@
                         String userCity = "";
                         String userState = "";
                         String userStatus = "";
+                        String profileImage = "https://bootdey.com/img/Content/avatar/avatar6.png";
 
                         String userIdParam = request.getParameter("user_id");
                         if (userIdParam != null && !userIdParam.isEmpty()) {
                             userId = Integer.parseInt(userIdParam);
-                        } else {
-                            fullName = "User ID not provided";
-                            userAddress = "Address not found";
+
+                            try (Connection connection = DBConnection.getConnection();
+                                 Statement statement = connection.createStatement();
+                                 ResultSet resultSet = statement.executeQuery("SELECT * FROM users WHERE id = " + userId)) {
+
+                                if (resultSet.next()) {
+                                    fullName = resultSet.getString("firstname") + " " + resultSet.getString("lastname");
+                                    userEmail = resultSet.getString("email");
+                                    userPhone = resultSet.getString("phone");
+                                    userAddress = resultSet.getString("address");
+                                    userGender = resultSet.getString("gender");
+                                    userCity = resultSet.getString("city");
+                                    userState = resultSet.getString("state");
+                                    userStatus = resultSet.getString("status");
+
+                                    // Set profile image based on gender
+                                    if ("female".equalsIgnoreCase(userGender)) {
+                                        profileImage = "https://bootdey.com/img/Content/avatar/avatar3.png";
+                                    }
+                                } else {
+                                    fullName = "User not found";
+                                }
+                            } catch (SQLException e) {
+                                fullName = "Error retrieving user data";
+                                userAddress = "Error retrieving address";
+                                e.printStackTrace(); // Logs the stack trace for debugging
+                            }
                         }
 
-                        try {
-                            Connection connection = DBConnection.getConnection();
-                            Statement statement = connection.createStatement();
-                            ResultSet resultSet = statement.executeQuery("SELECT * FROM users WHERE user_id = " + userId);
-                            if (resultSet.next()) {
-                                fullName = resultSet.getString("first_name") + " " + resultSet.getString("last_name");
-                                userEmail = resultSet.getString("user_email");
-                                userPhone = resultSet.getString("user_phone");
-                                userAddress = resultSet.getString("user_address");
-                                userGender = resultSet.getString("user_gender");
-                                userCity = resultSet.getString("user_city");
-                                userState = resultSet.getString("user_state");
-                                userStatus = resultSet.getString("status");
-                            } else {
-                                fullName = "User not found";
-                            }
-                        } catch (SQLException e) {
-                            fullName = "Error retrieving user data";
-                            userAddress = "Error retrieving address";
-                            e.printStackTrace(); // This will print the stack trace to the server logs for debugging
-                        }
                     %>
-                    <img src="<%= userGender.equalsIgnoreCase("female") ? "https://bootdey.com/img/Content/avatar/avatar3.png" : "https://bootdey.com/img/Content/avatar/avatar6.png" %>" alt="Profile Picture" class="profile-image">
+                    <img src="<%= profileImage %>" alt="Profile Picture" class="profile-image">
                     <h4 class="mt-3"><%= fullName %></h4>
                     <p class="text-muted font-size-sm"><%= userAddress %></p>
-                    <a href="edit-profile.jsp" class="btn btn-info">Edit Profile</a>
                 </div>
 
                 <div class="col-md-8">
@@ -138,7 +138,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-12">
-                    <h2 style="margin-left: 385px">Seller Shop List</h2>
+                    <h2 style="text-align: center;">Seller Shop List</h2>
                     <div class="alert alert-success" id="success-alert" style="display: none;"></div>
                     <div class="alert alert-danger" id="error-alert" style="display: none;"></div>
                     <div class="table-responsive">
@@ -155,23 +155,32 @@
                             </thead>
                             <tbody>
                             <%
-                                int shopId = 0;
-                                String shopName = null;
-                                String description = null;
-                                String address = null;
-                                String status = null;
+                                int shopId;
+                                String shopName;
+                                String description;
+                                String address;
+                                String status;
+
+                                Connection connection = null;
+                                PreparedStatement statement = null;
+                                ResultSet shopResultSet = null;
 
                                 try {
-                                    Connection connection = DBConnection.getConnection();
-                                    Statement statement = connection.createStatement();
-                                    ResultSet shopResultSet = statement.executeQuery("SELECT * FROM sellers_shop ss JOIN shops s ON ss.shop_id = s.id WHERE ss.seller_id = " + userId);
+                                    connection = DBConnection.getConnection();
+                                    String query = "SELECT * FROM shops WHERE owner_id = ?";
+                                    statement = connection.prepareStatement(query);
+                                    statement.setInt(1, userId); // Set the userId from the earlier code
+                                    shopResultSet = statement.executeQuery();
+
+                                    boolean hasResults = false; // Flag to check if any results were found
+
                                     while (shopResultSet.next()) {
-                                        shopId = shopResultSet.getInt("shop_id");
+                                        hasResults = true; // Data found
+                                        shopId = shopResultSet.getInt("id");
                                         shopName = shopResultSet.getString("name");
                                         description = shopResultSet.getString("description");
                                         address = shopResultSet.getString("address");
                                         status = shopResultSet.getString("status");
-
                             %>
                             <tr>
                                 <td><%= shopId %></td>
@@ -180,15 +189,33 @@
                                 <td><%= address %></td>
                                 <td><%= status %></td>
                                 <td>
-                                    <a href="show-shop-productslist.jsp?shop_id=<%= shopId %>" class="btn btn-secondary" style="background-color: green">Products</a>
+                                    <a href="/app/admin/shopproducts?id=<%= shopId %>" class="btn btn-secondary" style="background-color: green">Products</a>
                                 </td>
                             </tr>
                             <%
-                                    }
-                                } catch (SQLException e) {
-                                    e.printStackTrace();
+                                }
+
+                                if (!hasResults) {
+                            %>
+                            <tr>
+                                <td colspan="6">No shops found for this seller.</td>
+                            </tr>
+                            <%
+                                }
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            %>
+                            <tr>
+                                <td colspan="6">Error fetching shop data.</td>
+                            </tr>
+                            <%
+                                } finally {
+                                    if (shopResultSet != null) try { shopResultSet.close(); } catch (SQLException ignored) {}
+                                    if (statement != null) try { statement.close(); } catch (SQLException ignored) {}
+                                    if (connection != null) try { connection.close(); } catch (SQLException ignored) {}
                                 }
                             %>
+
                             </tbody>
                         </table>
                     </div>

@@ -7,11 +7,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-
-@WebServlet(name = "ADMIN",urlPatterns = {"/app/admin/main"})
-public class AdminServlet extends HttpServlet {
+@WebServlet(name = "manageusers",value = "/app/admin/manageusers")
+public class ManageUsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/admin.jsp").forward(req, resp);
+        req.getRequestDispatcher("/manage-user.jsp").forward(req, resp);
     }
 }

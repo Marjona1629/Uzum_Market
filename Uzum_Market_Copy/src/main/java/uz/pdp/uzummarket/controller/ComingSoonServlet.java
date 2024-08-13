@@ -8,10 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "ADMIN",urlPatterns = {"/app/admin/main"})
-public class AdminServlet extends HttpServlet {
+@WebServlet(name = "comingsoon",value = "/app/admin/comingsoon")
+public class ComingSoonServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/admin.jsp").forward(req, resp);
+        req.getRequestDispatcher("/coming-soon.jsp").forward(req, resp);
     }
 }

@@ -1,60 +1,53 @@
-<%@ page import="java.sql.Connection" %>
-<%@ page import="java.sql.PreparedStatement" %>
-<%@ page import="java.sql.SQLException" %>
+<%@ page import="java.sql.Connection, java.sql.PreparedStatement, java.sql.ResultSet, java.sql.SQLException" %>
 <%@ page import="uz.pdp.uzummarket.util.DBConnection" %>
-<%@ page import="java.sql.ResultSet" %>
 
 <%
-    String userId = request.getParameter("user_id");
-    String action = request.getParameter("action"); // Get action parameter
+    String userId = request.getParameter("id");
+    String action = request.getParameter("action");
     boolean updateSuccess = false;
     String message = "";
     String status = "";
 
     if (userId != null && !userId.isEmpty() && action != null && !action.isEmpty()) {
-        try {
-            Connection con = DBConnection.getConnection();
-            PreparedStatement pstmt = null;
+        try (Connection con = DBConnection.getConnection()) {
+            String query = "";
+            if ("block".equals(action)) {
+                query = "UPDATE users SET status = CASE WHEN status = 'ACTIVE' THEN 'BLOCKED' ELSE 'ACTIVE' END WHERE id = ?";
+                try (PreparedStatement pstmt = con.prepareStatement(query)) {
+                    pstmt.setInt(1, Integer.parseInt(userId));
+                    int rowsAffected = pstmt.executeUpdate();
 
-            if (action.equals("block")) {
-                pstmt = con.prepareStatement("UPDATE users SET status = CASE WHEN status = 'ACTIVE' THEN 'BLOCKED' ELSE 'ACTIVE' END WHERE user_id = ?");
-                pstmt.setInt(1, Integer.parseInt(userId));
-                int rowsAffected = pstmt.executeUpdate();
-
-                if (rowsAffected > 0) {
-                    // Update shop status
-                    PreparedStatement shopPstmt = con.prepareStatement("UPDATE shops SET status = 'BLOCKED' WHERE owner_id = ?");
-                    shopPstmt.setInt(1, Integer.parseInt(userId));
-                    shopPstmt.executeUpdate();
-                    shopPstmt.close();
-
-                    updateSuccess = true;
-                    status = getStatusForUser(Integer.parseInt(userId), con); // Get updated status
-                    message = "Seller and shop status updated successfully!";
-                } else {
-                    message = "No rows affected. User ID may not exist.";
+                    if (rowsAffected > 0) {
+                        // Update shop status
+                        query = "UPDATE shops SET status = 'BLOCKED' WHERE owner_id = ?";
+                        try (PreparedStatement shopPstmt = con.prepareStatement(query)) {
+                            shopPstmt.setInt(1, Integer.parseInt(userId));
+                            shopPstmt.executeUpdate();
+                        }
+                        updateSuccess = true;
+                        status = getStatusForUser(Integer.parseInt(userId), con);
+                        message = "Seller and shop status updated successfully!";
+                    } else {
+                        message = "No rows affected. User ID may not exist.";
+                    }
                 }
-            } else if (action.equals("unblock")) {
-                pstmt = con.prepareStatement("UPDATE users SET status = 'ACTIVE' WHERE user_id = ?");
-                pstmt.setInt(1, Integer.parseInt(userId));
-                int rowsAffected = pstmt.executeUpdate();
+            } else if ("unblock".equals(action)) {
+                query = "UPDATE users SET status = 'ACTIVE' WHERE id = ?";
+                try (PreparedStatement pstmt = con.prepareStatement(query)) {
+                    pstmt.setInt(1, Integer.parseInt(userId));
+                    int rowsAffected = pstmt.executeUpdate();
 
-                if (rowsAffected > 0) {
-                    updateSuccess = true;
-                    status = getStatusForUser(Integer.parseInt(userId), con); // Get updated status
-                    message = "Seller status updated successfully!";
-                } else {
-                    message = "No rows affected. User ID may not exist.";
+                    if (rowsAffected > 0) {
+                        updateSuccess = true;
+                        status = getStatusForUser(Integer.parseInt(userId), con);
+                        message = "Seller status updated successfully!";
+                    } else {
+                        message = "No rows affected. User ID may not exist.";
+                    }
                 }
-            }
-
-            if (pstmt != null) {
-                pstmt.close();
             } else {
                 message = "Invalid action.";
             }
-
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
             message = "SQL Exception: " + e.getMessage();
@@ -69,12 +62,15 @@
 
 <%!
     private String getStatusForUser(int userId, Connection con) throws SQLException {
-        PreparedStatement stmt = con.prepareStatement("SELECT status FROM users WHERE user_id = ?");
-        stmt.setInt(1, userId);
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            return rs.getString("status");
+        String status = "";
+        try (PreparedStatement stmt = con.prepareStatement("SELECT status FROM users WHERE id = ?")) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    status = rs.getString("status");
+                }
+            }
         }
-        return "";
+        return status;
     }
 %>
