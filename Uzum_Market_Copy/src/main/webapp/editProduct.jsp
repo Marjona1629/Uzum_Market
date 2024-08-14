@@ -1,25 +1,29 @@
+<%@ page import="uz.pdp.uzummarket.service.NotificationService" %>
+<%@ page import="uz.pdp.uzummarket.entities.User" %>
+<%@ page import="uz.pdp.uzummarket.repositories.NotificationRepository" %>
+<%@ page import="uz.pdp.uzummarket.entities.Product" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="uz.pdp.uzummarket.service.NotificationService" %>
-<%@ page import="uz.pdp.uzummarket.repositories.NotificationRepository" %>
-<%@ page import="uz.pdp.uzummarket.entities.User" %>
-<%@ page import="uz.pdp.uzummarket.entities.Product" %>
-<%@ page import="uz.pdp.uzummarket.entities.Category" %>
-<%@ page import="java.util.List" %>
-<%@ page import="uz.pdp.uzummarket.entities.Shop" %>
-<%@ page import="uz.pdp.uzummarket.service.ProductService" %>
-<%@ page import="uz.pdp.uzummarket.service.CategoryService" %>
-<%@ page import="uz.pdp.uzummarket.service.ShopService" %>
+<img src="${pageContext.request.contextPath}/images/${product.images}" alt="${product.name}" style="max-width: 200px;"/>
+<img src="https://via.placeholder.com/200" alt="${product.name}" style="max-width: 200px;"/>
 
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
     <title>Edit Product</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="admin-assets/img/favicon.png" rel="icon">
+    <link href="admin-assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
     <!-- Vendor CSS Files -->
     <link href="admin-assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -33,106 +37,177 @@
     <!-- Template Main CSS File -->
     <link href="admin-assets/css/style.css" rel="stylesheet">
 
-    <!-- Favicons -->
-    <link href="admin-assets/img/favicon.png" rel="icon">
-    <link href="admin-assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
     <style>
-        .add-product-margin {
-            margin-top: 20px;
+        /* Overall Container */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
         }
 
-        .form-row {
+        /* Title */
+        .container h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #333;
+        }
+
+        /* Form Container */
+        .form-container {
             display: flex;
-            flex-wrap: wrap;
+            justify-content: space-between;
             gap: 20px;
         }
 
-        .form-col {
+        /* Left Side */
+        .form-left {
             flex: 1;
-            min-width: 300px;
         }
 
+        /* Right Side */
+        .form-right {
+            flex: 1;
+        }
+
+        /* Form Groups */
         .form-group {
             margin-bottom: 15px;
         }
 
-        .form-control {
-            border-radius: 5px;
-            padding: 10px;
-            font-size: 16px;
-            width: 100%;
-        }
-
-        .form-control-file {
+        .form-group label {
             display: block;
-            width: 100%;
-            border-radius: 5px;
-            padding: 10px;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            border: none;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-align: center;
-            display: inline-block;
-            font-size: 16px;
+            margin-bottom: 8px;
             font-weight: 600;
-            text-decoration: none;
-            transition: background-color 0.3s, box-shadow 0.3s;
+            color: #555;
         }
 
-        .btn-primary:hover {
-            background-color: #0056b3;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            box-sizing: border-box;
+            padding: 8px;
         }
 
-        .btn-primary:focus, .btn-primary:active {
-            background-color: #004085;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(38, 143, 255, 0.5);
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select {
+            height: 40px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        /* Image Preview */
+        .image-preview {
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+
+        /* File Input and Buttons */
+        .form-actions {
+            margin-top: 20px;
         }
 
         .custom-file-input {
-            position: relative;
             display: inline-block;
         }
 
         .custom-file-input input[type="file"] {
-            position: absolute;
-            top: 0;
-            right: 0;
-            height: 100%;
-            width: 100%;
-            opacity: 0;
+            display: none;
         }
 
         .custom-file-input label {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            display: inline-block;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Update Product Button */
+        .btn-update {
             display: block;
-            background-color: #f8f9fa;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            padding: 10px;
-            text-align: center;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
             cursor: pointer;
         }
 
-        .file-notification {
-            margin-top: 10px;
-            color: #6c757d;
+        .btn-update:hover {
+            background-color: #45a049;
+        }
+
+        /* Image Preview */
+        .image-preview {
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 5px;
+            display: block; /* Ensure it does not have extra space below */
+            margin: 0 auto; /* Center image */
+        }
+
+        .shift-up {
+            margin-top: -8mm; /* Adjust the value as needed */
+        }
+
+        /* Textarea Styling */
+        .form-group textarea {
+            width: 100%;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+            padding: 8px;
+            resize: vertical; /* Allows users to resize vertically */
+            min-height: 100px; /* Set a minimum height */
+        }
+
+
+        .image-preview {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
         }
     </style>
 </head>
 
 <body>
 
+<!-- ======= Header ======= -->
 <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="d-flex align-items-center justify-content-between">
         <div class="logo d-flex align-items-center">
@@ -153,27 +228,13 @@
         <ul class="d-flex align-items-center">
 
             <%
+                // Assuming you have a method to get unread notifications count
                 NotificationService notificationService = new NotificationService(NotificationRepository.getInstance());
                 User user = (User) session.getAttribute("user");
                 if (user == null || user.getId() == null) {
                     response.sendRedirect("login.jsp");
                     return;
                 }
-
-                ProductService productService = new ProductService();
-                CategoryService categoryService = new CategoryService();
-                ShopService shopService = new ShopService();
-
-                int productId = Integer.parseInt(request.getParameter("id"));
-                Product product = productService.getProductById(productId);
-                List<Category> categories = categoryService.getAllCategories();
-                List<Shop> sellerShops = shopService.getAllShops();
-
-                request.setAttribute("product", product);
-                request.setAttribute("categories", categories);
-                request.setAttribute("sellerShops", sellerShops);
-
-
                 long unreadCount = notificationService.countUnreadNotificationsByUserId(user.getId());
                 request.setAttribute("unreadCount", unreadCount);
             %>
@@ -233,93 +294,156 @@
 
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar">
+
     <ul class="sidebar-nav" id="sidebar-nav">
-        <li class="nav-item"><a class="nav-link collapsed" href="seller.jsp"><i class="bi bi-grid"></i><span>Dashboard</span></a></li><!-- End Dashboard Nav -->
-        <li class="nav-item"><a class="nav-link collapsed" href="addProduct.jsp"><i class="bi bi-menu-button-wide"></i><span>Add Product</span></a></li><!-- End Show Sellers Nav -->
-        <li class="nav-item"><a class="nav-link collapsed" href="add-shop.jsp"><i class="bi bi-receipt"></i><span>Manage Shops</span></a></li>
-        <li class="nav-item"><a class="nav-link collapsed" href="seller-profile.jsp"><i class="bi bi-person"></i><span>Profile</span></a></li>
-        <li class="nav-item"><a class="nav-link collapsed" href="logout.jsp"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a></li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="seller.jsp">
+                <i class="bi bi-grid"></i>
+                <span>Dashboard</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="addProduct.jsp">
+                <i class="bi bi-menu-button-wide"></i>
+                <span>Add Product</span>
+            </a>
+        </li><!-- End Show Sellers Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="add-shop.jsp">
+                <i class="bi bi-receipt"></i>
+                <span>Manage Shops</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="seller-profile.jsp">
+                <i class="bi bi-person"></i>
+                <span>Profile</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="logout.jsp">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+
     </ul>
+
 </aside><!-- End Sidebar -->
 
-<div class="container add-product-margin">
-    <form action="/app/seller/editProductServlet" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="productId" value="${product.id}">
+<%
+    Product product = (Product) request.getAttribute("product");
+    request.setAttribute("product", product);
+%>
 
-        <div class="form-row">
-            <div class="form-col">
+
+<div class="container" style="margin-top: -15mm;">
+    <h2>Edit Product</h2>
+    <form action="/editProduct" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="productId" value="${productId}" />
+
+        <div class="form-container">
+            <!-- Left Side -->
+            <div class="form-left">
                 <div class="form-group">
-                    <label for="productName">Product Name</label>
-                    <input type="text" class="form-control" id="productName" name="productName" placeholder="Product Name" value="${product.name}" required>
+                    <label for="productName">Product Name:</label>
+                    <input type="text" id="productName" name="productName" value="${product.name}" />
                 </div>
+
                 <div class="form-group">
-                    <label for="productDescription">Product Description</label>
-                    <textarea class="form-control" id="productDescription" name="productDescription" placeholder="Product Description" required>${product.description}</textarea>
-                </div>
-                <div class="form-group">
-                    <label for="productPrice">Product Price</label>
-                    <input type="text" class="form-control" id="productPrice" name="productPrice" placeholder="Product Price" value="${product.price}" required>
+                    <label for="productDescription">Product Description:</label>
+                    <textarea id="productDescription" name="productDescription">${product.description}</textarea>
                 </div>
             </div>
-            <div class="form-col">
+
+            <!-- Right Side -->
+            <div class="form-right">
                 <div class="form-group">
-                    <label for="productDiscount">Product Discount</label>
-                    <input type="text" class="form-control" id="productDiscount" name="productDiscount" placeholder="Product Discount" value="${product.discount}">
+                    <label for="productPrice">Product Price:</label>
+                    <input type="number" id="productPrice" name="productPrice" value="${product.price}" step="0.01" />
                 </div>
+
                 <div class="form-group">
-                    <label for="productQuantity">Product Quantity</label>
-                    <input type="number" class="form-control" id="productQuantity" name="productQuantity" placeholder="Product Quantity" value="${product.quantity}" required>
+                    <label for="productDiscount">Product Discount:</label>
+                    <input type="number" id="productDiscount" name="productDiscount" value="${product.discount}" step="0.01" />
                 </div>
+
                 <div class="form-group">
-                    <label for="categoryId">Select Category</label>
-                    <select class="form-control" id="categoryId" name="productCategory" required>
-                        <option value="" disabled>Select Category</option>
+                    <label for="productQuantity">Product Quantity:</label>
+                    <input type="number" id="productQuantity" name="productQuantity" value="${product.quantity}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Product Category:</label>
+                    <select id="category" name="category">
                         <c:forEach var="category" items="${categories}">
-                            <option value="${category.id}" ${product.category.id == category.id ? 'selected' : ''}>${category.name}</option>
+                            <option value="${category.categoryId}"
+                                    <c:if test="${product.category != null && product.category.categoryId == category.categoryId}">selected</c:if>>
+                                    ${category.categoryName}
+                            </option>
                         </c:forEach>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label for="shopId">Select Shop</label>
-                    <select class="form-control" id="shopId" name="productShop" required>
-                        <option value="" disabled>Select Shop</option>
+                    <label for="shop">Product Shop:</label>
+                    <select id="shop" name="shop" >
                         <c:forEach var="shop" items="${sellerShops}">
-                            <option value="${shop.id}" ${product.shop.id == shop.id ? 'selected' : ''}>${shop.name}</option>
+                            <option value="${shop.id}"
+                                    <c:if test="${product.shop != null && product.shop.id == shop.id}">selected</c:if>>
+                                    ${shop.name}
+                            </option>
                         </c:forEach>
                     </select>
                 </div>
             </div>
         </div>
-        <div class="form-group">
-            <label for="productImage">Choose Product Image</label>
-            <div class="custom-file-input">
-                <input type="file" id="productImage" name="productImage">
-                <label for="productImage">Choose Image</label>
-            </div>
-            <c:if test="${not empty product.image}">
-                <div class="current-image mt-2">
-                    <img src="${product.image}" alt="Current Product Image" class="img-thumbnail" style="max-width: 200px;">
+
+        <!-- File Input and Buttons -->
+        <div class="form-actions">
+            <div class="form-group">
+                <label for="productImage">Choose Product Image</label>
+                <div class="custom-file-input">
+                    <input type="file" id="productImage" name="productImage">
+                    <label for="productImage">Choose Image</label>
                 </div>
-            </c:if>
-            <div class="file-notification" id="fileNotification"></div>
+                <div class="file-notification" id="fileNotification"></div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn-update">Update Product</button>
+            </div>
         </div>
-        <button type="submit" class="btn btn-success mt-3">Update Product</button>
     </form>
 </div>
+
+<script>
+    document.getElementById('productImage').addEventListener('change', function() {
+        var notification = document.getElementById('fileNotification');
+        if (this.files.length > 0) {
+            notification.textContent = 'Image selected: ' + this.files[0].name;
+        } else {
+            notification.textContent = '';
+        }
+    });
+</script>
+
+<!-- Vendor JS Files -->
+<script src="admin-assets/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="admin-assets/vendor/chart.js/chart.min.js"></script>
+<script src="admin-assets/vendor/echarts/echarts.min.js"></script>
+<script src="admin-assets/vendor/quill/quill.min.js"></script>
+<script src="admin-assets/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="admin-assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="admin-assets/vendor/php-email-form/validate.js"></script>
 
 <!-- Template Main JS File -->
 <script src="admin-assets/js/main.js"></script>
 
-<!-- Vendor JS Files -->
-<script src="admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="admin-assets/vendor/php-email-form/validate.js"></script>
-<script src="admin-assets/vendor/quill/quill.min.js"></script>
-<script src="admin-assets/vendor/tinymce/tinymce.min.js"></script>
-<script src="admin-assets/vendor/simple-datatables/simple-datatables.js"></script>
-<script src="admin-assets/vendor/chart.js/chart.min.js"></script>
-<script src="admin-assets/vendor/apexcharts/apexcharts.min.js"></script>
-<script src="admin-assets/vendor/echarts/echarts.min.js"></script>
-
 </body>
-
 </html>

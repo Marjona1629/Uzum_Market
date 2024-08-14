@@ -574,7 +574,7 @@
                                     <div class="ps-3">
                                         <h6><%= totalShops %></h6>
                                         <span class="<%= percentageChangeShops < 0 ? "text-danger" : "text-success" %> small pt-1 fw-bold">
-                        <%= df.format(Math.abs(percentageChangeShops)) %>%</span>
+                                            <%= df.format(Math.abs(percentageChangeShops)) %>%</span>
                                         <span class="text-muted small pt-2 ps-1"><%= percentageChangeShops < 0 ? "decrease" : "increase" %></span>
                                     </div>
                                 </div>

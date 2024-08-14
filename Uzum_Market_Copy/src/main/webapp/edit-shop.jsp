@@ -1,8 +1,5 @@
 <%@ page import="uz.pdp.uzummarket.entities.User" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="uz.pdp.uzummarket.entities.Shop" %>
-<%@ page import="uz.pdp.uzummarket.service.ShopService" %>
-<%@ page import="java.util.List" %>
 <%@ page import="uz.pdp.uzummarket.service.NotificationService" %>
 <%@ page import="uz.pdp.uzummarket.repositories.NotificationRepository" %>
 

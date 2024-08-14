@@ -41,9 +41,25 @@ public class ShopRepository implements BaseRepository<Shop> {
         return entityManager.find(Shop.class, id);
     }
 
-    @Override
     public List<Shop> getAll() {
-        return entityManager.createQuery("SELECT s FROM Shop s", Shop.class).getResultList();
+        EntityTransaction transaction = null;
+        List<Shop> shops;
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            shops = entityManager.createQuery("SELECT s FROM Shop s", Shop.class).getResultList();
+
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            System.err.println("Error retrieving shops: " + e.getMessage());
+            throw new PersistenceException("Failed to fetch shops", e);
+        } finally {
+            transaction.commit();
+        }
+        return shops;
     }
 
     @Transactional
