@@ -2,9 +2,8 @@ package uz.pdp.uzummarket.repositories;
 
 import jakarta.persistence.*;
 import uz.pdp.uzummarket.entities.Category;
-import uz.pdp.uzummarket.util.DBConnection;
+import uz.pdp.uzummarket.repositories.BaseRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryRepository implements BaseRepository<Category> {
@@ -83,8 +82,20 @@ public class CategoryRepository implements BaseRepository<Category> {
     }
 
     public List<String> getCategoryNames() {
-        String jpql = "SELECT c.categoryName FROM Category c";
-        TypedQuery<String> query = entityManager.createQuery(jpql, String.class);
+        String sql = "SELECT category_name FROM category"; // Replace 'category_name' and 'category' with your actual column and table names
+        Query query = entityManager.createNativeQuery(sql);
         return query.getResultList();
+    }
+    public String getCategoryName(int categoryId) {
+        String sql = "SELECT category_name FROM category WHERE category_id = ?"; // Ensure 'category_id' and 'category_name' match your actual column names
+        Query query = entityManager.createNativeQuery(sql);
+        query.setParameter(1, categoryId); // Set the categoryId parameter
+
+        try {
+            return (String) query.getSingleResult();
+        } catch (NoResultException e) {
+            // Handle the case when no result is found, for example, return null or a default value
+            return null;
+        }
     }
 }

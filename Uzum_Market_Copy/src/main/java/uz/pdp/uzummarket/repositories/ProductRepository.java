@@ -4,9 +4,16 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
+import lombok.SneakyThrows;
 import uz.pdp.uzummarket.entities.*;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
@@ -68,7 +75,7 @@ public class ProductRepository implements BaseRepository<Product> {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            return entityManager.createQuery("SELECT p FROM Product p", Product.class).getResultList();
+            return entityManager.createNativeQuery("SELECT * FROM products", Product.class).getResultList();
         } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback();
@@ -79,7 +86,6 @@ public class ProductRepository implements BaseRepository<Product> {
             transaction.commit();
         }
     }
-
     @Transactional
     @Override
     public void update(Product product) {
@@ -100,36 +106,32 @@ public class ProductRepository implements BaseRepository<Product> {
             entityManager.getTransaction().rollback();
         }
     }
-
     public List<Product> findProductsByCategoryId(int categoryId) {
-        return entityManager.createQuery("SELECT p FROM Product p WHERE p.category.id = :categoryId", Product.class)
-                .setParameter("categoryId", categoryId)
+        return entityManager.createNativeQuery("SELECT * FROM products WHERE category_id = ?", Product.class)
+                .setParameter(1, categoryId)
                 .getResultList();
     }
+
 
     public List<Product> findProductsByName(String query) {
-        return entityManager.createQuery("SELECT p FROM Product p WHERE p.name LIKE :name", Product.class)
-                .setParameter("name", query + "%")
+        return entityManager.createNativeQuery("SELECT * FROM products WHERE name LIKE ?", Product.class)
+                .setParameter(1, query + "%")
                 .getResultList();
     }
 
-    public List<Product> findByName(String name) {
-        return entityManager.createQuery("SELECT p FROM Product p WHERE p.name LIKE :name", Product.class)
-                .setParameter("name", name + "%")
-                .getResultList();
-    }
+
 
     public List<Product> findLatestProducts() {
-        return entityManager.createQuery("SELECT p FROM Product p ORDER BY p.id DESC", Product.class)
-                .setMaxResults(10)
+        return entityManager.createNativeQuery("SELECT * FROM products ORDER BY id DESC LIMIT 10", Product.class)
                 .getResultList();
     }
 
-    @Transactional
+
     public List<Product> findDiscountedProducts() {
-        return entityManager.createQuery("SELECT p FROM Product p WHERE p.discount > 0", Product.class)
+        return entityManager.createNativeQuery("SELECT * FROM products WHERE discount > 0", Product.class)
                 .getResultList();
     }
+
 
     @Transactional
     public List<Product> findProductsBySeller(User user) {

@@ -45,5 +45,7 @@ public class CategoryService {
         return categoryRepository.getCategoryNames();
     }
 
-    // Other methods related to CategoryService
+    public String getCategoryNameById(int categoryId) {
+        return categoryRepository.getCategoryName(categoryId);
+    }
 }

@@ -1,19 +1,18 @@
-<%@ page import="uz.pdp.uzummarket.service.ProductService" %>
+<%@ page import="uz.pdp.uzummarket.entities.User" %>
+<%@ page import="uz.pdp.uzummarket.service.FavoriteService" %>
+<%@ page import="uz.pdp.uzummarket.entities.FavoriteList" %>
 <%@ page import="uz.pdp.uzummarket.entities.Product" %>
 <%@ page import="java.util.List" %>
-<%@ page import="uz.pdp.uzummarket.service.CategoryService" %>
-<%@ page import="uz.pdp.uzummarket.entities.Category" %>
-<%@ page import="java.util.Collections" %>
-<!DOCTYPE html>
-<html lang="en">
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Uzum Market">
     <meta name="keywords" content="html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Uzum Market</title>
+    <title>My Favorites</title>
 
     <!-- Google Font -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -159,14 +158,9 @@
     </style>
 
 </head>
-
 <body>
-<!-- Page Preloder -->
-<div id="preloder">
-    <div class="loader"></div>
-</div>
 
-<<!-- Header Section Begin -->
+<!-- Header Section Begin -->
 <header class="header">
     <div class="container">
         <div class="row">
@@ -214,6 +208,7 @@
 </header>
 <!-- Header Section End -->
 
+
 <!-- Hero Section Begin -->
 <section class="hero">
     <div class="container">
@@ -223,20 +218,7 @@
                     <div class="hero__categories__all">
                         <i class="fa fa-bars"></i>
                         <span>All Categories</span>
-
-                        <%
-                            CategoryService categoryService = new CategoryService();
-                            List<Category> categories = categoryService.getAllCategories();
-                            request.setAttribute("categories", categories);
-                        %>
-
                     </div>
-                    <ul>
-                        <% for (Category category : categories) { %>
-                        <li><a href="?categoryId=<%= category.getCategoryId() %>"><%= category.getCategoryName() %></a>
-                        </li>
-                        <% } %>
-                    </ul>
                 </div>
             </div>
             <div class="col-lg-9">
@@ -260,33 +242,26 @@
                         </div>
                     </div>
                 </div>
-                <div class="hero__item set-bg" data-setbg="/assets/img/Black-Friday.jpg">
-                    <div class="hero__text">
-                        <a href="#" class="primary-btn">BUY NOW</a>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </section>
 <!-- Hero Section End -->
 
+
 <!-- Featured Section Begin -->
 <section class="featured spad">
-    <div class="container" >
+    <div class="container">
         <%
-            String categoryId = request.getParameter("categoryId");
-            if (categoryId != null) {
-                ProductService productService = new ProductService();
-                categoryService = new CategoryService(); // Assuming you have this service
-                List<Product> products = productService.getAllProductsByCategory(Integer.parseInt(categoryId));
-                String categoryName = categoryService.getCategoryNameById(Integer.parseInt(categoryId));
+            User user = (User) session.getAttribute("user");
+            FavoriteService favoriteService = new FavoriteService();
+            List<FavoriteList> favoriteLists = favoriteService.getUserFavorites(user);
         %>
-        <h2 style="font-weight: bold; margin-left: 450px"><%= categoryName %></h2><br><br>
+
         <div class="row featured__filter">
-            <% if (products != null && !products.isEmpty()) { %>
-            <% for (Product product : products) { %>
-            <%
+            <% if (favoriteLists != null && !favoriteLists.isEmpty()) { %>
+            <% for (FavoriteList favoriteList : favoriteLists) {
+                Product product = favoriteList.getProduct(); // Retrieve product from FavoriteList
                 String imageUrl = product.getImages() != null && !product.getImages().trim().isEmpty()
                         ? request.getContextPath() + "/image/" + product.getImages()
                         : "https://via.placeholder.com/150"; // Placeholder image
@@ -296,81 +271,25 @@
                     <div class="featured__item__pic">
                         <img src="<%= imageUrl %>" alt="<%= product.getName() %>" class="product-image" onError="this.src='https://via.placeholder.com/150';">
                         <ul class="featured__item__pic__hover">
-                            <li><a href="javascript:void(0);" onclick="addToFavorites(<%= product.getId() %>)"><i class="fa fa-heart"></i></a></li>
+                            <li><a href="/DeleteFavorite?productId=<%= product.getId() %>"><i class="fa fa-heart"></i></a></li>
                             <li><a href="/AddToCartServlet?productId=<%= product.getId() %>"><i class="fa fa-shopping-cart"></i></a></li>
+                            <li><a href="/productDetails?productId=<%= product.getId() %>"><i class="fa fa-info-circle"></i></a></li>
                         </ul>
                     </div>
                     <div class="featured__item__text">
-                        <h6><%= product.getName() %></h6>
-                        <h5><%= product.getPrice() %>$</h5>
+                        <h6><a href="/productDetails?productId=<%= product.getId() %>"><%= product.getName() %></a></h6>
+                        <h5>$<%= product.getPrice() %></h5>
                     </div>
                 </div>
             </div>
             <% } %>
             <% } else { %>
-            <p>No products found for this category.</p>
+            <p class="empty-message">You have no favorite products yet.</p>
             <% } %>
         </div>
-        <br><br><br>
-        <% } %>
     </div>
 </section>
 <!-- Featured Section End -->
-
-<!-- Products Container -->
-<section class="products">
-    <div class="container">
-        <div class="row">
-            <div class="categories__slider owl-carousel">
-                <%
-                    ProductService productService = new ProductService();
-                    List<Product> products = productService.getAllProducts();
-                    Collections.shuffle(products);
-
-                    for (Product product : products) {
-                        String imageUrl = product.getImages() != null && !product.getImages().trim().isEmpty()
-                                ? request.getContextPath() + "/image/" + product.getImages()
-                                : "https://via.placeholder.com/150"; // Placeholder image
-                %>
-                <!-- Product Item -->
-                <div class="item">
-                    <div class="products__item" style="background-image: url('<%= imageUrl %>');">
-                        <div class="products__item__text">
-                            <h5><a href="product-details.jsp?id=<%= product.getId() %>"><%= product.getName() %></a></h5>
-                            <p>$<%= product.getPrice() %></p>
-                        </div>
-                    </div>
-                </div>
-                <% } %>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-<script>
-    function addToFavorites(productId) {
-        fetch('/AddToFavorites?productId=' + productId)
-            .then(response => response.text())
-            .then(data => {
-                alert(data);
-
-                if (data.includes('successfully')) {
-                    const iconElement = document.querySelector(`a[href="/AddToFavorites?productId=${productId}"] i`);
-
-                    if (iconElement) {
-                        iconElement.style.color = 'red';
-                    } else {
-                        console.error("Icon element not found.");
-                    }
-                }
-            })
-            .catch(error => {
-                alert('Error: ' + error.message);
-            });
-    }
-</script>
-
 
 <!-- JS Scripts -->
 <script src="/assets/js_files/js/jquery-3.3.1.min.js"></script>
@@ -379,7 +298,6 @@
 <script src="/assets/js_files/js/jquery-ui.min.js"></script>
 <script src="/assets/js_files/js/jquery.nice-select.min.js"></script>
 <script src="/assets/js_files/js/main.js"></script>
-
 
 <script>
     function searchProducts() {
@@ -405,7 +323,16 @@
         document.getElementById('search-suggestions').innerHTML = '';
     }
 </script>
-<!-- Js Plugins -->
+
+
+<!-- JS Scripts -->
+<script src="/assets/js_files/js/jquery-3.3.1.min.js"></script>
+<script src="/assets/js_files/js/bootstrap.min.js"></script>
+<script src="/assets/js_files/js/owl.carousel.min.js"></script>
+<script src="/assets/js_files/js/jquery-ui.min.js"></script>
+<script src="/assets/js_files/js/jquery.nice-select.min.js"></script>
+<script src="/assets/js_files/js/main.js"></script>
+
 <script src="/assets/css_files/js/jquery-3.3.1.min.js"></script>
 <script src="/assets/css_files/js/bootstrap.min.js"></script>
 <script src="/assets/css_files/js/jquery.nice-select.min.js"></script>
@@ -414,6 +341,6 @@
 <script src="/assets/css_files/js/mixitup.min.js"></script>
 <script src="/assets/css_files/js/owl.carousel.min.js"></script>
 <script src="/assets/css_files/js/main.js"></script>
-</body>
 
+</body>
 </html>
