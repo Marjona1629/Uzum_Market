@@ -1,19 +1,24 @@
 package uz.pdp.uzummarket.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import uz.pdp.uzummarket.entities.Card;
 import uz.pdp.uzummarket.entities.User;
 import uz.pdp.uzummarket.enums.Role;
 import uz.pdp.uzummarket.enums.Status;
+import uz.pdp.uzummarket.repositories.CardRepository;
 import uz.pdp.uzummarket.repositories.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AuthService {
+
+    private final Random random = new Random();
     private static final Logger LOGGER = Logger.getLogger(AuthService.class.getName());
     private final UserRepository userRepository = UserRepository.getInstance();
+    private final CardService cardService = new CardService(new CardRepository());
+
 
     public User createUser(HttpServletRequest request) {
         String email = request.getParameter("email");
@@ -39,15 +44,17 @@ public class AuthService {
                 .hasConfirmed(false)
                 .build();
 
-        LOGGER.log(Level.INFO, "Creating user: {0}", user);
+        Card card = Card.builder()
+                .user(user)
+                .build();
+
 
         try {
             userRepository.save(user);
+            cardService.addCard(card);
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error saving user to database: {0}", e.getMessage());
             throw new RuntimeException("Failed to save user", e);
         }
-
         return user;
     }
 
@@ -58,27 +65,5 @@ public class AuthService {
             sb.append(random.nextInt(10));
         }
         return sb.toString();
-    }
-
-    public User findByCode(String code) {
-        LOGGER.log(Level.INFO, "Looking up user by code: {0}", code);
-        return userRepository.findByCode(code);
-    }
-
-    public boolean confirmUser(String code) {
-        User user = findByCode(code);
-        if (user != null) {
-            if (!user.getHasConfirmed()) {
-                user.setHasConfirmed(true);
-                try {
-                    userRepository.updateUser(user); // Update user in the database
-                } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "Error updating user confirmation status: {0}", e.getMessage());
-                    return false;
-                }
-                return true;
-            }
-        }
-        return false;
     }
 }

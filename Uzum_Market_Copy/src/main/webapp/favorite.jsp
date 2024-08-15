@@ -189,7 +189,7 @@
                     <a href="/app/favorites"><i class="fa fa-heart-o"></i> Favorite</a>
                 </div>
                 <div class="header__nav__item">
-                    <a href="basket.jsp"><i class="fa fa-shopping-basket"></i> Basket</a>
+                    <a href="/app/basket"><i class="fa fa-shopping-basket"></i> Basket</a>
                 </div>
                 <div class="header__nav__item">
                     <a href="/contact"><i class="fa fa-connectdevelop"></i> Contact</a>

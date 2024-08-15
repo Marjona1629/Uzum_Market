@@ -2,8 +2,15 @@ package uz.pdp.uzummarket.repositories;
 
 import jakarta.persistence.*;
 import uz.pdp.uzummarket.entities.Basket;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static uz.pdp.uzummarket.util.DBConnection.getConnection;
 
 public class BasketRepository implements BaseRepository<Basket> {
 
@@ -83,14 +90,25 @@ public class BasketRepository implements BaseRepository<Basket> {
     }
 
     public List<Basket> getBasketListByUserId(int userId) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        List<Basket> baskets = new ArrayList<>();
         try {
+            transaction = entityManager.getTransaction();
+            transaction.begin(); // Begin the transaction
+
             TypedQuery<Basket> query = entityManager.createQuery(
                     "SELECT b FROM Basket b WHERE b.user.id = :userId", Basket.class);
             query.setParameter("userId", userId);
-            return query.getResultList();
-        } catch (NoResultException e) {
-            return new ArrayList<>();
+            baskets = query.getResultList(); // Execute the query
+
+            transaction.commit(); // Commit the transaction
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback(); // Rollback the transaction on error
+            }
+            throw new RuntimeException("Error retrieving basket list by user ID", e);
         }
+        return baskets;
     }
 
     public int getQuantity(int userId, int productId) {
@@ -189,5 +207,28 @@ public class BasketRepository implements BaseRepository<Basket> {
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+
+    public boolean isProductExistBasket(int userId, int productId) {
+        String query = "SELECT COUNT(*) FROM baskets WHERE user_id = ? AND product_id = ?";
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, userId);
+            statement.setInt(2, productId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    return count > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle exceptions as needed
+        }
+
+        return false;
     }
 }

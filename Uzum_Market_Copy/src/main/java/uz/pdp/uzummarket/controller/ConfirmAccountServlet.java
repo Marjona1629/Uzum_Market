@@ -5,6 +5,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import uz.pdp.uzummarket.entities.User;
+import uz.pdp.uzummarket.repositories.UserRepository;
 import uz.pdp.uzummarket.util.DBConnection;
 
 import java.io.IOException;
@@ -47,7 +50,13 @@ public class ConfirmAccountServlet extends HttpServlet {
                                 if (rowsAffected > 0) {
                                     message = "Your account has been confirmed. You can now log in.";
                                     messageType = "success";
-                                    response.sendRedirect("home.jsp");
+
+                                    User user = new UserRepository().findByCode(code);
+
+                                    HttpSession session = request.getSession();
+                                    session.setAttribute("user", user);
+
+                                    response.sendRedirect("/app/home");
                                     return; // Ensure to stop further execution after redirect
                                 } else {
                                     message = "Failed to confirm your account.";

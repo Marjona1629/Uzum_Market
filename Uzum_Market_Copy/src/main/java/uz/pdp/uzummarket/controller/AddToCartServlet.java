@@ -6,17 +6,19 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import uz.pdp.uzummarket.entities.Basket;
 import uz.pdp.uzummarket.entities.Product;
+import uz.pdp.uzummarket.entities.User;
+import uz.pdp.uzummarket.service.BasketService;
 import uz.pdp.uzummarket.service.ProductService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-@WebServlet("/AddToCartServlet")
+@WebServlet("/app/addtobasket")
 public class AddToCartServlet extends HttpServlet {
 
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         int productId = Integer.parseInt(request.getParameter("productId"));
@@ -24,14 +26,25 @@ public class AddToCartServlet extends HttpServlet {
         ProductService productService = new ProductService();
         Product product = productService.getProductById(productId);
 
-        List<Product> cart = (List<Product>) session.getAttribute("cart");
-        if (cart == null) {
-            cart = new ArrayList<>();
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            BasketService basketService = new BasketService();
+
+            if (basketService.isProductInBasket(user.getId(), productId)) {
+                response.sendRedirect("/basket.jsp?message=Product%20already%20in%20basket");
+            } else {
+                Basket basket = Basket.builder()
+                        .user(user)
+                        .product(product)
+                        .quantity(1)
+                        .isFormalized(false)
+                        .build();
+
+                basketService.createBasket(basket);
+                response.sendRedirect("/home.jsp?message=Product%20added%20to%20basket");
+            }
+        } else {
+            response.sendRedirect("/login");
         }
-
-        cart.add(product);
-        session.setAttribute("cart", cart);
-
-        response.sendRedirect("shoping-cart.jsp");
     }
 }

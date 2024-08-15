@@ -80,4 +80,9 @@ public class BasketService {
         }
         return 0;
     }
+
+
+    public boolean isProductInBasket(Integer id, int productId) {
+        return cartRepository.isProductExistBasket(id, productId);
+    }
 }

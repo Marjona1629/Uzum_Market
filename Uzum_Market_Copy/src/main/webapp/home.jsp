@@ -29,6 +29,70 @@
     <link rel="stylesheet" href="/assets/css_files/css/style.css" type="text/css">
 
     <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .product__details__pic__item--large {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .primary-btn {
+            background-color: #ff6f61;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+
+        .primary-btn:hover {
+            background-color: #e65a50;
+        }
+
+        .heart-icon {
+            color: #ff6f61;
+            margin-left: 10px;
+        }
+
+        .heart-icon:hover {
+            color: #e65a50;
+        }
+
         .header__nav {
             display: flex;
             align-items: center;
@@ -192,10 +256,10 @@
                     %>
                 </div>
                 <div class="header__nav__item">
-                    <a href="/app/favorites"><i class="fa fa-heart-o"></i> Favorite</a>
+                    <a href="favorite.jsp"><i class="fa fa-heart-o"></i> Favorite</a>
                 </div>
                 <div class="header__nav__item">
-                    <a href="basket.jsp"><i class="fa fa-shopping-basket"></i> Basket</a>
+                    <a href="/app/basket"><i class="fa fa-shopping-basket"></i> Basket</a>
                 </div>
                 <div class="header__nav__item">
                     <a href="/contact"><i class="fa fa-connectdevelop"></i> Contact</a>
@@ -296,8 +360,70 @@
                     <div class="featured__item__pic">
                         <img src="<%= imageUrl %>" alt="<%= product.getName() %>" class="product-image" onError="this.src='https://via.placeholder.com/150';">
                         <ul class="featured__item__pic__hover">
-                            <li><a href="javascript:void(0);" onclick="addToFavorites(<%= product.getId() %>)"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="/AddToCartServlet?productId=<%= product.getId() %>"><i class="fa fa-shopping-cart"></i></a></li>
+                            <li><a href="#"><i class="fa fa-heart"></i></a></li>
+                            <!-- Modal Structure -->
+                            <div id="productDetailModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <div class="product-details spad">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-6">
+                                                    <div class="product__details__pic">
+                                                        <div class="product__details__pic__item">
+                                                            <img id="modalProductImage" class="product__details__pic__item--large" src="" alt="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6">
+                                                    <div class="product__details__text">
+                                                        <h3 id="modalProductName"></h3>
+                                                        <div class="product__details__rating">
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star-half-o"></i>
+                                                            <span>(<span id="modalProductReviews"></span> reviews)</span>
+                                                        </div>
+                                                        <div id="modalProductPrice" class="product__details__price"></div>
+                                                        <p id="modalProductDescription"></p>
+                                                        <div class="product__details__quantity">
+                                                            <div class="quantity">
+                                                                <div class="pro-qty">
+                                                                    <input type="text" value="1">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <ul class="featured__item__pic__hover">
+                                                            <li><a href="javascript:void(0);" onclick="addToFavorites(<%= product.getId() %>)"><i class="fa fa-heart"></i></a></li>
+                                                            <a href="/app/addtobasket?productId=<%= product.getId() %>" class="primary-btn">ADD TO BASKET</a>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <%
+                                imageUrl = product.getImages() != null && !product.getImages().trim().isEmpty()
+                                        ? request.getContextPath() + "/image/" + product.getImages()
+                                        : "https://via.placeholder.com/150"; // Placeholder image
+                            %>
+
+                            <!-- The link -->
+                            <li>
+                                <a href="#"
+                                   data-name="<%= product.getName() %>"
+                                   data-price="<%= product.getPrice() %>"
+                                   data-description="<%= product.getDescription() %>"
+                                   data-image="<%= imageUrl%>"
+                                   data-reviews="<%= 6 %>">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </a>
+                            </li>
+
                         </ul>
                     </div>
                     <div class="featured__item__text">
@@ -315,8 +441,8 @@
         <% } %>
     </div>
 </section>
-<!-- Featured Section End -->
 
+<!-- Featured Section End -->
 <!-- Products Container -->
 <section class="products">
     <div class="container">
@@ -334,9 +460,14 @@
                 %>
                 <!-- Product Item -->
                 <div class="item">
-                    <div class="products__item" style="background-image: url('<%= imageUrl %>');">
+                    <div class="products__item" style="background-image: url('<%= imageUrl %>');"
+                         data-name="<%= product.getName() %>"
+                         data-price="<%= product.getPrice() %>"
+                         data-description="<%= product.getDescription() %>"
+                         data-image="<%= imageUrl %>"
+                         data-reviews="<%= 6 %>">
                         <div class="products__item__text">
-                            <h5><a href="product-details.jsp?id=<%= product.getId() %>"><%= product.getName() %></a></h5>
+                            <h5><a href="#" class="product-detail-link"><%= product.getName() %></a></h5>
                             <p>$<%= product.getPrice() %></p>
                         </div>
                     </div>
@@ -346,6 +477,66 @@
         </div>
     </div>
 </section>
+
+
+
+<!-- Footer Section Begin -->
+<footer class="footer spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="footer__about">
+                    <div class="footer__about__logo">
+                        <a href="/app/home"><img src="/assets/img/uzum_market_logo.png" alt=""></a>
+                    </div>
+                    <ul>
+                        <li>Address: Shaykhontohur district, Beshkent str</li>
+                        <li>Phone: +99894 022 36 33</li>
+                        <li>Email: uzummarket@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
+                <div class="footer__widget">
+                    <h6>Useful Links</h6>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">About Our Shop</a></li>
+                        <li><a href="#">Secure Shopping</a></li>
+                        <li><a href="#">Delivery infomation</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Our Sitemap</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#">Who We Are</a></li>
+                        <li><a href="#">Our Services</a></li>
+                        <li><a href="#">Projects</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Innovation</a></li>
+                        <li><a href="#">Testimonials</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="footer__widget">
+                    <h6>Join Our Newsletter Now</h6>
+                    <p>Get E-mail updates about our latest shop and special offers.</p>
+                    <form action="#">
+                        <input type="text" placeholder="Enter your mail">
+                        <button type="submit" class="site-btn">Subscribe</button>
+                    </form>
+                    <div class="footer__widget__social">
+                        <a href="#"><i class="fa fa-facebook"></i></a>
+                        <a href="#"><i class="fa fa-instagram"></i></a>
+                        <a href="#"><i class="fa fa-twitter"></i></a>
+                        <a href="#"><i class="fa fa-pinterest"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Footer Section End -->
 
 
 <script>
@@ -370,6 +561,7 @@
             });
     }
 </script>
+
 
 
 <!-- JS Scripts -->
@@ -404,7 +596,50 @@
         document.getElementById('search-input').value = productName;
         document.getElementById('search-suggestions').innerHTML = '';
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var modal = document.getElementById("productDetailModal");
+        var modalProductName = document.getElementById("modalProductName");
+        var modalProductPrice = document.getElementById("modalProductPrice");
+        var modalProductDescription = document.getElementById("modalProductDescription");
+        var modalProductImage = document.getElementById("modalProductImage");
+        var modalProductReviews = document.getElementById("modalProductReviews");
+        var span = document.getElementsByClassName("close")[0];
+        var links = document.querySelectorAll('a[data-name]');
+
+        links.forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                var name = this.getAttribute('data-name');
+                var price = this.getAttribute('data-price');
+                var description = this.getAttribute('data-description');
+                var image = this.getAttribute('data-image');
+                var reviews = this.getAttribute('data-reviews');
+
+                modalProductName.textContent = name;
+                modalProductPrice.textContent = "$" + price;
+                modalProductDescription.textContent = description;
+                modalProductImage.src = image;
+                modalProductReviews.textContent = reviews;
+
+                modal.style.display = "block";
+            });
+        });
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    });
+
 </script>
+
+
 <!-- Js Plugins -->
 <script src="/assets/css_files/js/jquery-3.3.1.min.js"></script>
 <script src="/assets/css_files/js/bootstrap.min.js"></script>

@@ -14,7 +14,7 @@ import uz.pdp.uzummarket.service.NotificationService;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "seller",urlPatterns = {"/app/seller/main"})
+@WebServlet(name = "seller",value = {"/app/seller/main"})
 public class SellerServlet  extends HttpServlet {
 
     final NotificationService notificationService = new NotificationService(new NotificationRepository());

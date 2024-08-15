@@ -1,3 +1,7 @@
+
+<%@ page import="java.util.List" %>
+<%@ page import="uz.pdp.uzummarket.service.CategoryService" %>
+<%@ page import="uz.pdp.uzummarket.entities.Category" %>
 <%@ page import="uz.pdp.uzummarket.entities.User" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -171,20 +175,6 @@
             cursor: pointer;
             border: solid 1px #BA68C8;
         }
-        .back-button {
-            background-color: #6f3cce; /* Adjust background color */
-            color: white; /* Text color */
-            border: none; /* Remove border */
-            padding: 10px 20px; /* Padding */
-            border-radius: 5px; /* Rounded corners */
-            cursor: pointer; /* Pointer cursor on hover */
-            font-size: 16px; /* Font size */
-            margin-top: 10px; /* Margin on top */
-        }
-
-        .back-button:hover {
-            background-color: #6f3cce; /* Darker color on hover */
-        }
     </style>
 
 </head>
@@ -201,7 +191,9 @@
         <div class="row">
             <div class="col-lg-3">
                 <div class="header__logo">
-                    <img src="/assets/img/uzum_market_logo.png" alt="">
+                    <a href="${pageContext.request.contextPath}/home.jsp">
+                        <img src="/assets/img/uzum_market_logo.png" alt="">
+                    </a>
                 </div>
             </div>
 
@@ -211,7 +203,7 @@
                         String username = (String) session.getAttribute("username");
                         if (username != null) {
                     %>
-                    <a href="/app/profile"><i class="fa fa-user-o"></i> <%= username %></a>
+                    <a href="app/profile"><i class="fa fa-user-o"></i> <%= username %></a>
                     <%
                     } else {
                     %>
@@ -221,10 +213,10 @@
                     %>
                 </div>
                 <div class="header__cart">
-                    <a href="favorite.jsp"><i class="fa fa-heart-o"></i> Favorite</a>
+                    <a href="/app/favorites"><i class="fa fa-heart-o"></i> Favorite</a>
                 </div>
                 <div class="header__cart">
-                    <a href="basket.jsp"><i class="fa fa-shopping-basket"></i> Basket</a>
+                    <a href="/app/basket"><i class="fa fa-shopping-basket"></i> Basket</a>
                 </div>
                 <div class="header__top__right__language">
                     <img src="/assets/img/language.png" alt=""><a>English</a>
@@ -246,13 +238,28 @@
 <section class="hero">
     <div class="container">
         <div class="row">
-            <div class="col-lg-3">
-                <div class="hero__categories">
-                    <button onclick="window.location.href='/app/home'" class="back-button">
-                        Back to Home
-                    </button>
-                </div>
-            </div>
+            <%--
+                        <div class="col-lg-3">
+                            <div class="hero__categories">
+                                <div class="hero__categories__all">
+                                    <i class="fa fa-bars"></i>
+                                    <span>All Categories</span>
+
+                                    <%
+                                        CategoryService categoryService = new CategoryService();
+                                        List<Category> categories = categoryService.getAllCategories();
+                                        request.setAttribute("categories", categories);
+                                    %>
+
+                                </div>
+                                <ul>
+                                    <% for (Category category : categories) { %>
+                                    <li><a href="?categoryId=<%= category.getCategoryId() %>"><%= category.getCategoryName() %></a></li>
+                                    <% } %>
+                                </ul>
+                            </div>
+                        </div>
+            --%>
             <div class="col-lg-9">
                 <div class="hero__search">
                     <div class="hero__search__form">
@@ -270,7 +277,7 @@
                         </div>
                         <div class="hero__search__phone__text">
                             <h5>+99894 022 11 44</h5>
-                            <span>Support 24/7</span>
+                            <span>support 24/7</span>
                         </div>
                     </div>
                 </div>
@@ -278,7 +285,7 @@
         </div>
     </div>
 </section>
-
+<!-- Hero Section End -->
 <form action="/app/updateProfile" method="post">
     <%
         User user = (User) session.getAttribute("user");
@@ -300,6 +307,13 @@
                     >
                     <br>
                     <span class="font-weight-bold"><%= user.getUsername() %></span>
+                    <!-- Logout Button -->
+                    <div>
+                        <a class="dropdown-item d-flex align-items-center" href="/logout">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Sign Out</span>
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="col-md-9 border-right">
@@ -365,7 +379,7 @@
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <label class="labels">Country</label>
-                                <select name="country" id="country" class="form-control" onchange="updateCities()">
+                                <select name="country" id="country" class="form-control">
                                     <option value="" <%= user.getState() == null ? "selected" : "" %>>Select Country...</option>
                                     <option value="USA" <%= "USA".equals(user.getState()) ? "selected" : "" %>>USA</option>
                                     <option value="Canada" <%= "Canada".equals(user.getState()) ? "selected" : "" %>>Canada</option>
@@ -378,6 +392,7 @@
                             <div class="col-md-12">
                                 <label class="labels">City</label>
                                 <select name="city" id="city" class="form-control">
+                                    <option value="" <%= user.getCity() == null ? "selected" : "" %>>Select City...</option>
                                 </select>
                             </div>
                         </div>
@@ -413,45 +428,36 @@
     <% } %>
 </form>
 <script>
-    function updateCities() {
-        var country = document.getElementById("country").value;
-        var citySelect = document.getElementById("city");
-        citySelect.innerHTML = "";
+    document.addEventListener('DOMContentLoaded', function() {
+        const countrySelect = document.getElementById('country');
+        const citySelect = document.getElementById('city');
 
-        var cities = {
-            "USA": ["New York", "Los Angeles", "Chicago"],
-            "Canada": ["Toronto", "Vancouver", "Montreal"],
-            "UK": ["London", "Manchester", "Birmingham"],
-            "Australia": ["Sydney", "Melbourne", "Brisbane"]
+        const citiesByCountry = {
+            "USA": ["New York", "Los Angeles", "Chicago", "Houston"],
+            "Canada": ["Toronto", "Vancouver", "Montreal", "Calgary"],
+            "UK": ["London", "Manchester", "Birmingham", "Leeds"],
+            "Australia": ["Sydney", "Melbourne", "Brisbane", "Perth"]
         };
 
-        var defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.text = "Select City...";
-        citySelect.add(defaultOption);
+        function updateCities() {
+            const selectedCountry = countrySelect.value;
+            const cities = citiesByCountry[selectedCountry] || [];
 
-        if (cities[country]) {
-            cities[country].forEach(function(city) {
-                var option = document.createElement("option");
+            citySelect.innerHTML = '<option value="">Select City...</option>';
+
+            cities.forEach(city => {
+                const option = document.createElement('option');
                 option.value = city;
-                option.text = city;
-                citySelect.add(option);
+                option.textContent = city;
+                citySelect.appendChild(option);
             });
-
-            var selectedCity = "<%= user.getCity() != null ? user.getCity() : "" %>";
-            if (selectedCity) {
-                citySelect.value = selectedCity;
-            }
         }
-    }
 
-    document.addEventListener("DOMContentLoaded", function() {
+        countrySelect.addEventListener('change', updateCities);
         updateCities();
     });
 </script>
 
-<script src="/admin-assets/vendor/quill/quill.min.js"></script>
-<script src="/admin-assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="/assets/css_files/js/jquery-3.3.1.min.js"></script>
 <script src="/assets/css_files/js/bootstrap.min.js"></script>
 <script src="/assets/css_files/js/jquery.nice-select.min.js"></script>

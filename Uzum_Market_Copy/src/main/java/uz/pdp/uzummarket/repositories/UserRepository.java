@@ -9,7 +9,6 @@ import uz.pdp.uzummarket.enums.Role;
 import java.util.List;
 import java.util.Optional;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserRepository implements BaseRepository<User> {
 
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("HIBERNATE-UNIT");

@@ -10,10 +10,7 @@
     <title>Uzum Market</title>
 
     <!-- Google Font -->
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
 
     <!-- Css Styles -->
     <link rel="stylesheet" href="/assets/css_files/css/bootstrap.min.css" type="text/css">
@@ -148,13 +145,13 @@
                     %>
                 </div>
                 <div class="header__nav__item">
-                    <a href="favorite.jsp"><i class="fa fa-heart-o"></i> Favorite</a>
+                    <a href="/app/favorites"><i class="fa fa-heart-o"></i> Favorite</a>
                 </div>
                 <div class="header__nav__item">
-                    <a href="basket.jsp"><i class="fa fa-shopping-basket"></i> Basket</a>
+                    <a href="/app/basket"><i class="fa fa-shopping-basket"></i> Basket</a>
                 </div>
                 <div class="header__nav__item">
-                    <a href="contact.jsp"><i class="fa fa-connectdevelop"></i> Contact</a>
+                    <a href="/contact"><i class="fa fa-connectdevelop"></i> Contact</a>
                 </div>
                 <div class="header__nav__item header__top__right__language">
                     <img src="/assets/img/language.png" alt=""><a>English</a>
@@ -256,16 +253,16 @@
                 </div>
             </div>
         </div>
-        <form action="#">
+        <form action="/send-query">
             <div class="row">
                 <div class="col-lg-6 col-md-6">
-                    <input type="text" placeholder="Your name">
+                    <input type="text" id="name" placeholder="Your name">
                 </div>
                 <div class="col-lg-6 col-md-6">
-                    <input type="text" placeholder="Your Email">
+                    <input type="text" id="email" placeholder="Your Email">
                 </div>
                 <div class="col-lg-12 text-center">
-                    <textarea placeholder="Your message"></textarea>
+                    <textarea id="text" placeholder="Your message"></textarea>
                     <button type="submit" class="site-btn">SEND MESSAGE</button>
                 </div>
             </div>

@@ -39,6 +39,7 @@
                     <%
                         int userId = 0; // Default value
                         String fullName = "";
+                        String username = "";
                         String userAddress = "";
                         String userEmail = "";
                         String userPhone = "";
@@ -57,6 +58,7 @@
                                  ResultSet resultSet = statement.executeQuery("SELECT * FROM users WHERE id = " + userId)) {
 
                                 if (resultSet.next()) {
+                                    username = resultSet.getString("username");
                                     fullName = resultSet.getString("firstname") + " " + resultSet.getString("lastname");
                                     userEmail = resultSet.getString("email");
                                     userPhone = resultSet.getString("phone");
@@ -83,7 +85,7 @@
                     %>
                     <img src="<%= profileImage %>" alt="Profile Picture" class="profile-image">
                     <h4 class="mt-3"><%= fullName %></h4>
-                    <p class="text-muted font-size-sm"><%= userAddress %></p>
+                    <p class="text-muted font-size-sm"><%= username %></p>
                 </div>
 
                 <div class="col-md-8">
